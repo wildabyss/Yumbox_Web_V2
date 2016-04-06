@@ -89,6 +89,16 @@ switch (ENVIRONMENT)
 		exit(1); // EXIT_ERROR
 }
 
+
+
+/* Default Time Zone */
+if( ! ini_get('date.timezone') )
+{
+   date_default_timezone_set('EST');
+} 
+
+
+
 /*
  *---------------------------------------------------------------
  * SYSTEM DIRECTORY NAME
