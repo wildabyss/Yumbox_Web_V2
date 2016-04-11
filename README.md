@@ -1,14 +1,14 @@
-# Yumbox Web Application
+# Yumbox Web Application #
 
 The front-end and back-end of the server-side Yumbox application for home cooking sharing.
 
-## Requirements
+## Requirements ##
 
 - PHP 5.4 or higher
 - MySQL 5.1 or higher
 - Apache or IIS
 
-## Installation
+## Installation ##
 
 1. Set document root to /public
 2. Rename /application/config/config.php~ and /application/config/database.php~ to .php files
@@ -20,7 +20,7 @@ The front-end and back-end of the server-side Yumbox application for home cookin
 6. Modify /application/database/create_user.sql for the webuser password. Source the script.
 7. Run composer on /composer.json
 
-## Server Setup Notes
+## Server Setup Notes ##
 
 1. Make sure root password is secure
 2. Disable unused ports on the server firewall
@@ -28,6 +28,6 @@ The front-end and back-end of the server-side Yumbox application for home cookin
   bind-address = 127.0.0.1
 4. Configure SSL
 
-## Development Notes
+## Development Notes ##
 
 - Do not enter passwords or the encryption key into config.php~ and database.php~
