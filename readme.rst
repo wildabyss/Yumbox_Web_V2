@@ -1,70 +1,33 @@
-###################
-What is CodeIgniter
-###################
+# Yumbox Web Application
 
-CodeIgniter is an Application Development Framework - a toolkit - for people
-who build web sites using PHP. Its goal is to enable you to develop projects
-much faster than you could if you were writing code from scratch, by providing
-a rich set of libraries for commonly needed tasks, as well as a simple
-interface and logical structure to access these libraries. CodeIgniter lets
-you creatively focus on your project by minimizing the amount of code needed
-for a given task.
+The front-end and back-end of the server-side Yumbox application for home cooking sharing.
 
-*******************
-Release Information
-*******************
+## Requirements
 
-This repo contains in-development code for future releases. To download the
-latest stable release please visit the `CodeIgniter Downloads
-<https://codeigniter.com/download>`_ page.
+- PHP 5.4 or higher
+- MySQL 5.1 or higher
+- Apache or IIS
 
-**************************
-Changelog and New Features
-**************************
+## Installation
 
-You can find a list of all changes for each release in the `user
-guide change log <https://github.com/bcit-ci/CodeIgniter/blob/develop/user_guide_src/source/changelog.rst>`_.
+1. Set document root to /public
+2. Rename /application/config/config.php~ and /application/config/database.php~ to .php files
+3. Modify /application/config/database.php accordingly
+4. Modify /application/config/config.php for:
+  1. $config['base_url']
+  2. $config['encryption_key']
+5. Source /application/database/build_database.sql
+6. Modify /application/database/create_user.sql for the webuser password. Source the script.
+7. Run composer on /composer.json
 
-*******************
-Server Requirements
-*******************
+## Server Setup Notes
 
-PHP version 5.4 or newer is recommended.
+1. Make sure root password is secure
+2. Disable unused ports on the server firewall
+3. If the MySQL server is local, add the following line to /etc/my.cnf:
+  bind-address = 127.0.0.1
+4. Configure SSL
 
-It should work on 5.2.4 as well, but we strongly advise you NOT to run
-such old versions of PHP, because of potential security and performance
-issues, as well as missing features.
+## Development Notes
 
-************
-Installation
-************
-
-Please see the `installation section <https://codeigniter.com/user_guide/installation/index.html>`_
-of the CodeIgniter User Guide.
-
-*******
-License
-*******
-
-Please see the `license
-agreement <https://github.com/bcit-ci/CodeIgniter/blob/develop/user_guide_src/source/license.rst>`_.
-
-*********
-Resources
-*********
-
--  `User Guide <https://codeigniter.com/docs>`_
--  `Language File Translations <https://github.com/bcit-ci/codeigniter3-translations>`_
--  `Community Forums <http://forum.codeigniter.com/>`_
--  `Community Wiki <https://github.com/bcit-ci/CodeIgniter/wiki>`_
--  `Community IRC <https://webchat.freenode.net/?channels=%23codeigniter>`_
-
-Report security issues to our `Security Panel <mailto:security@codeigniter.com>`_
-or via our `page on HackerOne <https://hackerone.com/codeigniter>`_, thank you.
-
-***************
-Acknowledgement
-***************
-
-The CodeIgniter team would like to thank EllisLab, all the
-contributors to the CodeIgniter project and you, the CodeIgniter user.
+- Do not enter passwords or the encryption key into config.php~ and database.php~

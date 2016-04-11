@@ -1,4 +1,3 @@
 <?php
-	$lang['slogan'] = "Yumbox - Kitchen from Next Door";
-	$lang['sign_in_button'] = "Sign-In";
-	$lang['vendor_button'] = "Vendor";
+	$lang['quick_menu_text'] = "Hungry Now!";
+	$lang['full_menu_text'] = "Explore";

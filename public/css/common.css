@@ -115,6 +115,39 @@ h1 {
 	border-color: #377CA8;
 }
 
+.food_category_wrapper{
+	padding-left: 10px;
+}
+
+ul.food_list{
+	list-style-type: none;
+	padding: 0;
+}
+.food_list li{
+	display: inline-block;
+	margin-right: 5px;
+}
+.food_list a{
+	display: block;
+	text-align: center;
+}
+
+.food_pic{
+	width: 200px;
+	height: 200px;
+	background: url(/imgs/image-not-available.gif);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.food_display_wrapper{
+	padding-left: 10px;
+}
+
+.past_cutoff{
+	color: red;
+}
+
 /* footer elements */
 
 #footer_wrapper{

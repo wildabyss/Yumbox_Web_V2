@@ -1,24 +1,19 @@
-drop database if exists yumbox;
-create database yumbox;
-
-drop user 'yumbox'@'localhost';
-create user 'yumbox'@'localhost' identified by 'yummy_tasty';
-grant all on yumbox.* to 'yumbox'@'localhost';
-
-use yumbox;
+drop database if exists yumbox_dev;
+create database yumbox_dev;
+use yumbox_dev;
 
 drop table if exists user;
 create table user
 (
 	id int unsigned not null auto_increment,
     user_type tinyint unsigned not null, 	# 0=consumer, 1=vendor
-    acct_status tinyint unsigned not null,	# 0=inactive, 1=active, 2=licensed
+    status tinyint unsigned not null,	# 0=inactive, 1=active, 2=licensed
     date_joined datetime not null,
+    name varchar(255) not null,
+    email varchar(255) not null,
     
 	fb_id varchar(22),
-    
-    name varchar(255),
-    email varchar(255),
+
     phone varchar(25),
     driver_lic varchar(30),
     passport_num varchar(30),
@@ -27,8 +22,24 @@ create table user
     primary key (id),
     index fb_id_index (fb_id),
     index user_type_index (user_type),
-    index acct_status_user_index (acct_status),
+    index status_user_index (status),
     index return_date_user_index (return_date)
+) engine = InnoDB;
+
+drop table if exists user_picture;
+create table user_picture
+(
+	id int unsigned not null auto_increment,
+	user_id int unsigned not null,
+	path varchar(255) not null,
+	
+	primary key (id),
+	index user_id_picture_index (user_id),
+	
+	constraint user_id_picture_constraint
+		foreign key (user_id)
+		references user (id)
+		on delete cascade
 ) engine = InnoDB;
 
 drop table if exists address;
@@ -107,6 +118,22 @@ create table food_category_assoc
         on delete cascade
 ) engine = InnoDB;
 
+drop table if exists food_picture;
+create table food_picture
+(
+	id int unsigned not null auto_increment,
+	food_id int unsigned not null,
+	path varchar(255) not null,
+	
+	primary key (id),
+	index food_id_picture_index (food_id),
+	
+	constraint food_id_picture_constraint
+		foreign key (food_id)
+		references food (id)
+		on delete cascade
+) engine = InnoDB;
+
 drop table if exists food_review;
 create table food_review
 (
@@ -137,6 +164,7 @@ create table order_basket
 	id int unsigned not null auto_increment,
     order_date datetime not null,
     user_id int unsigned not null,
+	settled tinyint(1) unsigned not null default 0,
     
     delivery_address int unsigned,
     

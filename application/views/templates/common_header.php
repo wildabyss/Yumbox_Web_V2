@@ -12,3 +12,4 @@
 	</head>
 	
 	<body>
+		<div id="global_wrapper">
