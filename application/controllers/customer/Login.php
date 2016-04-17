@@ -2,8 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Login extends Customer_Controller {
-	//protected function login
-	
+
 	public function redirect($requestUrl="menu"){
 		if (isset($_SESSION['fb_token']) || isset($_SESSION['google_token'])){
 			// session exists
@@ -51,12 +50,14 @@ class Login extends Customer_Controller {
 		// fetch user object from the database
 		if ($this->user_model->getUserForFacebookId($fbId) == NULL){
 			// If it doesn't exist in the db, add the user
-			$this->user_model->addUser(User_model::$CUSTOMER, $fbName, $email, $fbId);
+			if ($this->user_model->addUser(User_model::$CUSTOMER, $fbName, $email, $fbId) !== true){
+				$error = "Internal server error";
+				goto NO_LOGIN;
+			}
 		}
 		
 		// successful retrieval of token
 		$_SESSION['fb_token'] = $accessToken;
-		
 		redirect($requestUrl, 'refresh');
 		
 		//-- END OF FACEBOOK LOGIN

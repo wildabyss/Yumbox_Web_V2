@@ -46,6 +46,11 @@ class User_model extends CI_Model {
 			return $results[0];
 	}
 	
+	/**
+	 * Add user to the database if it doesn't already exist
+	 *
+	 * @return TRUE on success, error code and message on failure
+	 */
 	public function addUser($user_type, $name, $email, $fb_id=NULL, $google_id=NULL){
 		$fb_token = $fb_id==NULL?"null":"?";
 		$google_token = $google_token==NULL?"null":"?";
@@ -54,7 +59,13 @@ class User_model extends CI_Model {
 		$bindings = array($user_type, $name, $email);
 		if ($fb_id != NULL)
 			$bindings[] = $fb_id;
+		if ($googe_id != NULL)
+			$bindings[] = $google_id;
 		
-		$query = $this->db->query("call add_user(?, ?, ?, $fb_token)", $bindings);
+		if (!$this->db->query("call add_user(?, ?, ?, $fb_token, $google_token)", $bindings)){
+			return $this->db->error();
+		}
+		
+		return true;
 	}
 }

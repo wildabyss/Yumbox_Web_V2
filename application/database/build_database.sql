@@ -12,7 +12,8 @@ create table user
     name varchar(255) not null,
     email varchar(255) not null,
     
-	fb_id varchar(22),
+	fb_id varchar(25),
+    google_id varchar(25),
 
     phone varchar(25),
     driver_lic varchar(30),
@@ -211,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 drop procedure if exists add_user;
 delimiter //
 create procedure add_user(in user_type tinyint, in name varchar(255), in email varchar(255),
-	in fb_id varchar(25))
+	in fb_id varchar(25), in google_id varchar(25))
 begin
 	set @id = null;
 	
@@ -224,6 +225,16 @@ begin
 		if (@id is null) then
 			insert into user (user_type, status, date_joined, name, email, fb_id)
             values (user_type, 1, now(), name, email, fb_id);
+		end if;
+    elseif (google_id is not null) then
+		select u.id into @id
+        from user u
+        where
+			u.google_id = google_id;
+            
+		if (@id is null) then
+			insert into user (user_type, status, date_joined, name, email, google_id)
+            values (user_type, 1, now(), name, email, google_id);
 		end if;
     end if;
     
