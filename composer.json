@@ -1,5 +1,9 @@
 {
+	"autoload":{
+		"classmap": ["application/core/"]
+	},
 	"require": {
-		"facebook/php-sdk-v4" : "~5.0"
+		"facebook/php-sdk-v4" : "~5.0",
+		"google/apiclient" : "1.0.*@beta"
 	}
 }

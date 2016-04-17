@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+include("secret_config.php");
+
 /*
 | -------------------------------------------------------------------
 | DATABASE CONNECTIVITY SETTINGS
@@ -76,8 +78,8 @@ $query_builder = TRUE;
 $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
-	'username' => 'yumbox',
-	'password' => '',
+	'username' => $config["database_username"],
+	'password' => $config["database_password"],
 	'database' => 'yumbox_dev',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',

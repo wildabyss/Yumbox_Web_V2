@@ -148,6 +148,38 @@ ul.food_list{
 	color: red;
 }
 
+/* login */
+
+.login_wrapper{
+	padding: 5px;
+}
+
+.login_button_wrapper{
+	
+}
+
+.fb_login{
+	display: inline-block;
+	background: url(/imgs/facebook_signin_base.png);
+	width: 187px;
+	height: 32px;
+	cursor: pointer;
+}
+.fb_login:hover{
+	background: url(/imgs/facebook_signin_hover.png);
+}
+
+.google_login{
+	display: inline-block;
+	background: url(/imgs/google_signin_base.png);
+	width: 187px;
+	height: 32px;
+	cursor: pointer;
+}
+.google_login:hover{
+	background: url(/imgs/google_signin_hover.png);
+}
+
 /* footer elements */
 
 #footer_wrapper{

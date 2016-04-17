@@ -45,7 +45,7 @@ class Menu extends Customer_Controller {
 		$this->footer();
 	}
 	
-	public function food($food_id){
+	public function food($food_id=0){
 		// get food data
 		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
 		if ($food == NULL){

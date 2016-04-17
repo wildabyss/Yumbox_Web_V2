@@ -197,3 +197,35 @@ create table order_item
         references food (id)
         on delete cascade
 ) engine = InnoDB;
+
+drop table if exists ci_sessions;
+CREATE TABLE IF NOT EXISTS `ci_sessions` (
+        `id` varchar(40) NOT NULL,
+        `ip_address` varchar(45) NOT NULL,
+        `timestamp` int(10) unsigned DEFAULT 0 NOT NULL,
+        `data` blob NOT NULL,
+        KEY `ci_sessions_timestamp` (`timestamp`)
+) engine = InnoDB;
+
+
+drop procedure if exists add_user;
+delimiter //
+create procedure add_user(in user_type tinyint, in name varchar(255), in email varchar(255),
+	in fb_id varchar(25))
+begin
+	set @id = null;
+	
+    if (fb_id is not null) then
+		select u.id into @id
+        from user u
+        where
+			u.fb_id = fb_id;
+            
+		if (@id is null) then
+			insert into user (user_type, status, date_joined, name, email, fb_id)
+            values (user_type, 1, now(), name, email, fb_id);
+		end if;
+    end if;
+    
+end//
+delimiter ;

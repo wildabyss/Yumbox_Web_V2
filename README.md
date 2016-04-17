@@ -30,4 +30,4 @@ The front-end and back-end of the server-side Yumbox application for home cookin
 
 ## Development Notes ##
 
-- Do not enter passwords or the encryption key into config.php~ and database.php~
+1. Do not enter passwords or the encryption key into config.php~ and database.php~
