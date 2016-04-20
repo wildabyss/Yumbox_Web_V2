@@ -6,6 +6,6 @@
 	<?php endif?>
 	<div class="login_button_wrapper">
 		<a class="fb_login" href="<?php echo $fb_login_url?>"></a>
-		<a class="google_login"></a>
+		<a class="google_login" href="<?php echo $google_login_url?>"></a>
 	</div>
 </div>

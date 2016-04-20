@@ -1,5 +1,5 @@
 drop database if exists yumbox_dev;
-create database yumbox_dev;
+create database yumbox_dev default character set utf8 default collate utf8_general_ci;
 use yumbox_dev;
 
 drop table if exists user;
@@ -15,6 +15,7 @@ create table user
 	fb_id varchar(25),
     google_id varchar(25),
 
+	alternate_name varchar(255),
     phone varchar(25),
     driver_lic varchar(30),
     passport_num varchar(30),
@@ -41,6 +42,27 @@ create table user_picture
 		foreign key (user_id)
 		references user (id)
 		on delete cascade
+) engine = InnoDB;
+
+drop table if exists user_follow_assoc;
+create table user_follow_assoc
+(
+	id int unsigned not null auto_increment,
+    user_id int unsigned not null,
+	vendor_id int unsigned not null,
+    
+    primary key (id),
+    index user_id_user_follow_index (user_id),
+    index vendor_id_user_follow_index (vendor_id),
+    
+    constraint user_id_user_follow_constraint
+		foreign key (user_id)
+        references user (id)
+        on delete cascade,
+	constraint vendor_id_user_follow_constraint
+		foreign key (vendor_id)
+        references user (id)
+        on delete cascade
 ) engine = InnoDB;
 
 drop table if exists address;
@@ -85,6 +107,7 @@ create table food
     price decimal(5,2) unsigned not null,
     cutoff_time time not null default '00:00:00',
     
+	alternate_name varchar(255),
     descr text,
     ingredients text,
     health_benefits text,
@@ -133,6 +156,27 @@ create table food_picture
 		foreign key (food_id)
 		references food (id)
 		on delete cascade
+) engine = InnoDB;
+
+drop table if exists food_follow_assoc;
+create table food_follow_assoc
+(
+	id int unsigned not null auto_increment,
+    user_id int unsigned not null,
+	food_id int unsigned not null,
+    
+    primary key (id),
+    index user_id_food_follow_index (user_id),
+    index food_id_food_follow_index (food_id),
+    
+    constraint user_id_food_follow_constraint
+		foreign key (user_id)
+        references user (id)
+        on delete cascade,
+	constraint food_id_food_follow_constraint
+		foreign key (food_id)
+        references food (id)
+        on delete cascade
 ) engine = InnoDB;
 
 drop table if exists food_review;

@@ -8,19 +8,32 @@ The front-end and back-end of the server-side Yumbox application for home cookin
 - MySQL 5.1 or higher
 - Apache or IIS
 
-## Installation ##
+## Application Setup ##
 
 1. Set document root to /public
-2. Rename /application/config/config.php~ and /application/config/database.php~ to .php files
-3. Modify /application/config/database.php accordingly
-4. Modify /application/config/config.php for:
-  1. $config['base_url']
-  2. $config['encryption_key']
-5. Source /application/database/build_database.sql
-6. Modify /application/database/create_user.sql for the webuser password. Source the script.
-7. Run composer on /composer.json
+2. Source /application/database/build_database.sql
+3. Modify /application/database/create_user.sql for the webuser password. Source the script.
+4. Run composer on /composer.json
+5. Create /application/config/secret_config.php with the following:
 
-## Server Setup Notes ##
+```php
+<?php
+
+/** This file should not be checked into the code source or be made public **/
+
+$config['base_url'] 			= 'http://localhost/';
+$config["database_username"] 	= 'yumbox';
+$config["database_password"] 	= '';
+$config['encryption_key'] 		= '';
+
+$config['facebook_app_id']		= '';
+$config['facebook_secret']		= '';
+
+$config['google_client_id']		= '';
+$config['google_client_secret']	= '';
+```
+
+## Server Setup ##
 
 1. Make sure root password is secure
 2. Disable unused ports on the server firewall
@@ -30,4 +43,3 @@ The front-end and back-end of the server-side Yumbox application for home cookin
 
 ## Development Notes ##
 
-1. Do not enter passwords or the encryption key into config.php~ and database.php~

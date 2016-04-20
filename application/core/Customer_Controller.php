@@ -18,9 +18,7 @@ class Customer_Controller extends CI_Controller {
 			$data["sign_in_button"] = $this->lang->line("sign_in_button");
 			$data["sign_in_link"] = "/login";
 		}
-		
-
-		
+				
 		// Load views
 		$this->load->view("/templates/common_header");
 		$this->load->view("/templates/customer_top", $data);
