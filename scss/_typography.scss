@@ -1,3 +1,9 @@
+//import font
+@font-face {
+  font-family: 'ButlerStencil-Bold';
+	src: url("assets/font/Butler_Bold_Stencil.otf") format("opentype");
+}
+
 
 // TYPOGRAPHY STYLES
 html{
@@ -13,18 +19,20 @@ body{
 
 h1{
 	font-family: $specialFont;
-	font-size: 4.8rem;
+	font-size: 3.8rem;
 
 }
 
 h2{
 	font-family: $headingFont;
-	font-size: 3rem;
+	font-size: 2.5rem;
+	font-weight: 400;
 }
 
 h3{
 	font-family: $headingFont;
 	font-size: 1.6rem;
+	font-weight: 400;
 }
 
 h4{

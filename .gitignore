@@ -1,5 +1,6 @@
 */config/development
 */logs/log-*.php
 */cache/*
+*/.DS_Store
 !*/cache/.htaccess
 /vendor/*
