@@ -31,7 +31,7 @@ create table user
 drop table if exists user_picture;
 create table user_picture
 (
-	id int unsigned not null auto_increment,
+	id bigint unsigned not null auto_increment,
 	user_id int unsigned not null,
 	path varchar(255) not null,
 	
@@ -47,7 +47,7 @@ create table user_picture
 drop table if exists user_follow_assoc;
 create table user_follow_assoc
 (
-	id int unsigned not null auto_increment,
+	id bigint unsigned not null auto_increment,
     user_id int unsigned not null,
 	vendor_id int unsigned not null,
     
@@ -100,7 +100,7 @@ create table food_category
 drop table if exists food;
 create table food
 (
-	id int unsigned not null auto_increment,
+	id bigint unsigned not null auto_increment,
     status tinyint unsigned not null,		# 0=inactive, 1=active
     user_id int unsigned not null,
     name varchar(255) not null,
@@ -124,8 +124,8 @@ create table food
 drop table if exists food_category_assoc;
 create table food_category_assoc
 (
-	id int unsigned not null auto_increment,
-    food_id int unsigned not null,
+	id bigint unsigned not null auto_increment,
+    food_id bigint unsigned not null,
     food_category_id int unsigned not null,
     
     primary key (id),
@@ -145,8 +145,8 @@ create table food_category_assoc
 drop table if exists food_picture;
 create table food_picture
 (
-	id int unsigned not null auto_increment,
-	food_id int unsigned not null,
+	id bigint unsigned not null auto_increment,
+	food_id bigint unsigned not null,
 	path varchar(255) not null,
 	
 	primary key (id),
@@ -161,9 +161,9 @@ create table food_picture
 drop table if exists food_follow_assoc;
 create table food_follow_assoc
 (
-	id int unsigned not null auto_increment,
+	id bigint unsigned not null auto_increment,
     user_id int unsigned not null,
-	food_id int unsigned not null,
+	food_id bigint unsigned not null,
     
     primary key (id),
     index user_id_food_follow_index (user_id),
@@ -182,8 +182,8 @@ create table food_follow_assoc
 drop table if exists food_review;
 create table food_review
 (
-	id int unsigned not null auto_increment,
-    food_id int unsigned not null,
+	id bigint unsigned not null auto_increment,
+    food_id bigint unsigned not null,
     user_id int unsigned not null,
     rating tinyint unsigned not null,
     
@@ -203,19 +203,50 @@ create table food_review
         on delete cascade
 ) engine = InnoDB;
 
+drop table if exists credit_card;
+create table if not exists credit_card(
+	id bigint unsigned not null auto_increment,
+    exp_month tinyint unsigned not null,
+    exp_year smallint unsigned not null,
+    last4 smallint unsigned not null,
+    type varchar(10) not null,		# Visa, Master
+    
+    stripe_cust_id varchar(50),
+    stripe_card_id varchar(50),
+    
+    primary key (id),
+    index stripe_cust_id_index (stripe_cust_id),
+    index stripe_card_id_index (stripe_card_id)
+) engine = InnoDB;
+
+drop table if exists payment;
+create table if not exists payment (
+	id bigint unsigned not null auto_increment,
+    amount decimal(8,2) not null,
+    payment_date datetime not null,
+    
+    stripe_charge_id varchar(50),
+    
+    primary key (id),
+    index amount_payment_index (amount),
+    index payment_date_index (payment_date),
+    index stripe_charge_id_index (stripe_charge_id)
+) engine = InnoDB;
+
 drop table if exists order_basket;
 create table order_basket
 (
-	id int unsigned not null auto_increment,
+	id bigint unsigned not null auto_increment,
     order_date datetime not null,
     user_id int unsigned not null,
-	settled tinyint(1) unsigned not null default 0,
     
     delivery_address int unsigned,
+    payment_id bigint unsigned,
     
     primary key (id),
     index order_date_index (order_date),
     index user_id_order_index (user_id),
+    index payment_id_order_index (payment_id),
     
     constraint user_id_order_constraint
 		foreign key (user_id)
@@ -224,14 +255,18 @@ create table order_basket
 	constraint address_order_constraint
 		foreign key (delivery_address)
         references address (id)
+        on delete set null,
+	constraint payment_id_order_constraint
+		foreign key (payment_id)
+        references payment (id)
         on delete set null
 ) engine = InnoDB;
 
 drop table if exists order_item;
 create table order_item
 (
-	id int unsigned not null auto_increment,
-    food_id int unsigned not null,
+	id bigint unsigned not null auto_increment,
+    food_id bigint unsigned not null,
     quantity smallint unsigned not null,
     
     primary key (id),

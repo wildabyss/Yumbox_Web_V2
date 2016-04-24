@@ -14,7 +14,7 @@ The front-end and back-end of the server-side Yumbox application for home cookin
 2. Source /application/database/build_database.sql
 3. Modify /application/database/create_user.sql for the webuser password. Source the script.
 4. Run composer on /composer.json
-5. Create /application/config/secret_config.php with the following:
+5. Create /application/config/secret_config.php with the following and fill in the values:
 
 ```php
 <?php
@@ -31,6 +31,9 @@ $config['facebook_secret']		= '';
 
 $config['google_client_id']		= '';
 $config['google_client_secret']	= '';
+
+$config['stripe_secret_key']	= '';
+$config['stripe_public_key']	= '';
 ```
 
 ## Server Setup ##

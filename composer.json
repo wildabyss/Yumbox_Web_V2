@@ -1,9 +1,10 @@
 {
 	"autoload":{
-		"classmap": ["application/core/"]
+		"classmap"				: ["application/core/"]
 	},
 	"require": {
-		"facebook/php-sdk-v4" : "~5.0",
-		"google/apiclient" : "1.0.*@beta"
+		"facebook/php-sdk-v4" 	: "~5.0",
+		"google/apiclient" 		: "1.0.*@beta",
+		"stripe/stripe-php"		: "3.*"
 	}
 }

@@ -43,7 +43,7 @@ class Login extends Customer_Controller {
 	}
 	
 	protected function facebook_redirect_url($requestUrl){
-		return "http://$_SERVER[HTTP_HOST]/login/facebook/".urlencode($requestUrl);
+		return $this->config->item('base_url')."login/facebook/".urlencode($requestUrl);
 	}
 	
 	protected function facebook_permissions(){
@@ -51,7 +51,7 @@ class Login extends Customer_Controller {
 	}
 	
 	protected function google_redirect_url($requestUrl){
-		return "http://$_SERVER[HTTP_HOST]/login/google/".urlencode($requestUrl);
+		return $this->config->item('base_url')."login/google/".urlencode($requestUrl);
 	}
 	
 	protected function google_scopes(){
