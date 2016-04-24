@@ -1,0 +1,46 @@
+
+// TYPOGRAPHY STYLES
+html{
+	font-size: 62.5%;
+}
+
+body{
+	font-size: 1.2rem;
+	font-family: $mainFont;
+	color: #almostBlack;
+}
+
+
+h1{
+	font-family: $specialFont;
+	font-size: 4.8rem;
+
+}
+
+h2{
+	font-family: $headingFont;
+	font-size: 3rem;
+}
+
+h3{
+	font-family: $headingFont;
+	font-size: 1.6rem;
+}
+
+h4{
+	font-size: 1.6rem;
+	color:$grey;
+	font-style: italic;
+}
+
+p{
+	font-size: 1.4rem;
+	line-height: 20px;
+	font-weight: 300;
+}
+
+p.small{
+	font-size: 1.2rem;
+	line-height: 15px;
+}
+
