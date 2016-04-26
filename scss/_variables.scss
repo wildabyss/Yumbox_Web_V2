@@ -2,9 +2,12 @@ $grey : #EEECE7;
 $pink : #F5BDA3;
 $teal : #B3CCC8;
 $almostBlack : #251F1E;
+$translucentBlack : rgba(0,0,0, 0.3);
+
+$rush_selected : $pink;
+$explore_selected: $teal;
 
 //FONT FAMILY
 $mainFont: 'Open Sans', sans-serif;
 $specialFont:'ButlerStencil-Bold', serif;
 $headingFont: 'Montserrat-Regular', sans-serif;
-

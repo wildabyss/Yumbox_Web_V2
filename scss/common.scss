@@ -2,32 +2,155 @@
 @import "setup";
 @import "typography";
 
-//general styles
-button{
-
+// centered global element
+#global{
+	max-width: 1440px;
+	margin: 0 auto;
+	position: absolute;
+	left: 0;
+	right: 0;
 }
 
-button.btn_explore{
-
-}
-button.btn_rush{
-
+#landing_main{
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
 }
 
 nav{
-	height:15%vh;
+	height:10vh;
+	width: 100%;
+	
+	min-height: 50px;
+	padding: 5px;
+	
+	.logo{
+		background-image: url("../../scss/assets/logo_128.png");
+		background-size: contain;
+		background-repeat: no-repeat;
+		height: 50px;
+		padding-left: 55px;
+		display: block;
+		float: left;
+		line-height: 50px;
+	}
+	
+	ul{
+		list-style-type: none;
+		float: right;
+		margin: 0;
+		padding: 0;
+		
+		li{
+			line-height: 50px;
+			display: inline-block;
+			margin: 0 10px 0 10px;
+		}
+	}
+}
+
+#featured_dishes{
+	display: flex;
+	width: 100%;
+	flex: 1;
+	
+	.button_parent{
+		display: flex;
+		flex: 1;
+		float: left;
+		position: relative;
+	}
+	
+	span{
+		flex: 1;
+		width: 100%;
+		
+		display: block;
+		border: 0;
+		
+		background-position:center;
+		background-size: 100%;
+		background-repeat: no-repeat;
+	}
+	
+	a.button{
+		width: 100%;
+		padding: 5px;
+		
+		text-decoration: none;
+		
+		position: absolute;
+		display: block;
+		background-color: $translucentBlack;
+		top: 50%;
+		left: 0;
+		color: white !important;
+		z-index: 1000;
+	}
+	
+	h1{
+		margin: 5px 0 5px 0;
+	}
+}
+
+#menu_mega_selection{
+	width: 100%;
+	height: 200px;
+	margin: auto;
+	background-color: $grey;
+	
+	.button_parent{
+		height: 100%;
+		width: 50%;
+		float: left;
+	}
+	
+	a{
+		display: block;
+		height: 100%;
+		width: 100%;
+	}
+	
+	a.explore{
+		
+	}
+	
+	a.rush{
+		
+	}
+}
+
+#menu_mega_selection.explore{
+	background-color: $explore_selected;
+}
+#menu_mega_selection.rush{
+	background-color: $rush_selected;
 }
 
 
 //media query
-@media (max-width:960px) {
+@media (min-width:1440px){
+	#global{
+		width: 1440px;
+	}
+}
 
+@media (max-width:960px) {
+	#featured_dishes{
+		.rush{
+			width: 100%;
+		}
+		
+		.explore{
+			display: none;
+		}
+	}
 }
 
 @media (max-width: 720px) {
-
+	
 }
 
 @media (max-width: 480px) {
-
+	
 }
