@@ -1,29 +1,55 @@
 <?php
 
 class Customer_Controller extends CI_Controller {
-	protected function header(){
+
+	/**
+	 * Display the top navigation bar
+	 *
+	 * @argument $display If true, display the content; if false, return as string
+	 */
+	protected function navigation($display=true){
 		// load language
 		$this->lang->load("header");
 		
 		// view content
-		$data["slogan"] = $this->lang->line("slogan");
 		$data["vendor_button"] = $this->lang->line("vendor_button");
 		
 		// determine if we have a valid session
-		if (isset($_SESSION['fb_token']) || isset($_SESSION['google_token'])){
-			// we have a valid session
-			$data["sign_out_button"] = $this->lang->line("sign_out_button");
-			$data["sign_out_link"] = "/logout";
-		} else {
-			$data["sign_in_button"] = $this->lang->line("sign_in_button");
-			$data["sign_in_link"] = "/login";
+		if (isset($_SESSION['user_id']) 
+			&& (isset($_SESSION['fb_token']) || isset($_SESSION['google_token']))){
+				
+			$user_id = $_SESSION['user_id'];
+			$user = $this->user_model->getUserForUserId($fbId);
+			if ($user != NULL){
+				// we have a valid session
+				$data["user_name"] = $user->name;
+				$data["sign_out_link"] = "/logout";
+				
+				return $this->load->view("/templates/common_nav", $data, !$display);
+			}
 		}
+		
+		// show log in button
+		$data["sign_in_button"] = $this->lang->line("sign_in_button");
+		$data["sign_in_link"] = "/login";
+		
+		return $this->load->view("/templates/common_nav", $data, !$display);
+	}
+	
+	/**
+	 * Display the header common to Yumbox web application
+	 */
+	protected function header(){
+		// load language
+		$this->lang->load("header");
 				
 		// Load views
 		$this->load->view("/templates/common_header");
-		$this->load->view("/templates/customer_top", $data);
 	}
 	
+	/**
+	 * Display the footer common to Yumbox web application
+	 */
 	protected function footer(){
 		// load language
 		$this->lang->load("footer");

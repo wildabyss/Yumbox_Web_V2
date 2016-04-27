@@ -3,6 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Menu extends Customer_Controller {
 	public function fullmenu(){
+		// load language
+		$this->lang->load("landing");
+		
 		// get food categories
 		$food_categories = $this->food_category_model->getAllActiveCategories();
 		
@@ -13,16 +16,23 @@ class Menu extends Customer_Controller {
 		}
 		
 		// bind to data
+		$data["quick_menu_text"] = $this->lang->line("quick_menu_text");
+		$data["full_menu_text"] = $this->lang->line("full_menu_text");
+		$data['is_rush'] = false;
 		$data['food_categories'] = $food_categories;
 		$data['foods'] = $foods;
 
 		// Load views
 		$this->header();
+		$this->navigation();
 		$this->load->view("customer/menu", $data);
 		$this->footer();
 	}
 	
 	public function quickmenu(){
+		// load language
+		$this->lang->load("landing");
+		
 		// now
 		$now = new DateTime();
 		
@@ -36,11 +46,15 @@ class Menu extends Customer_Controller {
 		}
 		
 		// bind to data
+		$data["quick_menu_text"] = $this->lang->line("quick_menu_text");
+		$data["full_menu_text"] = $this->lang->line("full_menu_text");
+		$data['is_rush'] = true;
 		$data['food_categories'] = $food_categories;
 		$data['foods'] = $foods;
 
 		// Load views
 		$this->header();
+		$this->navigation();
 		$this->load->view("customer/menu", $data);
 		$this->footer();
 	}

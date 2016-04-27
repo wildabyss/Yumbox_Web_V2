@@ -8,9 +8,27 @@ class Landing extends Customer_Controller {
 		// load language
 		$this->lang->load("landing");
 		
+		// featured foods
+		$rush_food_id = $this->config->item('featured_rush_id');
+		$rush_food = $this->food_model->getFoodAndVendorForFoodId($rush_food_id);
+		$data["rush_food_id"] = $rush_food_id;
+		$data["rush_food_name"] = $rush_food==NULL?"":$rush_food->food_name;
+		$data["rush_food_descr"] = $rush_food==NULL?"":$rush_food->descr;
+		$rush_food_pic = $this->food_model->getFoodPicturesForFoodId($rush_food_id)[0];
+		$data["rush_food_pic"] = $rush_food_pic==NULL?"":$rush_food_pic->path;
+		
+		$explore_food_id = $this->config->item('featured_explore_id');
+		$explore_food = $this->food_model->getFoodAndVendorForFoodId($explore_food_id);
+		$data["explore_food_id"] = $explore_food_id;
+		$data["explore_food_name"] = $explore_food==NULL?"":$explore_food->food_name;
+		$data["explore_food_descr"] = $explore_food==NULL?"":$explore_food->descr;
+		$explore_food_pic = $this->food_model->getFoodPicturesForFoodId($explore_food_id)[0];
+		$data["explore_food_pic"] = $explore_food_pic==NULL?"":$explore_food_pic->path;
+		
 		// page data
 		$data["quick_menu_text"] = $this->lang->line("quick_menu_text");
 		$data["full_menu_text"] = $this->lang->line("full_menu_text");
+		$data["nav_content"] = $this->navigation(false);
 		
 		// Load views
 		$this->header();

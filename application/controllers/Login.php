@@ -38,7 +38,7 @@ class Login extends Customer_Controller {
 		
 		// Load views
 		$this->header();
-		$this->load->view("customer/login", $data);
+		$this->load->view("login", $data);
 		$this->footer();
 	}
 	
@@ -110,8 +110,12 @@ class Login extends Customer_Controller {
 				}
 			}
 			
+			// user object
+			$user = $this->user_model->getUserForFacebookId($fbId);
+			
 			// successful retrieval of token
 			$_SESSION['fb_token'] = $accessToken;
+			$_SESSION['user_id'] = $user->id;
 			redirect($requestUrl, 'refresh');
 			return;
 		}
@@ -164,9 +168,13 @@ class Login extends Customer_Controller {
 					return;
 				}
 			}
+			
+			// user object
+			$user = $this->user_model->getUserForGoogleId($googleId);
 
 			// successful retrieval of token
 			$_SESSION['google_token'] = $accessToken;
+			$_SESSION['user_id'] = $user->id;
 			redirect($requestUrl, 'refresh');
 			return;
 		}

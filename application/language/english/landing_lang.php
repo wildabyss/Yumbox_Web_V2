@@ -1,3 +1,3 @@
 <?php
-	$lang['quick_menu_text'] = "Hungry Now!";
-	$lang['full_menu_text'] = "Explore";
+	$lang['quick_menu_text'] = "Yum Rush";
+	$lang['full_menu_text'] = "Yum Explore";

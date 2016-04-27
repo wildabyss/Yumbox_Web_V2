@@ -169,7 +169,7 @@ legend, button::-moz-focus-inner, input::-moz-focus-inner {
 
 @font-face {
   font-family: 'ButlerStencil-Bold';
-  src: url("assets/font/Butler_Bold_Stencil.otf") format("opentype");
+  src: url("/font/Butler_Bold_Stencil.otf") format("opentype");
 }
 
 html {
@@ -216,6 +216,15 @@ p.small {
   line-height: 15px;
 }
 
+a:link {
+  color: #251F1E;
+  text-decoration: none;
+}
+
+a:visited {
+  color: #251F1E;
+}
+
 #global {
   max-width: 1440px;
   margin: 0 auto;
@@ -238,7 +247,7 @@ nav {
 }
 
 nav .logo {
-  background-image: url("../../scss/assets/logo_128.png");
+  background-image: url("/imgs/logo_128.png");
   background-size: contain;
   background-repeat: no-repeat;
   height: 50px;
@@ -312,12 +321,37 @@ nav ul li {
   height: 100%;
   width: 50%;
   float: left;
+  position: relative;
 }
 
 #menu_mega_selection a {
   display: block;
-  height: 100%;
-  width: 100%;
+  width: 70%;
+  height: 65%;
+  left: 0;
+  right: 0;
+  position: absolute;
+  margin: 5% auto 0 auto;
+  border: 5px solid white;
+  color: #251F1E;
+  text-align: center;
+  text-decoration: none;
+}
+
+#menu_mega_selection a.rush {
+  border-color: #B3CCC8;
+}
+
+#menu_mega_selection a.explore {
+  border-color: #F5BDA3;
+}
+
+#menu_mega_selection.small {
+  height: 100px;
+}
+
+#menu_mega_selection.small a {
+  margin: 2% auto;
 }
 
 #menu_mega_selection.explore {
@@ -326,6 +360,11 @@ nav ul li {
 
 #menu_mega_selection.rush {
   background-color: #F5BDA3;
+}
+
+#about {
+  padding-top: 30px;
+  height: 100vh;
 }
 
 @media (min-width: 1440px) {
@@ -340,5 +379,14 @@ nav ul li {
   }
   #featured_dishes .explore {
     display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  #menu_mega_selection h2 {
+    font-size: 1.5rem;
+  }
+  #menu_mega_selection p {
+    font-size: 1rem;
   }
 }
