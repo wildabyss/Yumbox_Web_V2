@@ -1,7 +1,7 @@
-<section id="menu_listing">
+<section>
 	<?php foreach ($food_categories as $category):?>
 	<div class="food_category_wrapper">
-		<h2><?php echo ucfirst($category->name)?></h2>
+		<h2><?php echo ucwords($category->name)?></h2>
 		<ul class="food_list">
 			<?php foreach ($foods[$category->id] as $food):?>
 			<li><a href="/menu/food/<?php echo $food->id?>">

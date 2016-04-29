@@ -1,6 +1,16 @@
 <?php
 
 class Food_category_model extends CI_Model {
+	public function getAllMainCategories(){
+		$query = $this->db->query('
+			select c.id, c.name
+			from food_category c
+			where
+				main = 1
+			order by
+				name asc');
+		return $query->result();
+	}
 
     public function getAllActiveCategories(){
 		$query = $this->db->query('

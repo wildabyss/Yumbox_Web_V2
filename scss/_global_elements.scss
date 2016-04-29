@@ -1,0 +1,82 @@
+// centered global element
+div#global{
+	max-width: 1440px;
+	margin: 0 auto;
+	position: absolute;
+	left: 0;
+	right: 0;
+}
+
+nav{
+	height:10vh;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	min-height: 50px;
+	
+	.nav_wrapper{
+		flex:1;
+	}
+	
+	.logo{
+		background-image: url("/imgs/logo_128.png");
+		background-size: contain;
+		background-repeat: no-repeat;
+		height: 50px;
+		padding-left: 55px;
+		display: block;
+		float: left;
+		line-height: 50px;
+	}
+	
+	ul{
+		list-style-type: none;
+		float: right;
+		margin: 0;
+		padding: 0;
+		
+		li{
+			line-height: 50px;
+			display: inline-block;
+			margin: 0 10px 0 10px;
+		}
+	}
+}
+
+
+// jquery-ui override
+
+.ui-button-text{
+	font-size: 1.5rem;
+}
+
+.rush{
+	.ui-state-default{
+		border-color: $rush_selected;
+	}
+	.ui-state-active{
+		background-color: $rush_selected !important;
+	}
+	.ui-state-hover{
+		background-color: $rush_selected;
+	}
+	.ui-state-focus{
+		background-color: $light_grey;
+	}
+}
+
+.explore{
+	.ui-state-default{
+		border-color: $explore_selected;
+	}
+	.ui-state-active{
+		background-color: $explore_selected !important;
+	}
+	.ui-state-hover{
+		background-color: $explore_selected;
+	}
+	.ui-state-focus{
+		background-color: $light_grey;
+	}
+}

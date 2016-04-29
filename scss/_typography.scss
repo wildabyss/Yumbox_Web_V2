@@ -12,9 +12,8 @@ html{
 body{
 	font-size: 1.2rem;
 	font-family: $mainFont;
-	color: #almostBlack;
+	color: $almostBlack;
 }
-
 
 h1{
 	font-family: $specialFont;
@@ -57,4 +56,8 @@ a:link{
 }
 a:visited {
     color: $almostBlack;
+}
+
+input {
+	font-size: 1.5rem;
 }

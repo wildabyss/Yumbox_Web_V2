@@ -1,6 +1,6 @@
 <?php
 
-class Customer_Controller extends CI_Controller {
+class Yumbox_Controller extends CI_Controller {
 
 	/**
 	 * Display the top navigation bar
@@ -25,7 +25,7 @@ class Customer_Controller extends CI_Controller {
 				$data["user_name"] = $user->name;
 				$data["sign_out_link"] = "/logout";
 				
-				return $this->load->view("/templates/common_nav", $data, !$display);
+				return $this->load->view("common_nav", $data, !$display);
 			}
 		}
 		
@@ -33,7 +33,7 @@ class Customer_Controller extends CI_Controller {
 		$data["sign_in_button"] = $this->lang->line("sign_in_button");
 		$data["sign_in_link"] = "/login";
 		
-		return $this->load->view("/templates/common_nav", $data, !$display);
+		return $this->load->view("common_nav", $data, !$display);
 	}
 	
 	/**
@@ -44,7 +44,7 @@ class Customer_Controller extends CI_Controller {
 		$this->lang->load("header");
 				
 		// Load views
-		$this->load->view("/templates/common_header");
+		$this->load->view("common_header");
 	}
 	
 	/**
@@ -55,6 +55,6 @@ class Customer_Controller extends CI_Controller {
 		$this->lang->load("footer");
 		
 		// Load views
-		$this->load->view("/templates/common_footer");
+		$this->load->view("common_footer");
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Logout extends Customer_Controller {
+class Logout extends Yumbox_Controller {
 
 	public function index($requestUrl="menu")
 	{

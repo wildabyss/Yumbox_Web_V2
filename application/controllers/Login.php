@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Login extends Customer_Controller {
+class Login extends Yumbox_Controller {
 	protected function display_login($requestUrl, $error=NULL){
 		// Initialize Facebook
 		$fb_config = array(

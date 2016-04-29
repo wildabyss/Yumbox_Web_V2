@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Landing extends Customer_Controller {
+class Landing extends Yumbox_Controller {
 
 	public function index()
 	{

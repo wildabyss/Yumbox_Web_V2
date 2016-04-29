@@ -92,9 +92,11 @@ create table food_category
 (
 	id int unsigned not null auto_increment,
     name varchar(255) not null,
+    main tinyint(1) not null default 0,
     
     primary key (id),
-    index name_food_category_index (name)
+    index name_food_category_index (name),
+    index main_food_category_index (main)
 ) engine = InnoDB;
 
 drop table if exists food;
@@ -319,3 +321,23 @@ begin
     
 end//
 delimiter ;
+
+
+/** essential data **/
+insert into food_category (name, main) values ('dessert', 1); #1
+insert into food_category (name, main) values ('indian', 1); #2
+insert into food_category (name, main) values ('chinese', 1); #3
+insert into food_category (name, main) values ('french', 1); #4
+insert into food_category (name, main) values ('fruit', 0); #5
+insert into food_category (name, main) values ('thai', 1); #6
+insert into food_category (name, main) values ('vietnam', 1); #7
+insert into food_category (name, main) values ('burger', 0); #8
+insert into food_category (name, main) values ('sandwich', 0); #9
+insert into food_category (name, main) values ('soup', 0); #10
+insert into food_category (name, main) values ('breakfast', 0); #11
+insert into food_category (name, main) values ('vegetarian', 1); #12 
+insert into food_category (name, main) values ('sea food', 1); #13
+insert into food_category (name, main) values ('drink', 1); #14
+insert into food_category (name, main) values ('italian', 1); #15
+insert into food_category (name, main) values ('mexican', 1); #16 
+insert into food_category (name, main) values ('persian', 1); #17 
