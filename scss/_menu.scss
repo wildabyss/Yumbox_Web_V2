@@ -1,0 +1,164 @@
+// rush vs. explore buttons
+
+#menu_mega_selection.small{
+	height: 70px;
+	
+	a{
+		box-sizing: border-box;
+		margin: 15px auto;
+		height: 40px;
+		border-width: 2px;
+		color: white;
+		width: 300px;
+		
+		line-height: 40px;
+	}
+	
+	a.rush{
+		border-color: $explore_selected;
+	}
+	
+	a.explore{
+		border-color: $rush_selected;
+	}
+	
+	h3{
+		margin: 0;
+	}
+}
+
+#menu_mega_selection.explore{
+	background-color: $explore_selected;
+}
+#menu_mega_selection.rush{
+	background-color: $rush_selected;
+}
+
+
+// search filters
+
+#menu_filter{
+	margin-top: 20px;
+}
+
+.menu_filter_container{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	
+	.menu_filter_zone{
+		flex: 1;
+		padding-right: 20px;
+		min-width: 300px;
+	}
+}
+
+.menu_button_container{
+	margin-top: 30px;
+	text-align: center;
+
+	button{
+		margin: 0 0 10px 10px;
+		width: 170px;
+	}
+}
+
+input#search {
+	width: 80%;
+	min-width: 300px;
+	
+	/*background-image: url('/imgs/search_large.png');
+	background-repeat: no-repeat;
+	background-position: right center;*/
+}
+
+.filter_slider{
+	margin-left: 10px;
+	width: 80%;
+	min-width: 365px;
+}
+
+#menu_filter_categories{
+	label{
+		margin: 0 0 10px 10px;
+		width: 100px;
+	}
+}
+
+
+// menu listing
+
+#menu_listing{
+	margin-top: 30px;
+	
+}
+
+.food_category_wrapper{
+	diplay: flex;
+	justify-content: center;
+	margin-bottom: 20px;
+}
+
+.food_list_parent{
+	max-width: 1000px;
+	margin: 0 auto;
+	overflow: auto;
+	
+	h2{
+		margin-left: 20px;
+		padding-bottom: 2px;
+		border-bottom: solid 1px $darkGrey;
+	}
+	
+	ul.food_list{
+		padding: 0;
+		
+		li{
+			float: left;
+			list-style: none;
+			text-align: left;
+			
+			margin: 0 20px;
+		}
+		
+		.food_pic{
+			display: inline-block;
+			width: 220px;
+			height: 220px;
+			
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-image: url('/imgs/image-not-available.gif');
+			border: solid 1px $almostBlack;
+		}
+		
+		h3{
+			display: inline-block;
+			margin-bottom: 5px;
+		}
+		
+		.food_price{
+			display: block;
+			float: right;
+			//font-size: 1.4rem;
+		}
+		
+		.food_maker {
+			display: block;
+		}
+	}
+}
+
+
+// media query
+
+@media (max-width: 600px){
+	#menu_mega_selection.small{
+		height: auto;
+		
+		a{
+			margin: 5px auto;
+		}
+	}
+}

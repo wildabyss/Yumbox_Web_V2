@@ -2,95 +2,9 @@
 @import "setup";
 @import "typography";
 @import "global_elements";
-@import "menu_filter";
 
+// landing page
+@import "_landing.scss";
 
-#landing_main{
-	height: 100vh;
-	display: flex;
-	flex-direction: column;
-}
-
-#featured_dishes{
-	display: flex;
-	width: 100%;
-	flex: 1;
-	
-	.button_parent{
-		display: flex;
-		flex: 1;
-		float: left;
-		position: relative;
-	}
-	
-	span{
-		flex: 1;
-		width: 100%;
-		
-		display: block;
-		border: 0;
-		
-		background-position:center;
-		background-size: 100%;
-		background-repeat: no-repeat;
-	}
-	
-	a.button{
-		width: 100%;
-		padding: 5px;
-		
-		text-decoration: none;
-		
-		position: absolute;
-		display: block;
-		background-color: $translucentBlack;
-		top: 50%;
-		left: 0;
-		color: white !important;
-		z-index: 1000;
-	}
-	
-	h1{
-		margin: 5px 0 5px 0;
-	}
-}
-
-#about{
-	padding-top: 30px;
-	height: 100vh;
-}
-
-
-//media query
-@media (min-width:1440px){
-	#global{
-		width: 1440px;
-	}
-}
-
-@media (max-width:960px) {
-	#featured_dishes{
-		.rush{
-			width: 100%;
-		}
-		
-		.explore{
-			display: none;
-		}
-	}
-}
-
-@media (max-width: 720px) {
-	
-}
-
-@media (max-width: 480px) {
-	#menu_mega_selection{
-		h2{
-			font-size: 1.5rem;
-		}
-		p{
-			font-size: 1rem;
-		}
-	}
-}
+// menu page
+@import "_menu.scss";

@@ -16,6 +16,7 @@ class Landing extends Yumbox_Controller {
 		$data["rush_food_descr"] = $rush_food==NULL?"":$rush_food->descr;
 		$rush_food_pic = $this->food_model->getFoodPicturesForFoodId($rush_food_id)[0];
 		$data["rush_food_pic"] = $rush_food_pic==NULL?"":$rush_food_pic->path;
+		$data["rush_vendor"] = $rush_food==NULL?"":$rush_food->user_name;
 		
 		$explore_food_id = $this->config->item('featured_explore_id');
 		$explore_food = $this->food_model->getFoodAndVendorForFoodId($explore_food_id);
@@ -24,6 +25,7 @@ class Landing extends Yumbox_Controller {
 		$data["explore_food_descr"] = $explore_food==NULL?"":$explore_food->descr;
 		$explore_food_pic = $this->food_model->getFoodPicturesForFoodId($explore_food_id)[0];
 		$data["explore_food_pic"] = $explore_food_pic==NULL?"":$explore_food_pic->path;
+		$data["explore_vendor"] = $explore_food==NULL?"":$explore_food->user_name;
 		
 		// page data
 		$data["quick_menu_text"] = $this->lang->line("quick_menu_text");

@@ -8,9 +8,14 @@ class Food_model extends CI_Model {
 	// cutoff time grace period
 	public static $CUTOFF_GRACE_MIN = 15;
 	
-	public function getActiveFoodsWithPicturesForCategory($categoryId, $limit){
-		$query = $this->db->query('
-			select f.*, p.path
+	public function getActiveFoodsAndVendorWithPicturesForCategory($categoryId, $limit, DateTime $orderDateTime=NULL){
+		// base query
+		$query_str = '
+			select 
+				f.id food_id, f.name food_name, f.alternate_name food_alt_name, f.price food_price,
+				f.cutoff_time cutoff_time,
+				p.path pic_path,
+				u.id vendor_id, u.name vendor_name
 			from food_category_assoc a
 			left join food f
 			on f.id = a.food_id
@@ -21,45 +26,30 @@ class Food_model extends CI_Model {
 			where
 				a.food_category_id = ?
 				and f.status = ?
-				and u.status = ?
-			group by f.id
-			limit ?', 
-			array(
-				$categoryId, 
-				Food_model::$ACTIVE_FOOD, 
-				User_model::$CERTIFIED_VENDOR,
-				$limit
-			));
-		return $query->result();
-	}
-	
-	public function getQuickFoodsWithPicturesForCategory($categoryId, DateTime $orderDateTime, $limit){
-		$query = $this->db->query('
-			select f.*, p.path
-			from food_category_assoc a
-			left join food f
-			on f.id = a.food_id
-			left join user u
-			on u.id = f.user_id
-			left join food_picture p
-			on p.food_id = f.id
-			where
-				a.food_category_id = ?
-				and f.status = ?
-				and (f.cutoff_time > addtime(?, ?) or f.cutoff_time = \'00:00:00\')
-				and u.status = ?
-				and (u.return_date is null or u.return_date < ?)
-			group by f.id
-			limit ?', 
-			array(
-				$categoryId, 
-				Food_model::$ACTIVE_FOOD,
-				$orderDateTime->format('H:i:s'),
-				"00:".self::$CUTOFF_GRACE_MIN.":00}",
-				User_model::$CERTIFIED_VENDOR,
-				$orderDateTime->format(DateTime::ISO8601),
-				$limit
-			));
+				and u.status = ?';
+				
+		// filter cut-off time
+		if ($orderDateTime != NULL){
+			$query_str .= ' and (f.cutoff_time > addtime(?, ?) or f.cutoff_time = \'00:00:00\')
+				and (u.return_date is null or u.return_date < ?)';
+		}
+		$query_str .= ' group by f.id limit ?';
+		
+		// bindings
+		$bindings = array(
+			$categoryId, 
+			Food_model::$ACTIVE_FOOD, 
+			User_model::$CERTIFIED_VENDOR
+		);
+		if ($orderDateTime != NULL){
+			$bindings[] = $orderDateTime->format('H:i:s');
+			$bindings[] = "00:".self::$CUTOFF_GRACE_MIN.":00";
+			$bindings[] = $orderDateTime->format(DateTime::ISO8601);
+		}
+		$bindings[] = $limit;
+		
+		// perform database query
+		$query = $this->db->query($query_str, $bindings);
 		return $query->result();
 	}
 	

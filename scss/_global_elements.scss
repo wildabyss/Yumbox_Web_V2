@@ -1,12 +1,21 @@
 // centered global element
 div#global{
-	max-width: 1440px;
+	max-width: $max_display_width;
 	margin: 0 auto;
 	position: absolute;
 	left: 0;
 	right: 0;
 }
 
+// IE 11 fix: must specify width for centering
+@media (min-width: $max_display_width) {
+	div#global{
+		width: $max_display_width;
+	}
+}
+
+
+// top navigation bar
 nav{
 	height:10vh;
 	width: 100%;
@@ -45,7 +54,7 @@ nav{
 }
 
 
-// jquery-ui override
+// jquery-ui overrides
 
 .ui-button-text{
 	font-size: 1.5rem;
