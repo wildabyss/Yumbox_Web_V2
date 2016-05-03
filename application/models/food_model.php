@@ -8,7 +8,7 @@ class Food_model extends CI_Model {
 	// cutoff time grace period
 	public static $CUTOFF_GRACE_MIN = 15;
 	
-	public function getActiveFoodsAndVendorWithPicturesForCategory($categoryId, $limit, DateTime $orderDateTime=NULL){
+	public function getActiveFoodsAndVendorWithPicturesForCategory($categoryId, $limit, DateTime $orderDateTime=NULL, $user_id=NULL){
 		// base query
 		$query_str = '
 			select 
@@ -33,6 +33,11 @@ class Food_model extends CI_Model {
 			$query_str .= ' and (f.cutoff_time > addtime(?, ?) or f.cutoff_time = \'00:00:00\')
 				and (u.return_date is null or u.return_date < ?)';
 		}
+		
+		// filter user
+		if ($user_id != NULL){
+			$query_str .= ' and u.id = ?';
+		}
 		$query_str .= ' group by f.id limit ?';
 		
 		// bindings
@@ -45,6 +50,9 @@ class Food_model extends CI_Model {
 			$bindings[] = $orderDateTime->format('H:i:s');
 			$bindings[] = "00:".self::$CUTOFF_GRACE_MIN.":00";
 			$bindings[] = $orderDateTime->format(DateTime::ISO8601);
+		}
+		if ($user_id != NULL){
+			$bindings[] = $user_id;
 		}
 		$bindings[] = $limit;
 		

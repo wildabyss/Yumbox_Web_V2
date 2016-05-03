@@ -1,6 +1,6 @@
 <section id="menu_listing">
 	<?php if (count($foods)==0):?>
-		<p>No result found with your criteria :(</p>
+		<p><?php echo $empty_string?></p>
 		
 	<?php else: ?>
 		<?php foreach ($categories as $category):?>

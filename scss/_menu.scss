@@ -3,9 +3,12 @@
 #menu_mega_selection.small{
 	height: 70px;
 	
+	.button_parent{
+		flex: none;
+	}
+	
 	a{
 		box-sizing: border-box;
-		margin: 15px auto;
 		height: 40px;
 		border-width: 2px;
 		color: white;
@@ -158,7 +161,8 @@ input#search {
 		height: auto;
 		
 		a{
-			margin: 5px auto;
+			margin-top: 5px;
+			margin-bottom: 5px;
 		}
 	}
 }

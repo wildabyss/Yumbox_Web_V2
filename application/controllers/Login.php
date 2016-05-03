@@ -38,6 +38,7 @@ class Login extends Yumbox_Controller {
 		
 		// Load views
 		$this->header();
+		$this->navigation();
 		$this->load->view("login", $data);
 		$this->footer();
 	}
@@ -101,7 +102,7 @@ class Login extends Yumbox_Controller {
 			$email = $user['email'];
 			
 			// fetch user object from the database
-			if ($this->user_model->getUserForFacebookId($fbId) == NULL){
+			if ($this->user_model->getUserForFacebookId($fbId) === false){
 				// If it doesn't exist in the db, add the user
 				if ($this->user_model->addUser(User_model::$CUSTOMER, $name, $email, $fbId) !== true){
 					$error = "Internal server error";
@@ -116,6 +117,8 @@ class Login extends Yumbox_Controller {
 			// successful retrieval of token
 			$_SESSION['fb_token'] = $accessToken;
 			$_SESSION['user_id'] = $user->id;
+
+			// redirect to the request URL
 			redirect($requestUrl, 'refresh');
 			return;
 		}
@@ -160,7 +163,7 @@ class Login extends Yumbox_Controller {
 			$email = $user->emails[0]['value'];
 			
 			// fetch user object from the database
-			if ($this->user_model->getUserForGoogleId($googleId) == NULL){
+			if ($this->user_model->getUserForGoogleId($googleId) === false){
 				// If it doesn't exist in the db, add the user
 				if ($this->user_model->addUser(User_model::$CUSTOMER, $name, $email, NULL, $googleId) !== true){
 					$error = "Internal server error";
@@ -185,7 +188,7 @@ class Login extends Yumbox_Controller {
 
 	public function index($requestUrl="menu")
 	{
-		if (isset($_SESSION['fb_token']) || isset($_SESSION['google_token'])){
+		if ($this->login_util->isUserLoggedIn()){
 			// session exists
 			redirect($requestUrl, 'refresh');
 		}

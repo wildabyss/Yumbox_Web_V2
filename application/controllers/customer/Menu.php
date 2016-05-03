@@ -5,6 +5,8 @@ class Menu extends Yumbox_Controller {
 	public static $LIST_VIEW = "list";
 	public static $MAP_VIEW = "map";
 	
+	public static $MAX_RESULTS = 4;
+	
 	/**
 	 * Get the data required for the menu filter component for the view
 	 * @return an array of data to be passed to view
@@ -56,7 +58,7 @@ class Menu extends Yumbox_Controller {
 			
 			// get all foods
 			foreach ($categories as $category){
-				$foods[$category->id] = $this->food_model->getActiveFoodsAndVendorWithPicturesForCategory($category->id, 10, $now);
+				$foods[$category->id] = $this->food_model->getActiveFoodsAndVendorWithPicturesForCategory($category->id, self::$MAX_RESULTS, $now);
 			}
 		} else {
 			// show selected
@@ -66,7 +68,7 @@ class Menu extends Yumbox_Controller {
 		
 			// get all foods
 			foreach ($categories as $category){
-				$foods[$category->id] = $this->food_model->getActiveFoodsAndVendorWithPicturesForCategory($category->id, 10, $now);
+				$foods[$category->id] = $this->food_model->getActiveFoodsAndVendorWithPicturesForCategory($category->id, self::$MAX_RESULTS, $now);
 			}
 		}
 		
@@ -107,11 +109,15 @@ class Menu extends Yumbox_Controller {
 			$categories = $foods_and_cats["categories"];
 		}
 		
+		// language
+		$this->lang->load("menu");
+		
 		// bind to data
 		$filter_data = $this->dataForMenuFilter(false, $view!=self::$MAP_VIEW, $search_query, 
 			$chosen_categories, $price_filter, $rating_filter, $time_filter);
 		$data['foods'] = $foods;
 		$data['categories'] = $categories;
+		$data['empty_string'] = $this->lang->line("no_result");
 
 		// Load views
 		$this->header();

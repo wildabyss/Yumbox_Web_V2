@@ -39,7 +39,7 @@ nav{
 		line-height: 50px;
 	}
 	
-	ul{
+	ul#pc_nav_buttons{
 		list-style-type: none;
 		float: right;
 		margin: 0;
@@ -49,6 +49,14 @@ nav{
 			line-height: 50px;
 			display: inline-block;
 			margin: 0 10px 0 10px;
+		}
+	}
+}
+
+@media (max-width:480px) {
+	nav{
+		ul#pc_nav_buttons{
+			display: none;
 		}
 	}
 }

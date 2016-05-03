@@ -10,6 +10,10 @@ class User_model extends CI_Model {
 	public static $CUSTOMER = 0;
     public static $VENDOR = 1;
 	
+	/**
+	 * Fetch the user object
+	 * Return false if user does not exist
+	 */
 	public function getUserForUserId($user_id){
 		$query = $this->db->query('
 			select 
@@ -23,11 +27,15 @@ class User_model extends CI_Model {
 		$results = $query->result();
 		
 		if (count($results) == 0)
-			return NULL;
+			return false;
 		else
 			return $results[0];
 	}
 	
+	/**
+	 * Fetch the user object using the Facebook id
+	 * Return false if user does not exist
+	 */
 	public function getUserForFacebookId($fb_id){
 		$query = $this->db->query('
 			select 
@@ -41,11 +49,15 @@ class User_model extends CI_Model {
 		$results = $query->result();
 		
 		if (count($results) == 0)
-			return NULL;
+			return false;
 		else
 			return $results[0];
 	}
 	
+	/**
+	 * Fetch the user object using the Google id
+	 * Return false if user does not exist
+	 */
 	public function getUserForGoogleId($google_id){
 		$query = $this->db->query('
 			select 
@@ -59,7 +71,7 @@ class User_model extends CI_Model {
 		$results = $query->result();
 		
 		if (count($results) == 0)
-			return NULL;
+			return false;
 		else
 			return $results[0];
 	}

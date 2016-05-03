@@ -1,6 +1,9 @@
 <?php
 
 class Food_category_model extends CI_Model {
+	/**
+	 * Fetch all categories whose 'main' field is 1
+	 */
 	public function getAllMainCategories(){
 		$query = $this->db->query('
 			select c.id, c.name
@@ -12,7 +15,9 @@ class Food_category_model extends CI_Model {
 		return $query->result();
 	}
 	
-	// Return all categories that have associations with the provided categories
+	/*
+	 * Fetch all categories that have associations with the provided categories
+	 */
 	public function getAllActiveRelatedCategories(array $category_ids, DateTime $orderDateTime=NULL){
 		// base query
 		$query_str = '
@@ -63,8 +68,13 @@ class Food_category_model extends CI_Model {
 		$query = $this->db->query($query_str, $bindings);
 		return $query->result();
 	}
-
-    public function getAllActiveCategories(DateTime $orderDateTime=NULL){
+	
+	/**
+	 * Fetch all active categories
+	 * @param DateTime $orderDateTime filter with datetime cutoff
+	 * @param $user_id filter with foods belonging to user_id
+	 */
+    public function getAllActiveCategories(DateTime $orderDateTime=NULL, $user_id=NULL){
 		// base query string
 		$query_str = '
 			select distinct c.id, c.name 
@@ -84,6 +94,11 @@ class Food_category_model extends CI_Model {
 			$query_str .= ' and (f.cutoff_time > addtime(?, ?) or f.cutoff_time = \'00:00:00\')
 				and (u.return_date is null or u.return_date < ?)';
 		}
+		
+		// user filter
+		if ($user_id != NULL){
+			$query_str .= ' and u.id = ?';
+		}
 	
 		// bindings
 		$bindings = array(
@@ -94,6 +109,9 @@ class Food_category_model extends CI_Model {
 			$bindings[] = $orderDateTime->format('H:i:s');
 			$bindings[] = "00:".Food_model::$CUTOFF_GRACE_MIN.":00";
 			$bindings[] = $orderDateTime->format(DateTime::ISO8601);
+		}
+		if ($user_id != NULL){
+			$bindings[] = $user_id;
 		}
 		
 		// perform database query

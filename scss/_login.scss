@@ -1,0 +1,19 @@
+// login page elements
+
+.login_button_wrapper{
+	a{
+		display: block;
+		width: 187px;
+		height: 32px;
+		background-repeat: no-repeat;
+	}
+	
+	.fb_login{
+		background-image: url('/imgs/facebook_signin_base.png');
+		
+	}
+
+	.google_login{
+		background-image: url('/imgs/google_signin_base.png');
+	}
+}

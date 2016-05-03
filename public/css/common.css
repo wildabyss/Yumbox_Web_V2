@@ -270,17 +270,23 @@ nav .logo {
   line-height: 50px;
 }
 
-nav ul {
+nav ul#pc_nav_buttons {
   list-style-type: none;
   float: right;
   margin: 0;
   padding: 0;
 }
 
-nav ul li {
+nav ul#pc_nav_buttons li {
   line-height: 50px;
   display: inline-block;
   margin: 0 10px 0 10px;
+}
+
+@media (max-width: 480px) {
+  nav ul#pc_nav_buttons {
+    display: none;
+  }
 }
 
 .ui-button-text {
@@ -437,9 +443,12 @@ nav ul li {
   height: 70px;
 }
 
+#menu_mega_selection.small .button_parent {
+  flex: none;
+}
+
 #menu_mega_selection.small a {
   box-sizing: border-box;
-  margin: 15px auto;
   height: 40px;
   border-width: 2px;
   color: white;
@@ -575,6 +584,62 @@ input#search {
     height: auto;
   }
   #menu_mega_selection.small a {
-    margin: 5px auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
+}
+
+.login_button_wrapper a {
+  display: block;
+  width: 187px;
+  height: 32px;
+  background-repeat: no-repeat;
+}
+
+.login_button_wrapper .fb_login {
+  background-image: url("/imgs/facebook_signin_base.png");
+}
+
+.login_button_wrapper .google_login {
+  background-image: url("/imgs/google_signin_base.png");
+}
+
+#profile_intro {
+  display: flex;
+  flex-direction: row;
+}
+
+#profile_intro .pic_wrapper {
+  float: left;
+}
+
+#profile_intro .pic_wrapper #profile_pic {
+  display: block;
+  width: 200px;
+  height: 200px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("/imgs/image-not-available.gif");
+  border: solid 1px #251F1E;
+}
+
+#profile_intro .pic_wrapper #followers {
+  float: left;
+}
+
+#profile_intro .pic_wrapper #follow_btn {
+  float: right;
+}
+
+#profile_intro .intro_wrapper {
+  flex: 1;
+  padding-left: 40px;
+}
+
+#profile_intro .intro_wrapper h1 {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  padding-bottom: 5px;
+  border-bottom: solid 1px #b5b3ac;
 }

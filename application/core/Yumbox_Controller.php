@@ -15,11 +15,10 @@ class Yumbox_Controller extends CI_Controller {
 		$data["vendor_button"] = $this->lang->line("vendor_button");
 		
 		// determine if we have a valid session
-		if (isset($_SESSION['user_id']) 
-			&& (isset($_SESSION['fb_token']) || isset($_SESSION['google_token']))){
+		if ($this->login_util->isUserLoggedIn()){
 				
-			$user_id = $_SESSION['user_id'];
-			$user = $this->user_model->getUserForUserId($fbId);
+			$user_id = $this->login_util->getUserId();
+			$user = $this->user_model->getUserForUserId($user_id);
 			if ($user != NULL){
 				// we have a valid session
 				$data["user_name"] = $user->name;

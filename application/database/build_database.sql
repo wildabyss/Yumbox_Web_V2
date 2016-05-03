@@ -16,6 +16,7 @@ create table user
     google_id varchar(25),
 
 	alternate_name varchar(255),
+    descr text,
     phone varchar(25),
     driver_lic varchar(30),
     passport_num varchar(30),
