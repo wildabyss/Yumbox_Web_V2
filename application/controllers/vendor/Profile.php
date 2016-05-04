@@ -2,17 +2,25 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Profile extends Yumbox_Controller {
+	public static $MAX_RESULTS = 5;
 
-	public function id($id){
+	public function id($user_id){
+		// csrf hash
+		$csrf = array(
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
+		);
+		
 		// fetch user
-		$user = $this->user_model->getUserForUserId($id);
+		$user = $this->user_model->getUserForUserId($user_id);
 		if ($user===false){
 			show_404();
 		}
+		$filters["vendor_id"] = $user->id;
 		
 		// is this my profile?
 		$my_id = $this->login_util->getUserId();
-		if ($my_id !== false && $my_id == $id){
+		if ($my_id !== false && $my_id == $user_id){
 			// my profile
 			$myprofile = true;
 		} else {
@@ -23,8 +31,12 @@ class Profile extends Yumbox_Controller {
 		$categories = $this->food_category_model->getAllActiveCategories(NULL, $user->id);
 		$foods = array();
 		foreach ($categories as $category){
-			$foods[$category->id] = $this->food_model->getActiveFoodsAndVendorWithPicturesForCategory($category->id, self::$MAX_RESULTS, NULL, $user->id);
+			$foods[$category->id] = $this->food_model->
+				getActiveFoodsAndVendorAndOrdersAndRatingWithPicturesForCategory($category->id, self::$MAX_RESULTS, $filters);
 		}
+		
+		// get followers
+		$num_followers = $this->user_follow_model->getNumberOfActiveFollowersForUser($user_id);
 		
 		// language
 		$this->lang->load("menu");
@@ -37,12 +49,15 @@ class Profile extends Yumbox_Controller {
 		$data['empty_string'] = $this->lang->line("empty_kitchen");
 		$data['foods'] = $foods;
 		$data['categories'] = $categories;
+		$data['my_id'] = $my_id;
+		$data['num_followers'] = $num_followers;
+		$data['start_time'] = strtotime($user->start_time);
+		$data['end_time'] = strtotime($user->end_time);
 		
 		// load view
 		$this->header();
 		$this->navigation();
 		$this->load->view("vendor/profile", $data);
-		$this->load->view("customer/menu", $data);
 		$this->footer();
 	}
 

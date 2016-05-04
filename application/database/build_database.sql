@@ -11,6 +11,9 @@ create table user
     date_joined datetime not null,
     name varchar(255) not null,
     email varchar(255) not null,
+    start_time time not null default '09:00:00',
+    end_time time not null default '20:00:00',
+    max_unfilled_orders mediumint unsigned not null default 10,
     
 	fb_id varchar(25),
     google_id varchar(25),
@@ -108,8 +111,8 @@ create table food
     user_id int unsigned not null,
     name varchar(255) not null,
     price decimal(5,2) unsigned not null,
-    cutoff_time time not null default '00:00:00',
     
+    cutoff_time time default '00:00:00',		# not used at the moment, replaced by user.start_time and end_time
 	alternate_name varchar(255),
     descr text,
     ingredients text,
@@ -188,7 +191,7 @@ create table food_review
 	id bigint unsigned not null auto_increment,
     food_id bigint unsigned not null,
     user_id int unsigned not null,
-    rating tinyint unsigned not null,
+    rating tinyint unsigned not null default 3,		# scale 0 to 5
     
     review text,
     
@@ -242,6 +245,7 @@ create table order_basket
 	id bigint unsigned not null auto_increment,
     order_date datetime not null,
     user_id int unsigned not null,
+    is_filled tinyint(1) unsigned not null default 0,
     
     delivery_address int unsigned,
     payment_id bigint unsigned,
@@ -271,13 +275,19 @@ create table order_item
 	id bigint unsigned not null auto_increment,
     food_id bigint unsigned not null,
     quantity smallint unsigned not null,
+    order_basket_id bigint unsigned not null,
     
     primary key (id),
     index food_id_order_index (food_id),
+    index order_item_basket_index (order_basket_id),
     
     constraint food_id_order_constraint
 		foreign key (food_id)
         references food (id)
+        on delete cascade,
+	constraint order_item_basket_constraint
+		foreign key (order_basket_id)
+        references order_basket (id)
         on delete cascade
 ) engine = InnoDB;
 
@@ -320,6 +330,26 @@ begin
 		end if;
     end if;
     
+end//
+delimiter ;
+
+
+drop procedure if exists add_user_follower;
+delimiter //
+create procedure add_user_follower(in user_id int, in vendor_id int)
+begin
+	set @exist = null;
+    
+    select a.id into @exist
+    from user_follow_assoc a
+    where
+		a.user_id = user_id
+        and a.vendor_id = vendor_id;
+        
+	if (@exist is null) then
+		insert into user_follow_assoc (user_id, vendor_id)
+        values (user_id, vendor_id);
+    end if;
 end//
 delimiter ;
 

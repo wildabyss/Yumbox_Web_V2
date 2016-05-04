@@ -58,7 +58,12 @@ $autoload['packages'] = array();
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array('database', 'email', 'session', 'login_util');
+$autoload['libraries'] = array(
+	'database', 
+	'email', 
+	'session', 
+	'login_util'
+);
 
 /*
 | -------------------------------------------------------------------
@@ -135,5 +140,8 @@ $autoload['language'] = array();
 $autoload['model'] = array(
 	'food_model', 
 	'food_category_model',
-	'user_model'
+	'food_review_model',
+	'user_model',
+	'user_follow_model',
+	'order_model'
 );

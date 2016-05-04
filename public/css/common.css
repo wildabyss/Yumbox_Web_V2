@@ -230,6 +230,7 @@ a:visited {
 
 input {
   font-size: 1.5rem;
+  border: 1px solid #b5b3ac;
 }
 
 div#global {
@@ -505,9 +506,9 @@ nav ul#pc_nav_buttons li {
 input#search {
   width: 80%;
   min-width: 300px;
-  /*background-image: url('/imgs/search_large.png');
-	background-repeat: no-repeat;
-	background-position: right center;*/
+  background-image: url("/imgs/search_large.png");
+  background-repeat: no-repeat;
+  background-position: right center;
 }
 
 .filter_slider {
@@ -532,7 +533,7 @@ input#search {
 }
 
 .food_list_parent {
-  max-width: 1000px;
+  max-width: calc(290px*4);
   margin: 0 auto;
   overflow: auto;
 }
@@ -570,6 +571,15 @@ input#search {
   margin-bottom: 5px;
 }
 
+.food_list_parent ul.food_list .alt_name {
+  display: block;
+}
+
+.food_list_parent ul.food_list .alt_name h3 {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
 .food_list_parent ul.food_list .food_price {
   display: block;
   float: right;
@@ -577,6 +587,18 @@ input#search {
 
 .food_list_parent ul.food_list .food_maker {
   display: block;
+}
+
+.food_list_parent ul.food_list .total_orders {
+  float: left;
+}
+
+.food_list_parent ul.food_list .rating {
+  float: right;
+}
+
+.food_list_parent ul.food_list .after_hours {
+  color: #991f00;
 }
 
 @media (max-width: 600px) {
@@ -642,4 +664,8 @@ input#search {
   margin-bottom: 30px;
   padding-bottom: 5px;
   border-bottom: solid 1px #b5b3ac;
+}
+
+#profile_menu_listing {
+  margin-top: 20px;
 }

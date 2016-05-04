@@ -34,12 +34,12 @@
 					<input type="hidden" name="rating_max" id="rating_filter_max"
 						value="<?php echo $rating_filter['max']?>"/>
 				</div>
-				<div>
+				<!--<div>
 					<p>Turnaround time: <span id="time_slider_output"></span></p>
 					<div class="filter_slider" id="time_slider"></div>
 					<input type="hidden" name="time_max" id="time_filter_max"
 						value="<?php echo $time_filter?>"/>
-				</div>
+				</div>-->
 			</div>
 			
 			<div class="menu_filter_zone">
@@ -100,7 +100,7 @@
 		}
 		
 		// update turnaround time slider's equivalent output
-		var updateTimeSliderOutput = function(ui){
+		/*var updateTimeSliderOutput = function(ui){
 			if (ui==null){
 				var high = $('#time_slider').slider('value');
 			} else {
@@ -131,7 +131,7 @@
 			}
 			
 			$('#time_slider_output').html(output);
-		}
+		}*/
 	
 		// range sliders
 		$( "#price_slider" ).slider({
@@ -158,7 +158,7 @@
 				updateRatingSliderOutput(ui);
 			}
 		});
-		$( "#time_slider" ).slider({
+		/*$( "#time_slider" ).slider({
 			min: 0,
 			max: 5,
 			step: 1,
@@ -167,12 +167,12 @@
 				$('#time_filter_max').val(ui.value);
 				updateTimeSliderOutput(ui);
 			}
-		});
+		});*/
 		
 		// initially update the ranged outputs
 		updatePriceSliderOutput();
 		updateRatingSliderOutput();
-		updateTimeSliderOutput();
+		//updateTimeSliderOutput();
 		
 		// category filter checkboxes
 		$( "#menu_filter_categories" ).buttonset();

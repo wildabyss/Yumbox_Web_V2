@@ -21,7 +21,7 @@ class Login_util {
 	 * False otherwise
 	 */
 	public function getUserId(){
-		if (isset($_SESSION['user_id']))
+		if ($this->isUserLoggedIn())
 			return $_SESSION['user_id'];
 		else
 			return false;

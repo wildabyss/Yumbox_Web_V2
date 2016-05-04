@@ -17,12 +17,28 @@
 						<div>
 							<a href="/menu/item/<?php echo $food->food_id?>">
 								<h3><?php echo $food->food_name?></h3>
-								<?php if ($food->food_alt_name != ""):?>
-									<h3><?php echo $food->food_alt_name?></h3>
-								<?php endif ?>
 							</a>
 							<a class="food_price"><h3>$<?php echo $food->food_price?></h3></a>
-							<a class="food_maker"><h4><?php echo $food->vendor_name?></h4></a>
+							
+							<?php if ($food->food_alt_name != ""):?>
+								<a class="alt_name" href="/menu/item/<?php echo $food->food_id?>">
+									<h3><?php echo $food->food_alt_name?></h3>
+								</a>
+							<?php endif ?>
+							
+							<a class="food_maker" href="/vendor/profile/id/<?php echo $food->vendor_id?>">
+								<h4><?php echo $food->vendor_name?>
+								</h4>
+							</a>
+							<div>
+								<span class="total_order"><?php echo $food->total_orders==""?0:$food->total_orders?> orders</span>
+								<?php if ($food->rating != ""):?>
+									<span class="rating">&hearts; <?php echo $food->rating?>%</span>
+								<?php endif?>
+							</div>
+							<?php if (time() < strtotime($food->start_time) || time() > strtotime($food->end_time)):?>
+								<h3 class="after_hours">(After Hours)</h3>
+							<?php endif?>
 						</div>
 					</li>
 					<?php endforeach?>

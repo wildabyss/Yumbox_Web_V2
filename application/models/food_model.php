@@ -8,13 +8,29 @@ class Food_model extends CI_Model {
 	// cutoff time grace period
 	public static $CUTOFF_GRACE_MIN = 15;
 	
-	public function getActiveFoodsAndVendorWithPicturesForCategory($categoryId, $limit, DateTime $orderDateTime=NULL, $user_id=NULL){
+	/**
+	 * For a given $categoryId, fetch all the foods with its pictures up to $limit
+	 * Fetch also its total number of orders and its aggregate rating
+	 *
+	 * @param $filters:
+	 *    orderDateTime => DateTime
+	 *    vendor_id     => int
+	 */
+	public function getActiveFoodsAndVendorAndOrdersAndRatingWithPicturesForCategory(
+		$categoryId, $limit, array $filters){
+		
+		// sort through filters
+		$orderDateTime = isset($filters["orderDateTime"])?$filters["orderDateTime"]:NULL;
+		$vendor_id = isset($filters["vendor_id"])?$filters["vendor_id"]:NULL;
+		
 		// base query
 		$query_str = '
 			select 
 				f.id food_id, f.name food_name, f.alternate_name food_alt_name, f.price food_price,
-				f.cutoff_time cutoff_time,
+				u.start_time, u.end_time,
 				p.path pic_path,
+				orders.total total_orders,
+				review.rating,
 				u.id vendor_id, u.name vendor_name
 			from food_category_assoc a
 			left join food f
@@ -23,6 +39,18 @@ class Food_model extends CI_Model {
 			on u.id = f.user_id
 			left join food_picture p
 			on p.food_id = f.id
+			left join
+				(select o.food_id, sum(o.quantity) total
+				from order_item o
+				group by o.food_id) orders
+			on
+				orders.food_id = f.id
+			left join
+				(select r.food_id, round(avg(r.rating)/?*100) rating
+				from food_review r
+				group by r.food_id) review
+			on
+				review.food_id = f.id
 			where
 				a.food_category_id = ?
 				and f.status = ?
@@ -30,29 +58,31 @@ class Food_model extends CI_Model {
 				
 		// filter cut-off time
 		if ($orderDateTime != NULL){
-			$query_str .= ' and (f.cutoff_time > addtime(?, ?) or f.cutoff_time = \'00:00:00\')
+			$query_str .= ' and u.start_time <= ? 
+				and u.end_time >= ?
 				and (u.return_date is null or u.return_date < ?)';
 		}
 		
 		// filter user
-		if ($user_id != NULL){
+		if ($vendor_id != NULL){
 			$query_str .= ' and u.id = ?';
 		}
 		$query_str .= ' group by f.id limit ?';
 		
 		// bindings
 		$bindings = array(
+			Food_review_model::$HIGHEST_RATING,
 			$categoryId, 
 			Food_model::$ACTIVE_FOOD, 
 			User_model::$CERTIFIED_VENDOR
 		);
 		if ($orderDateTime != NULL){
-			$bindings[] = $orderDateTime->format('H:i:s');
-			$bindings[] = "00:".self::$CUTOFF_GRACE_MIN.":00";
+			$bindings[] = $orderDateTime->format("H:i:s");
+			$bindings[] = $orderDateTime->format("H:i:s");
 			$bindings[] = $orderDateTime->format(DateTime::ISO8601);
 		}
-		if ($user_id != NULL){
-			$bindings[] = $user_id;
+		if ($vendor_id != NULL){
+			$bindings[] = $vendor_id;
 		}
 		$bindings[] = $limit;
 		
@@ -72,8 +102,9 @@ class Food_model extends CI_Model {
 	public function getFoodAndVendorForFoodId($food_id){
 		$query = $this->db->query('
 			select 
-				f.name as food_name, f.price, f.cutoff_time, f.descr, f.ingredients, f.health_benefits,
-				u.id as user_id, u.name as user_name, u.email, u.phone, u.return_date
+				f.name as food_name, f.price, f.descr, f.ingredients, f.health_benefits,
+				u.id as user_id, u.name as user_name, u.email, u.phone, u.return_date,
+				u.start_time, u.end_time
 			from food f
 			left join user u
 			on u.id = f.user_id

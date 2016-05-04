@@ -38,7 +38,8 @@ class Food_category_model extends CI_Model {
 					
 		if ($orderDateTime != NULL){
 			// filter cut-off times
-			$query_str .= ' and (f.cutoff_time > addtime(?, ?) or f.cutoff_time = \'00:00:00\')
+			$query_str .= ' and u.start_time <= ? 
+				and u.end_time >= ?
 				and (u.return_date is null or u.return_date < ?)';
 		}
 					
@@ -59,8 +60,8 @@ class Food_category_model extends CI_Model {
 			User_model::$CERTIFIED_VENDOR
 		);
 		if ($orderDateTime != NULL){
-			$bindings[] = $orderDateTime->format('H:i:s');
-			$bindings[] = "00:".Food_model::$CUTOFF_GRACE_MIN.":00";
+			$bindings[] = $orderDateTime->format("H:i:s");
+			$bindings[] = $orderDateTime->format("H:i:s");
 			$bindings[] = $orderDateTime->format(DateTime::ISO8601);
 		}
 		
@@ -91,7 +92,8 @@ class Food_category_model extends CI_Model {
 		
 		// cut-off time filter
 		if ($orderDateTime != NULL){
-			$query_str .= ' and (f.cutoff_time > addtime(?, ?) or f.cutoff_time = \'00:00:00\')
+			$query_str .= ' and u.start_time <= ? 
+				and u.end_time >= ?
 				and (u.return_date is null or u.return_date < ?)';
 		}
 		
@@ -106,8 +108,8 @@ class Food_category_model extends CI_Model {
 			User_model::$CERTIFIED_VENDOR
 		);
 		if ($orderDateTime != NULL){
-			$bindings[] = $orderDateTime->format('H:i:s');
-			$bindings[] = "00:".Food_model::$CUTOFF_GRACE_MIN.":00";
+			$bindings[] = $orderDateTime->format("H:i:s");
+			$bindings[] = $orderDateTime->format("H:i:s");
 			$bindings[] = $orderDateTime->format(DateTime::ISO8601);
 		}
 		if ($user_id != NULL){
