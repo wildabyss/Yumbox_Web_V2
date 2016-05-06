@@ -20,5 +20,8 @@
 		<!-- jquery -->
 		<script src="/js/jquery.min.js"></script>
 		<script src="/js/jquery-ui.min.js"></script>
+		
+		<!-- global js loading -->
+		<script src="/js/global.js"></script>
 	
 		<div id="global">
