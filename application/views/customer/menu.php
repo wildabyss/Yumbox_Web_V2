@@ -36,9 +36,6 @@
 									<span class="rating">&hearts; <?php echo $food->rating?>%</span>
 								<?php endif?>
 							</div>
-							<?php if (time() < strtotime($food->start_time) || time() > strtotime($food->end_time)):?>
-								<h3 class="after_hours">(After Hours)</h3>
-							<?php endif?>
 						</div>
 					</li>
 					<?php endforeach?>

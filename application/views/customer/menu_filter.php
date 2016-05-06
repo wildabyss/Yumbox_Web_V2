@@ -56,8 +56,8 @@
 		</div>
 		
 		<div class="menu_button_container">
-			<button id="btn_map" class="<?php if (!$is_list):?>ui-state-active<?php endif?>">MAP VIEW</button>
-			<button id="btn_list" class="<?php if ($is_list):?>ui-state-active<?php endif?>">LIST VIEW</button>
+			<button id="btn_map" class="<?php if (!$is_list):?>ui-state-active<?php endif?>">UPDATE MAP</button>
+			<button id="btn_list" class="<?php if ($is_list):?>ui-state-active<?php endif?>">UPDATE LIST</button>
 		</div>
 	</form>
 	

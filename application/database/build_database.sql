@@ -11,9 +11,8 @@ create table user
     date_joined datetime not null,
     name varchar(255) not null,
     email varchar(255) not null,
-    start_time time not null default '09:00:00',
-    end_time time not null default '20:00:00',
     max_unfilled_orders mediumint unsigned not null default 10,
+    is_open tinyint(1) not null default 0,
     
 	fb_id varchar(25),
     google_id varchar(25),
@@ -111,8 +110,8 @@ create table food
     user_id int unsigned not null,
     name varchar(255) not null,
     price decimal(5,2) unsigned not null,
+    prep_time_hours float not null default 2.0,
     
-    cutoff_time time default '00:00:00',		# not used at the moment, replaced by user.start_time and end_time
 	alternate_name varchar(255),
     descr text,
     ingredients text,

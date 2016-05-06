@@ -11,5 +11,4 @@
 	<p>Price: $<?php echo $food->price?></p>
 	<p>Ingredients: <?php echo $food->ingredients ?>
 	<p>Health Benefits: <?php echo $food->health_benefits?>
-	<p <?php if ($bool_past_cutoff):?>class="past_cutoff"<?php endif?>>Order Cut-Off Time: <?php echo $food->cutoff_time?></p>
 </div>

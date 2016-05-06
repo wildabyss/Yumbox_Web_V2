@@ -23,6 +23,7 @@ nav{
 	flex-direction: row;
 	align-items: center;
 	min-height: 50px;
+	position: relative;
 	
 	.nav_wrapper{
 		flex:1;
@@ -34,9 +35,22 @@ nav{
 		background-repeat: no-repeat;
 		height: 50px;
 		padding-left: 55px;
-		display: block;
 		float: left;
 		line-height: 50px;
+		
+		display: block;
+	}
+	
+	#mobile_user_menu_trigger{
+		background-image: url("/imgs/menu_burger.png");
+		background-repeat: no-repeat;
+		background-position: 5px center;
+		width: 28px;
+		height: 50px;
+		float: left;
+		cursor: pointer;
+		
+		display: none;
 	}
 	
 	ul#pc_nav_buttons{
@@ -50,13 +64,100 @@ nav{
 			display: inline-block;
 			margin: 0 10px 0 10px;
 		}
+		
+		// the clickable button for showing/hiding the user menu
+		#user_menu_trigger{
+			cursor: pointer;
+			
+			#user_menu_visual{
+				color: $darkGrey;
+			}
+		}
+		#user_menu_trigger.selected{
+			#user_menu_visual{
+				color: $almostBlack;
+			}
+		}
+	}
+	
+	ul#user_menu{
+		position: absolute;
+		z-index: 2000;
+		right: 0;
+		border-top: 0;
+		
+		display: none;
+		
+		li{
+			margin: 0;
+			height: 50px;
+			display: block;
+			border-top: solid 1px $grey;
+			padding: 0;
+		}
+		li a{
+			display: block;
+			padding: 0 10px 0 10px;
+		}
+		li.ui-state-focus{
+			border: 0;
+			border-top: solid 1px $grey;
+		}
+	}
+	
+	ul#mobile_user_menu{
+		position: absolute;
+		z-index: 5000;
+		left: 0;
+		top: 100%;
+		border-top: 0;
+		
+		display: none;
+		
+		li{
+			text-align: center;
+			margin: 0;
+			padding: 0;
+			line-height: 50px;
+			border-top: solid 1px $grey;
+			display: block;
+			
+		}
+		li a{
+			padding: 0 20px 0 20px;
+			display: block;
+			height: 50px;
+		}
+		a.logo{
+			display: block;
+			float: none;
+			padding-left: 70px;
+			background-position: 10px center;
+			background-size: 50px;
+			line-height: 100px;
+			height: 100px;
+		}
 	}
 }
 
 @media (max-width:480px) {
 	nav{
-		ul#pc_nav_buttons{
+		a.logo{
 			display: none;
+		}
+		
+		#mobile_user_menu_trigger{
+			display: block;
+		}
+		
+		ul#pc_nav_buttons{
+			li.nav_about{
+				display: none;
+			}
+			
+			li.user_menu_trigger_wrapper{
+				display:none;
+			}
 		}
 	}
 }

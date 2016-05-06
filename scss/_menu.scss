@@ -20,9 +20,15 @@
 	a.rush{
 		border-color: $explore_selected;
 	}
+	a.rush:hover{
+		border-color: $rush_selected;
+	}
 	
 	a.explore{
 		border-color: $rush_selected;
+	}
+	a.explore:hover{
+		border-color: $explore_selected;
 	}
 	
 	h3{
@@ -165,10 +171,6 @@ input#search {
 		
 		.rating{
 			float: right;
-		}
-		
-		.after_hours{
-			color: $red;
 		}
 	}
 }

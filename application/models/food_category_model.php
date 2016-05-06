@@ -18,7 +18,7 @@ class Food_category_model extends CI_Model {
 	/*
 	 * Fetch all categories that have associations with the provided categories
 	 */
-	public function getAllActiveRelatedCategories(array $category_ids, DateTime $orderDateTime=NULL){
+	public function getAllActiveRelatedCategories(array $category_ids, $is_rush=false){
 		// base query
 		$query_str = '
 			select distinct c.id, c.name
@@ -36,11 +36,10 @@ class Food_category_model extends CI_Model {
 					f.status = ? 
 					and u.status = ?';
 					
-		if ($orderDateTime != NULL){
-			// filter cut-off times
-			$query_str .= ' and u.start_time <= ? 
-				and u.end_time >= ?
-				and (u.return_date is null or u.return_date < ?)';
+		// filter out non-rush items		
+		if ($is_rush){
+			$query_str .= ' and f.prep_time_hours <= ? 
+				and u.is_open = 1';
 		}
 					
 		$query_str .= ' and a.food_category_id in (';
@@ -59,10 +58,8 @@ class Food_category_model extends CI_Model {
 			Food_model::$ACTIVE_FOOD,
 			User_model::$CERTIFIED_VENDOR
 		);
-		if ($orderDateTime != NULL){
-			$bindings[] = $orderDateTime->format("H:i:s");
-			$bindings[] = $orderDateTime->format("H:i:s");
-			$bindings[] = $orderDateTime->format(DateTime::ISO8601);
+		if ($is_rush){
+			$bindings[] = Food_model::$MAX_RUSH_HOURS;
 		}
 		
 		// perform database query
@@ -75,7 +72,7 @@ class Food_category_model extends CI_Model {
 	 * @param DateTime $orderDateTime filter with datetime cutoff
 	 * @param $user_id filter with foods belonging to user_id
 	 */
-    public function getAllActiveCategories(DateTime $orderDateTime=NULL, $user_id=NULL){
+    public function getAllActiveCategories($is_rush=false, $user_id=NULL){
 		// base query string
 		$query_str = '
 			select distinct c.id, c.name 
@@ -90,11 +87,10 @@ class Food_category_model extends CI_Model {
 				f.status = ?
 				and u.status = ?';
 		
-		// cut-off time filter
-		if ($orderDateTime != NULL){
-			$query_str .= ' and u.start_time <= ? 
-				and u.end_time >= ?
-				and (u.return_date is null or u.return_date < ?)';
+		// filter out non-rush items
+		if ($is_rush){
+			$query_str .= ' and f.prep_time_hours <= ?
+				and u.is_open = 1';
 		}
 		
 		// user filter
@@ -107,10 +103,8 @@ class Food_category_model extends CI_Model {
 			Food_model::$ACTIVE_FOOD,
 			User_model::$CERTIFIED_VENDOR
 		);
-		if ($orderDateTime != NULL){
-			$bindings[] = $orderDateTime->format("H:i:s");
-			$bindings[] = $orderDateTime->format("H:i:s");
-			$bindings[] = $orderDateTime->format(DateTime::ISO8601);
+		if ($is_rush){
+			$bindings[] = Food_model::$MAX_RUSH_HOURS;
 		}
 		if ($user_id != NULL){
 			$bindings[] = $user_id;

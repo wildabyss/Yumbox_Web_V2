@@ -80,6 +80,14 @@
 		text-decoration: none;
 	}
 	
+	a.rush:hover{
+		border-color: $rush_selected;
+	}
+	
+	a.explore:hover{
+		border-color: $explore_selected;
+	}
+	
 	h2{
 		margin-top: 10px;
 		margin-bottom: 5px;
@@ -91,9 +99,41 @@
 	}
 }
 
+div.about_text{
+	background-color: $translucentGrey;
+	width: 600px;
+	padding: 0 20px 40px 20px;
+	color: $almostBlack;
+	
+	h1{
+		text-align: center;
+	}
+}
+
 #about{
 	padding-top: 30px;
 	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	
+	/*background-image: url('/imgs/cooking1.jpg');
+	background-position:center;
+	background-size: cover;
+	background-repeat: no-repeat;*/
+}
+
+#contact{
+	padding-top: 30px;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	
+	background-image: url('/imgs/cooking1.jpg');
+	background-position:center;
+	background-size: cover;
+	background-repeat: no-repeat;
 }
 
 // media query
@@ -113,6 +153,12 @@
 }
 
 @media (max-width: 600px){
+	#about{
+		.text{
+			width: 100%;
+		}
+	}
+	
 	#menu_mega_selection{
 		display: flex;
 		flex-direction: column;

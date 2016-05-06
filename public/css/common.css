@@ -254,6 +254,7 @@ nav {
   flex-direction: row;
   align-items: center;
   min-height: 50px;
+  position: relative;
 }
 
 nav .nav_wrapper {
@@ -266,9 +267,20 @@ nav .logo {
   background-repeat: no-repeat;
   height: 50px;
   padding-left: 55px;
-  display: block;
   float: left;
   line-height: 50px;
+  display: block;
+}
+
+nav #mobile_user_menu_trigger {
+  background-image: url("/imgs/menu_burger.png");
+  background-repeat: no-repeat;
+  background-position: 5px center;
+  width: 28px;
+  height: 50px;
+  float: left;
+  cursor: pointer;
+  display: none;
 }
 
 nav ul#pc_nav_buttons {
@@ -284,8 +296,89 @@ nav ul#pc_nav_buttons li {
   margin: 0 10px 0 10px;
 }
 
+nav ul#pc_nav_buttons #user_menu_trigger {
+  cursor: pointer;
+}
+
+nav ul#pc_nav_buttons #user_menu_trigger #user_menu_visual {
+  color: #b5b3ac;
+}
+
+nav ul#pc_nav_buttons #user_menu_trigger.selected #user_menu_visual {
+  color: #251F1E;
+}
+
+nav ul#user_menu {
+  position: absolute;
+  z-index: 2000;
+  right: 0;
+  border-top: 0;
+  display: none;
+}
+
+nav ul#user_menu li {
+  margin: 0;
+  height: 50px;
+  display: block;
+  border-top: solid 1px #e3e0d8;
+  padding: 0;
+}
+
+nav ul#user_menu li a {
+  display: block;
+  padding: 0 10px 0 10px;
+}
+
+nav ul#user_menu li.ui-state-focus {
+  border: 0;
+  border-top: solid 1px #e3e0d8;
+}
+
+nav ul#mobile_user_menu {
+  position: absolute;
+  z-index: 5000;
+  left: 0;
+  top: 100%;
+  border-top: 0;
+  display: none;
+}
+
+nav ul#mobile_user_menu li {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  line-height: 50px;
+  border-top: solid 1px #e3e0d8;
+  display: block;
+}
+
+nav ul#mobile_user_menu li a {
+  padding: 0 20px 0 20px;
+  display: block;
+  height: 50px;
+}
+
+nav ul#mobile_user_menu a.logo {
+  display: block;
+  float: none;
+  padding-left: 70px;
+  background-position: 10px center;
+  background-size: 50px;
+  line-height: 100px;
+  height: 100px;
+}
+
 @media (max-width: 480px) {
-  nav ul#pc_nav_buttons {
+  nav a.logo {
+    display: none;
+  }
+  nav #mobile_user_menu_trigger {
+    display: block;
+  }
+  nav ul#pc_nav_buttons li.nav_about {
+    display: none;
+  }
+  nav ul#pc_nav_buttons li.user_menu_trigger_wrapper {
     display: none;
   }
 }
@@ -402,6 +495,14 @@ nav ul#pc_nav_buttons li {
   text-decoration: none;
 }
 
+#menu_mega_selection a.rush:hover {
+  border-color: #F5BDA3;
+}
+
+#menu_mega_selection a.explore:hover {
+  border-color: #B3CCC8;
+}
+
 #menu_mega_selection h2 {
   margin-top: 10px;
   margin-bottom: 5px;
@@ -412,9 +513,39 @@ nav ul#pc_nav_buttons li {
   margin-bottom: 10px;
 }
 
+div.about_text {
+  background-color: rgba(240, 240, 240, 0.8);
+  width: 600px;
+  padding: 0 20px 40px 20px;
+  color: #251F1E;
+}
+
+div.about_text h1 {
+  text-align: center;
+}
+
 #about {
   padding-top: 30px;
   height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /*background-image: url('/imgs/cooking1.jpg');
+	background-position:center;
+	background-size: cover;
+	background-repeat: no-repeat;*/
+}
+
+#contact {
+  padding-top: 30px;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("/imgs/cooking1.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 @media (max-width: 960px) {
@@ -430,6 +561,9 @@ nav ul#pc_nav_buttons li {
 }
 
 @media (max-width: 600px) {
+  #about .text {
+    width: 100%;
+  }
   #menu_mega_selection {
     display: flex;
     flex-direction: column;
@@ -461,8 +595,16 @@ nav ul#pc_nav_buttons li {
   border-color: #B3CCC8;
 }
 
+#menu_mega_selection.small a.rush:hover {
+  border-color: #F5BDA3;
+}
+
 #menu_mega_selection.small a.explore {
   border-color: #F5BDA3;
+}
+
+#menu_mega_selection.small a.explore:hover {
+  border-color: #B3CCC8;
 }
 
 #menu_mega_selection.small h3 {
@@ -597,10 +739,6 @@ input#search {
   float: right;
 }
 
-.food_list_parent ul.food_list .after_hours {
-  color: #991f00;
-}
-
 @media (max-width: 600px) {
   #menu_mega_selection.small {
     height: auto;
@@ -664,6 +802,10 @@ input#search {
   margin-bottom: 30px;
   padding-bottom: 5px;
   border-bottom: solid 1px #b5b3ac;
+}
+
+#profile_intro .intro_wrapper .closed {
+  color: #991f00;
 }
 
 #profile_menu_listing {

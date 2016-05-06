@@ -41,14 +41,11 @@ class Menu extends Yumbox_Controller {
 	 * Get the data required for food listing in the view
 	 * @return: an array with "foods" => array of foods and "categories" => array of categories
 	 */
-	protected function dataForFoodListing($is_rush, $search_query, array $chosen_categories){
+	protected function dataForFoodListing($is_rush, $search_query, 
+		array $chosen_categories, array $price_filter, array $rating_filter){
 		// filters
 		$filters = array();
-		if ($is_rush){
-			$now = new DateTime();
-			$filters["orderDateTime"] = $now;
-		} else
-			$now = NULL;
+		$filters["is_rush"] = $is_rush;
 		
 		// search for foods with the chosen categories
 		$foods = array();
@@ -56,7 +53,7 @@ class Menu extends Yumbox_Controller {
 			// show everything
 			
 			// get all categories
-			$categories = $this->food_category_model->getAllActiveCategories($now);
+			$categories = $this->food_category_model->getAllActiveCategories($is_rush);
 			
 			// get all foods
 			foreach ($categories as $category){
@@ -67,7 +64,7 @@ class Menu extends Yumbox_Controller {
 			// show selected
 			
 			// get all related categories
-			$categories = $this->food_category_model->getAllActiveRelatedCategories($chosen_categories, $now);
+			$categories = $this->food_category_model->getAllActiveRelatedCategories($chosen_categories, $is_rush);
 		
 			// get all foods
 			foreach ($categories as $category){
@@ -111,7 +108,7 @@ class Menu extends Yumbox_Controller {
 		} else {
 			// list view
 			
-			$foods_and_cats = $this->dataForFoodListing(false, $search_query, $chosen_categories);
+			$foods_and_cats = $this->dataForFoodListing(false, $search_query, $chosen_categories, $price_filter, $rating_filter);
 			$foods = $foods_and_cats["foods"];
 			$categories = $foods_and_cats["categories"];
 		}
@@ -164,7 +161,7 @@ class Menu extends Yumbox_Controller {
 		} else {
 			// list view
 			
-			$foods_and_cats = $this->dataForFoodListing(true, $search_query, $chosen_categories);
+			$foods_and_cats = $this->dataForFoodListing(true, $search_query, $chosen_categories, $price_filter, $rating_filter);
 			$foods = $foods_and_cats["foods"];
 			$categories = $foods_and_cats["categories"];
 		}
@@ -197,24 +194,9 @@ class Menu extends Yumbox_Controller {
 		// get food pictures
 		$food_pictures = $this->food_model->getFoodPicturesForFoodId($food_id);
 		
-		// cutoff time
-		$bool_past_cutoff = false;
-		if ($food->cutoff_time == '00:00:00'){
-			$food->cutoff_time = 'All Day';
-		} else {
-			$cutoff_time = new DateTime($food->cutoff_time);
-			$cutoff_time->modify('-'.Food_model::$CUTOFF_GRACE_MIN.' minutes');
-			$food->cutoff_time = $cutoff_time->format("H:i:s");
-			
-			$now = new DateTime();
-			if ($now->format("H:i:s") > $food->cutoff_time)
-				$bool_past_cutoff = true;
-		}
-		
 		// bind to data
 		$data['food'] = $food;
 		$data['food_pictures'] = $food_pictures;
-		$data['bool_past_cutoff'] = $bool_past_cutoff;
 		
 		// Load views
 		$this->header();

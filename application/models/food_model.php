@@ -5,29 +5,29 @@ class Food_model extends CI_Model {
 	public static $INACTIVE_FOOD = 0;
     public static $ACTIVE_FOOD = 1;
 	
-	// cutoff time grace period
-	public static $CUTOFF_GRACE_MIN = 15;
+	// max time in hours to be considered a rush item
+	public static $MAX_RUSH_HOURS = 1.0;
 	
 	/**
 	 * For a given $categoryId, fetch all the foods with its pictures up to $limit
 	 * Fetch also its total number of orders and its aggregate rating
 	 *
 	 * @param $filters:
-	 *    orderDateTime => DateTime
+	 *    is_rush		=> bool
 	 *    vendor_id     => int
 	 */
 	public function getActiveFoodsAndVendorAndOrdersAndRatingWithPicturesForCategory(
 		$categoryId, $limit, array $filters){
 		
 		// sort through filters
-		$orderDateTime = isset($filters["orderDateTime"])?$filters["orderDateTime"]:NULL;
+		$is_rush = isset($filters["is_rush"])?$filters["is_rush"]:false;
 		$vendor_id = isset($filters["vendor_id"])?$filters["vendor_id"]:NULL;
 		
 		// base query
 		$query_str = '
 			select 
 				f.id food_id, f.name food_name, f.alternate_name food_alt_name, f.price food_price,
-				u.start_time, u.end_time,
+				u.is_open,
 				p.path pic_path,
 				orders.total total_orders,
 				review.rating,
@@ -56,11 +56,10 @@ class Food_model extends CI_Model {
 				and f.status = ?
 				and u.status = ?';
 				
-		// filter cut-off time
-		if ($orderDateTime != NULL){
-			$query_str .= ' and u.start_time <= ? 
-				and u.end_time >= ?
-				and (u.return_date is null or u.return_date < ?)';
+		// filter out non-rush
+		if ($is_rush){
+			$query_str .= ' and f.prep_time_hours <= ?
+				and u.is_open = 1';
 		}
 		
 		// filter user
@@ -76,10 +75,8 @@ class Food_model extends CI_Model {
 			Food_model::$ACTIVE_FOOD, 
 			User_model::$CERTIFIED_VENDOR
 		);
-		if ($orderDateTime != NULL){
-			$bindings[] = $orderDateTime->format("H:i:s");
-			$bindings[] = $orderDateTime->format("H:i:s");
-			$bindings[] = $orderDateTime->format(DateTime::ISO8601);
+		if ($is_rush){
+			$bindings[] = self::$MAX_RUSH_HOURS;
 		}
 		if ($vendor_id != NULL){
 			$bindings[] = $vendor_id;
@@ -104,7 +101,7 @@ class Food_model extends CI_Model {
 			select 
 				f.name as food_name, f.price, f.descr, f.ingredients, f.health_benefits,
 				u.id as user_id, u.name as user_name, u.email, u.phone, u.return_date,
-				u.start_time, u.end_time
+				u.is_open
 			from food f
 			left join user u
 			on u.id = f.user_id

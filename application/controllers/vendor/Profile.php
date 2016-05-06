@@ -20,6 +20,7 @@ class Profile extends Yumbox_Controller {
 		
 		// is this my profile?
 		$my_id = $this->login_util->getUserId();
+		
 		if ($my_id !== false && $my_id == $user_id){
 			// my profile
 			$myprofile = true;
@@ -28,7 +29,7 @@ class Profile extends Yumbox_Controller {
 		}
 		
 		// get food data
-		$categories = $this->food_category_model->getAllActiveCategories(NULL, $user->id);
+		$categories = $this->food_category_model->getAllActiveCategories(false, $user->id);
 		$foods = array();
 		foreach ($categories as $category){
 			$foods[$category->id] = $this->food_model->
@@ -46,18 +47,18 @@ class Profile extends Yumbox_Controller {
 		$data['is_my_profile'] = $myprofile;
 		$data['user_name'] = $user->name;
 		$data['user_descr'] = $user->descr;
+		$data['is_open'] = $user->is_open;
 		$data['empty_string'] = $this->lang->line("empty_kitchen");
 		$data['foods'] = $foods;
 		$data['categories'] = $categories;
 		$data['my_id'] = $my_id;
 		$data['num_followers'] = $num_followers;
-		$data['start_time'] = strtotime($user->start_time);
-		$data['end_time'] = strtotime($user->end_time);
 		
 		// load view
 		$this->header();
 		$this->navigation();
 		$this->load->view("vendor/profile", $data);
+		$this->load->view("customer/menu", $data);
 		$this->footer();
 	}
 
