@@ -99,7 +99,7 @@ class Food_model extends CI_Model {
 	public function getFoodAndVendorForFoodId($food_id){
 		$query = $this->db->query('
 			select 
-				f.name as food_name, f.price, f.descr, f.ingredients, f.health_benefits,
+				f.name as food_name, f.alternate_name, f.price, f.descr, f.ingredients, f.health_benefits,
 				u.id as user_id, u.name as user_name, u.email, u.phone, u.return_date,
 				u.is_open
 			from food f

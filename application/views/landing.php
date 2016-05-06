@@ -1,9 +1,10 @@
 <div id="landing_main">
 	<?php echo $nav_content?>
+	
+	<div id="mobile_detector"></div>
 
 	<section id="featured_dishes">
-		<div id="featured_left" class="featured_arrow"><</div>
-		<div class="button_parent rush" >
+		<div class="button_parent" id="rush_dish">
 			<span style="background-image: url('<?php echo $rush_food_pic?>')"></span>
 			<a href="/menu/item/<?php echo $rush_food_id ?>" class="button">
 				Featured Rush Pick
@@ -12,7 +13,7 @@
 				<p><?php echo $rush_food_descr?></p>
 			</a>
 		</div>
-		<div class="button_parent explore">
+		<div class="button_parent" id="explore_dish">
 			<span style="background-image: url('<?php echo $explore_food_pic?>')"></span>
 			<a href="/menu/item/<?php echo $explore_food_id ?>" class="button">
 				Featured Explore Pick
@@ -21,7 +22,6 @@
 				<p><?php echo $explore_food_descr?></p>
 			</a>
 		</div>
-		<div id="featured_right" class="featured_arrow">></div>
 	</section>
 	
 	<section id="menu_mega_selection">
@@ -64,3 +64,29 @@
 		<p>Jobs: jobs@sample.ca</p>
 	</div>
 </section>
+
+
+<script>
+	// execute after DOM is fully loaded
+	$(document).ready(function(){
+		// landing page gallery
+		var timerId = setInterval(function() {
+			if ($('#rush_dish').is(':visible') && !$('#explore_dish').is(':visible')){
+				$('#rush_dish').hide();
+				$('#explore_dish').css('display', 'flex');
+				
+			} else if (!$('#rush_dish').is(':visible') && $('#explore_dish').is(':visible')){
+				$('#rush_dish').css('display', 'flex');
+				$('#explore_dish').hide();
+			}
+		}, 10000);
+	});
+	
+	// window resize handler to support gallery auto switching
+	$(window).resize(function(){
+		if (!$('#mobile_detector').is(':visible')){
+			$('#rush_dish').removeAttr('style');
+			$('#explore_dish').removeAttr('style');
+		}
+	});
+</script>

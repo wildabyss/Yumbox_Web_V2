@@ -2,6 +2,12 @@
 	height: 100vh;
 	display: flex;
 	flex-direction: column;
+	
+	#mobile_detector{
+		height: 0;
+		width: 0;
+		display: none;
+	}
 }
 
 #featured_dishes{
@@ -142,13 +148,17 @@ div.about_text{
 	#featured_dishes{
 		position: relative;
 		
-		.rush{
+		#rush_dish{
 			width: 100%;
 		}
 		
-		.explore{
+		#explore_dish{
 			display: none;
 		}
+	}
+	
+	#mobile_detector{
+		display: block;
 	}
 }
 
@@ -158,7 +168,7 @@ div.about_text{
 			width: 100%;
 		}
 	}
-	
+
 	#menu_mega_selection{
 		display: flex;
 		flex-direction: column;

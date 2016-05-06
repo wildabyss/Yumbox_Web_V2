@@ -425,6 +425,12 @@ nav ul#mobile_user_menu a.logo {
   flex-direction: column;
 }
 
+#landing_main #mobile_detector {
+  height: 0;
+  width: 0;
+  display: none;
+}
+
 #featured_dishes {
   display: flex;
   width: 100%;
@@ -552,11 +558,14 @@ div.about_text h1 {
   #featured_dishes {
     position: relative;
   }
-  #featured_dishes .rush {
+  #featured_dishes #rush_dish {
     width: 100%;
   }
-  #featured_dishes .explore {
+  #featured_dishes #explore_dish {
     display: none;
+  }
+  #mobile_detector {
+    display: block;
   }
 }
 
@@ -747,6 +756,16 @@ input#search {
     margin-top: 5px;
     margin-bottom: 5px;
   }
+}
+
+#food_detail h1 {
+  text-align: center;
+  padding-bottom: 5px;
+  border-bottom: solid 1px #b5b3ac;
+}
+
+#food_detail h2 {
+  text-align: center;
 }
 
 .login_button_wrapper a {
