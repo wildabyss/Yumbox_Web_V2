@@ -3,7 +3,8 @@
 	flex-direction: row;
 	
 	.pic_wrapper{
-		float: left;
+		width: 200px;
+		overflow-y: auto;
 		
 		#profile_pic{
 			display: block;
@@ -29,8 +30,6 @@
 	.intro_wrapper{
 		flex: 1;
 		padding-left: 40px;
-		//display: flex;
-		//justify-content: center;
 		
 		h1{
 			margin-top: 10px;
@@ -45,7 +44,26 @@
 	}
 }
 
-#profile_menu_listing{
-	margin-top: 20px;
-
+@media (max-width: 600px){
+	#profile_intro{
+		display: block;
+		
+		.pic_wrapper{
+			float: none;
+			
+			margin: 0 auto;
+		}
+		
+		.intro_wrapper{
+			padding: 0;
+			
+			h1{
+				text-align: center;
+			}
+			
+			h3{
+				text-align: center;
+			}
+		}
+	}
 }

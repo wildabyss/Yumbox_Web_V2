@@ -33,25 +33,20 @@ class Profile extends Yumbox_Controller {
 		}
 		
 		// get food data
-		$categories = $this->food_category_model->getAllActiveCategories($filters);
-		$foods = array();
-		foreach ($categories as $category){
-			$foods[$category->id] = $this->food_model->
-				getActiveFoodsAndVendorAndOrdersAndRatingWithPicturesForCategory($category->id, self::$MAX_RESULTS, $filters);
+		$foods = $this->food_model->
+			getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_RESULTS, $filters);
+		foreach ($foods as $food){
+			$categories[$food->food_id] = $this->food_category_model->getAllCategoriesForFood($food->food_id);
+			
+			// massage food data for display
+			if ($food->total_orders=="")
+				$food->total_orders=0;
+			
+			$food->prep_time = prepTimeForDisplay($food->prep_time);
 		}
 		
 		// get followers
 		$num_followers = $this->user_follow_model->getNumberOfActiveFollowersForUser($user_id);
-		
-		// massage food data for display
-		foreach ($foods as $cat_id=>$foods_for_cat){
-			foreach ($foods_for_cat as $food){
-				if ($food->total_orders=="")
-					$food->total_orders=0;
-				
-				$food->prep_time = prepTimeForDisplay($food->prep_time);
-			}
-		}
 		
 		// bind data
 		$data['is_my_profile'] = $myprofile;
@@ -66,7 +61,7 @@ class Profile extends Yumbox_Controller {
 		$this->header();
 		$this->navigation();
 		$this->load->view("vendor/profile", $data);
-		$this->load->view("customer/menu", $data);
+		$this->load->view("vendor/menu", $data);
 		$this->footer();
 	}
 

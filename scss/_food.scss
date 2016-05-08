@@ -1,19 +1,33 @@
 #food_detail{
-	h1{
+	.center{
 		text-align: center;
+	}
+	
+	.title{
 		padding-bottom: 5px;
 		border-bottom: solid 1px $darkGrey;
 		margin: 5px 0 5px 0;
 	}
 	
-	h2{
-		text-align: center;
-		padding-bottom: 5px;
-		border-bottom: solid 1px $darkGrey;
+	.tight_cluster{
+		max-width: 900px;
+		margin: 0 auto;
 	}
 	
-	h3{
-		text-align: center;
+	.order_info{
+		display: flex;
+		align-items: center;
+		
+		.price{
+			flex: 1;
+			text-align: right;
+			margin-right: 20px;
+		}
+		
+		#add_to_order{
+			display: block;
+			height: 32px;
+		}
 	}
 	
 	ul#food_detail_gallery{
@@ -39,6 +53,17 @@
 			background-size: cover;
 			background-image: url('/imgs/image-not-available.gif');
 			border: solid 1px $almostBlack;
+		}
+	}
+	
+	.about_dish{
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		
+		.about_dish_section{
+			flex: 1;
+			min-width: 400px;
 		}
 	}
 }

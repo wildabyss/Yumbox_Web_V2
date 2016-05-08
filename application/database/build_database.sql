@@ -365,13 +365,37 @@ begin
     from food_review r
     where
 		r.food_id = food_id
-	group by r.food_id;
+	group by 
+		r.food_id;
     
     if (average is null) then
 		set average = 0;
 	end if;
     
     return average;
+end//
+delimiter ;
+
+
+drop function if exists total_orders;
+delimiter //
+create function total_orders(food_id bigint unsigned)
+returns int not deterministic
+begin
+	declare total int;
+    
+    select sum(o.quantity) into total
+    from order_item o
+    where
+		o.food_id = food_id
+	group by
+		o.food_id;
+        
+	if (total is null) then
+		set total = 0;
+	end if;
+    
+    return total;
 end//
 delimiter ;
 

@@ -408,6 +408,22 @@ nav ul#mobile_user_menu a.logo {
   font-size: 1.5rem;
 }
 
+.ui-state-default {
+  border-color: #B3CCC8;
+}
+
+.ui-state-active {
+  background-color: #B3CCC8;
+}
+
+.ui-state-hover {
+  background-color: #B3CCC8;
+}
+
+.ui-state-focus {
+  background-color: #B3CCC8;
+}
+
 .rush .ui-state-default {
   border-color: #F5BDA3;
 }
@@ -732,7 +748,7 @@ div.about_text h1 {
 }
 
 #menu_listing .food_list_parent {
-  max-width: calc(290px*4);
+  max-width: calc(276px*4);
   margin: 0 auto;
   overflow: auto;
 }
@@ -743,18 +759,18 @@ div.about_text h1 {
   border-bottom: solid 1px #b5b3ac;
 }
 
-#menu_listing .food_list_parent ul.food_list {
+#menu_listing ul.food_list {
   padding: 0;
 }
 
-#menu_listing .food_list_parent ul.food_list li {
+#menu_listing ul.food_list li {
   float: left;
   list-style: none;
   text-align: left;
-  margin: 0 20px;
+  margin: 20px 20px;
 }
 
-#menu_listing .food_list_parent ul.food_list .food_pic {
+#menu_listing ul.food_list .food_pic {
   display: inline-block;
   width: 220px;
   height: 220px;
@@ -765,44 +781,44 @@ div.about_text h1 {
   border: solid 1px #251F1E;
 }
 
-#menu_listing .food_list_parent ul.food_list h3 {
+#menu_listing ul.food_list h3 {
   display: inline-block;
   margin-bottom: 5px;
 }
 
-#menu_listing .food_list_parent ul.food_list .alt_name {
+#menu_listing ul.food_list .alt_name {
   display: block;
 }
 
-#menu_listing .food_list_parent ul.food_list .alt_name h3 {
+#menu_listing ul.food_list .alt_name h3 {
   margin-top: 2px;
   margin-bottom: 2px;
 }
 
-#menu_listing .food_list_parent ul.food_list .food_price {
+#menu_listing ul.food_list .food_price {
   display: block;
   float: right;
 }
 
-#menu_listing .food_list_parent ul.food_list .food_maker {
+#menu_listing ul.food_list .food_maker {
   display: block;
 }
 
-#menu_listing .food_list_parent ul.food_list .order_rating_time_container {
+#menu_listing ul.food_list .order_rating_time_container {
   display: flex;
   flex-direction: row;
 }
 
-#menu_listing .food_list_parent ul.food_list .order_rating_time_container span {
+#menu_listing ul.food_list .order_rating_time_container span {
   flex: 1;
 }
 
-#menu_listing .food_list_parent ul.food_list .order_rating_time_container .rating {
+#menu_listing ul.food_list .order_rating_time_container .rating {
   text-align: center;
   flex: 1;
 }
 
-#menu_listing .food_list_parent ul.food_list .order_rating_time_container .prep_time {
+#menu_listing ul.food_list .order_rating_time_container .prep_time {
   text-align: right;
 }
 
@@ -843,21 +859,35 @@ div.about_text h1 {
   }
 }
 
-#food_detail h1 {
+#food_detail .center {
   text-align: center;
+}
+
+#food_detail .title {
   padding-bottom: 5px;
   border-bottom: solid 1px #b5b3ac;
   margin: 5px 0 5px 0;
 }
 
-#food_detail h2 {
-  text-align: center;
-  padding-bottom: 5px;
-  border-bottom: solid 1px #b5b3ac;
+#food_detail .tight_cluster {
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-#food_detail h3 {
-  text-align: center;
+#food_detail .order_info {
+  display: flex;
+  align-items: center;
+}
+
+#food_detail .order_info .price {
+  flex: 1;
+  text-align: right;
+  margin-right: 20px;
+}
+
+#food_detail .order_info #add_to_order {
+  display: block;
+  height: 32px;
 }
 
 #food_detail ul#food_detail_gallery {
@@ -883,6 +913,17 @@ div.about_text h1 {
   background-size: cover;
   background-image: url("/imgs/image-not-available.gif");
   border: solid 1px #251F1E;
+}
+
+#food_detail .about_dish {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+#food_detail .about_dish .about_dish_section {
+  flex: 1;
+  min-width: 400px;
 }
 
 @media (max-width: 900px) {
@@ -931,7 +972,8 @@ div.about_text h1 {
 }
 
 #profile_intro .pic_wrapper {
-  float: left;
+  width: 200px;
+  overflow-y: auto;
 }
 
 #profile_intro .pic_wrapper #profile_pic {
@@ -969,6 +1011,21 @@ div.about_text h1 {
   color: #991f00;
 }
 
-#profile_menu_listing {
-  margin-top: 20px;
+@media (max-width: 600px) {
+  #profile_intro {
+    display: block;
+  }
+  #profile_intro .pic_wrapper {
+    float: none;
+    margin: 0 auto;
+  }
+  #profile_intro .intro_wrapper {
+    padding: 0;
+  }
+  #profile_intro .intro_wrapper h1 {
+    text-align: center;
+  }
+  #profile_intro .intro_wrapper h3 {
+    text-align: center;
+  }
 }

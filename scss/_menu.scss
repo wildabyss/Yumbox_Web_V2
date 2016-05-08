@@ -122,7 +122,7 @@
 	}
 
 	.food_list_parent{
-		max-width: calc(290px*4);
+		max-width: calc(276px*4);
 		margin: 0 auto;
 		overflow: auto;
 		
@@ -131,67 +131,67 @@
 			padding-bottom: 2px;
 			border-bottom: solid 1px $darkGrey;
 		}
+	}
+	
+	ul.food_list{
+		padding: 0;
 		
-		ul.food_list{
-			padding: 0;
+		li{
+			float: left;
+			list-style: none;
+			text-align: left;
 			
-			li{
-				float: left;
-				list-style: none;
-				text-align: left;
-				
-				margin: 0 20px;
-			}
+			margin: 20px 20px;
+		}
+		
+		.food_pic{
+			display: inline-block;
+			width: 220px;
+			height: 220px;
 			
-			.food_pic{
-				display: inline-block;
-				width: 220px;
-				height: 220px;
-				
-				background-position: center;
-				background-repeat: no-repeat;
-				background-size: cover;
-				background-image: url('/imgs/image-not-available.gif');
-				border: solid 1px $almostBlack;
-			}
-			
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-image: url('/imgs/image-not-available.gif');
+			border: solid 1px $almostBlack;
+		}
+		
+		h3{
+			display: inline-block;
+			margin-bottom: 5px;
+		}
+		
+		.alt_name{
+			display: block;
 			h3{
-				display: inline-block;
-				margin-bottom: 5px;
+				margin-top: 2px;
+				margin-bottom: 2px;
 			}
+		}
+		
+		.food_price{
+			display: block;
+			float: right;
+			//font-size: 1.4rem;
+		}
+		
+		.food_maker {
+			display: block;
+		}
+		
+		.order_rating_time_container{
+			display: flex;
+			flex-direction: row;
 			
-			.alt_name{
-				display: block;
-				h3{
-					margin-top: 2px;
-					margin-bottom: 2px;
-				}
+			span{
+				flex: 1;
 			}
-			
-			.food_price{
-				display: block;
-				float: right;
-				//font-size: 1.4rem;
+			.rating{
+				text-align: center;
+				flex: 1;
 			}
-			
-			.food_maker {
-				display: block;
-			}
-			
-			.order_rating_time_container{
-				display: flex;
-				flex-direction: row;
-				
-				span{
-					flex: 1;
-				}
-				.rating{
-					text-align: center;
-					flex: 1;
-				}
-				.prep_time{
-					text-align: right;
-				}
+			.prep_time{
+				text-align: right;
 			}
 		}
 	}

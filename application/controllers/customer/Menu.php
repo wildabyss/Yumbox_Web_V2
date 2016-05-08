@@ -56,27 +56,20 @@ class Menu extends Yumbox_Controller {
 		// search for foods with the chosen categories
 		$foods = array();
 		if (count($chosen_categories)==0){
-			// show everything
-			
-			// get all categories
+			// show all categories
 			$categories = $this->food_category_model->getAllActiveCategories($filters);
-			
-			// get all foods
-			foreach ($categories as $category){
-				$foods[$category->id] = $this->food_model->
-					getActiveFoodsAndVendorAndOrdersAndRatingWithPicturesForCategory($category->id, self::$MAX_RESULTS, $filters);
-			}
 		} else {
-			// show selected
-			
-			// get all related categories
+			// show selected categories
 			$categories = $this->food_category_model->getAllActiveRelatedCategories($chosen_categories, $filters);
+		}
 		
-			// get all foods
-			foreach ($categories as $category){
-				$foods[$category->id] = $this->food_model->
-					getActiveFoodsAndVendorAndOrdersAndRatingWithPicturesForCategory($category->id, self::$MAX_RESULTS, $filters);
-			}
+		// get all foods for each category
+		foreach ($categories as $category){
+			$filters_food = $filters;
+			$filters_food["category_id"] = $category->id;
+			
+			$foods[$category->id] = $this->food_model->
+				getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_RESULTS, $filters_food);
 		}
 		
 		// array to be returned

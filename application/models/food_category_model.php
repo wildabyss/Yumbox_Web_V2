@@ -17,6 +17,15 @@ class Food_category_model extends CI_Model {
 	
 	/*
 	 * Fetch all categories that have associations with the provided categories
+	 *
+	 * @param $filters:
+	 *    is_rush		=> bool
+	 *    can_deliver   => bool
+	 *    vendor_id     => int
+	 *    min_rating	=> int
+	 *    min_price     => float
+	 *    max_price     => float
+	 *    max_time      => float
 	 */
 	public function getAllActiveRelatedCategories(array $category_ids, array $filters){
 		// sort through filters
@@ -96,8 +105,15 @@ class Food_category_model extends CI_Model {
 	
 	/**
 	 * Fetch all active categories
-	 * @param DateTime $orderDateTime filter with datetime cutoff
-	 * @param $user_id filter with foods belonging to user_id
+	 *
+	 * @param $filters:
+	 *    is_rush		=> bool
+	 *    can_deliver   => bool
+	 *    vendor_id     => int
+	 *    min_rating	=> int
+	 *    min_price     => float
+	 *    max_price     => float
+	 *    max_time      => float
 	 */
     public function getAllActiveCategories(array $filters){
 		// sort through filters
@@ -165,6 +181,24 @@ class Food_category_model extends CI_Model {
 		
 		// perform database query
 		$query = $this->db->query($query_str, $bindings);
+		return $query->result();
+	}
+	
+	
+	/**
+	 * Fetch all food_categories for the given $food_id
+	 */
+	public function getAllCategoriesForFood($food_id){
+		$query = $this->db->query('
+			select c.id, c.name
+			from
+				food_category c
+			left join
+				food_category_assoc a
+			on
+				a.food_category_id = c.id
+			where
+				a.food_id = ?', array($food_id));
 		return $query->result();
 	}
 }

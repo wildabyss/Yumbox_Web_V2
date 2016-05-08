@@ -191,6 +191,19 @@ nav{
 	font-size: 1.5rem;
 }
 
+.ui-state-default{
+	border-color: $defaultWidgetColor;
+}
+.ui-state-active{
+	background-color: $defaultWidgetColor;
+}
+.ui-state-hover{
+	background-color: $defaultWidgetColor;
+}
+.ui-state-focus{
+	background-color: $defaultWidgetColor;
+}
+
 .rush{
 	.ui-state-default{
 		border-color: $rush_selected;

@@ -9,12 +9,16 @@
 		</p>
 	</div>
 	<div class="intro_wrapper">
-		<h1><?php echo $user_name?></h1>
+		<h1><?php echo $user->name?></h1>
 		<?php if (!$is_my_profile && !$user->is_open):?>
 		<h3 class="closed">KITCHEN IS CLOSED</h3>
 		<?php endif?>
 		<h3>ABOUT ME</h3>
-		<p><?php echo $user->descr?></p>
+		<?php if ($user->descr == ""):?>
+			<p>Nothing interesting to say about this vendor</p>
+		<?php else:?>
+			<p><?php echo $user->descr?></p>
+		<?php endif?>
 	</div>
 </section>
 
