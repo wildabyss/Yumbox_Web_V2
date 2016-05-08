@@ -1,19 +1,13 @@
 <?php
 
 /**
- * Use cURL to save a remote image to a local file
- * @param unknown $url URL for image retrieval
- * @param unknown $saveTo Location to save the image
+ * Translate the preparation time returned from the database to
+ * a format to be displayed in the view
  */
-function save_remote_resource($url, $saveTo) {
-	// use cURL
-	$ch = curl_init ($url);
-	curl_setopt($ch, CURLOPT_HEADER, 0);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
-	curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
-	$data = curl_exec($ch);
-	curl_close($ch);
-	
-	file_put_contents($saveTo, $data);
+function prepTimeForDisplay($prep_time){
+	if ($prep_time <= 1){
+		return round($prep_time*60)."min";
+	} else {
+		return round($prep_time, 1)."hr";
+	}
 }

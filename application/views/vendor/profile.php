@@ -10,11 +10,11 @@
 	</div>
 	<div class="intro_wrapper">
 		<h1><?php echo $user_name?></h1>
-		<?php if (!$is_my_profile && !$is_open):?>
+		<?php if (!$is_my_profile && !$user->is_open):?>
 		<h3 class="closed">KITCHEN IS CLOSED</h3>
 		<?php endif?>
 		<h3>ABOUT ME</h3>
-		<p><?php echo $user_descr?></p>
+		<p><?php echo $user->descr?></p>
 	</div>
 </section>
 

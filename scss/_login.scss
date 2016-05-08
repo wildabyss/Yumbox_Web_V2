@@ -1,19 +1,34 @@
 // login page elements
 
-.login_button_wrapper{
-	a{
-		display: block;
-		width: 187px;
-		height: 32px;
-		background-repeat: no-repeat;
+#login_section{
+	margin: 0 auto;
+	max-width: 500px;
+	text-align: center;
+	
+	h1{
+		padding-bottom: 5px;
+		border-bottom: solid 1px $darkGrey;
 	}
 	
-	.fb_login{
-		background-image: url('/imgs/facebook_signin_base.png');
+	.login_button_wrapper{
+		margin-top: 50px;
 		
-	}
+		a{
+			display: block;
+			width: 100%;
+			height: 40px;
+			color: white;
+			line-height: 40px;
+			font-size: 1.5rem;
+			margin-bottom: 20px;
+		}
+		
+		.fb_login{
+			background-color: $facebookColor;
+		}
 
-	.google_login{
-		background-image: url('/imgs/google_signin_base.png');
+		.google_login{
+			background-color: $googleColor;
+		}
 	}
 }

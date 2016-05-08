@@ -5,6 +5,9 @@ class Profile extends Yumbox_Controller {
 	public static $MAX_RESULTS = 5;
 
 	public function id($user_id){
+		// language
+		$this->lang->load("menu");
+		
 		// csrf hash
 		$csrf = array(
 			'name' => $this->security->get_csrf_token_name(),
@@ -17,6 +20,7 @@ class Profile extends Yumbox_Controller {
 			show_404();
 		}
 		$filters["vendor_id"] = $user->id;
+		$filters["is_rush"] = false;
 		
 		// is this my profile?
 		$my_id = $this->login_util->getUserId();
@@ -29,7 +33,7 @@ class Profile extends Yumbox_Controller {
 		}
 		
 		// get food data
-		$categories = $this->food_category_model->getAllActiveCategories(false, $user->id);
+		$categories = $this->food_category_model->getAllActiveCategories($filters);
 		$foods = array();
 		foreach ($categories as $category){
 			$foods[$category->id] = $this->food_model->
@@ -39,15 +43,19 @@ class Profile extends Yumbox_Controller {
 		// get followers
 		$num_followers = $this->user_follow_model->getNumberOfActiveFollowersForUser($user_id);
 		
-		// language
-		$this->lang->load("menu");
-		
+		// massage food data for display
+		foreach ($foods as $cat_id=>$foods_for_cat){
+			foreach ($foods_for_cat as $food){
+				if ($food->total_orders=="")
+					$food->total_orders=0;
+				
+				$food->prep_time = prepTimeForDisplay($food->prep_time);
+			}
+		}
 		
 		// bind data
 		$data['is_my_profile'] = $myprofile;
-		$data['user_name'] = $user->name;
-		$data['user_descr'] = $user->descr;
-		$data['is_open'] = $user->is_open;
+		$data['user'] = $user;
 		$data['empty_string'] = $this->lang->line("empty_kitchen");
 		$data['foods'] = $foods;
 		$data['categories'] = $categories;

@@ -26,10 +26,12 @@
 								</a>
 							<?php endif ?>
 							
-							<a class="food_maker" href="/vendor/profile/id/<?php echo $food->vendor_id?>">
-								<h4><?php echo $food->vendor_name?>
-								</h4>
-							</a>
+							<?php if (!isset($is_my_profile)):?>
+								<a class="food_maker" href="/vendor/profile/id/<?php echo $food->vendor_id?>">
+									<h4><?php echo $food->vendor_name?></h4>
+								</a>
+							<?php endif?>
+							
 							<div class="order_rating_time_container">
 								<span><?php echo $food->total_orders?> orders</span>
 								

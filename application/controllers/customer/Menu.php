@@ -87,20 +87,6 @@ class Menu extends Yumbox_Controller {
 		return $ret;
 	}
 	
-	
-	/**
-	 * Translate the preparation time returned from the database to
-	 * a format to be displayed in the view
-	 */
-	protected function prepTimeForDisplay($prep_time){
-		if ($prep_time <= 1){
-			return round($prep_time*60)."min";
-		} else {
-			return round($prep_time, 1)."hr";
-		}
-	}
-	
-	
 	protected function displayMenu($is_rush, $view){
 		// load language
 		$this->lang->load("menu");
@@ -138,7 +124,7 @@ class Menu extends Yumbox_Controller {
 				if ($food->total_orders=="")
 					$food->total_orders=0;
 				
-				$food->prep_time = $this->prepTimeForDisplay($food->prep_time);
+				$food->prep_time = prepTimeForDisplay($food->prep_time);
 			}
 		}
 		
