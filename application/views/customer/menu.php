@@ -30,11 +30,14 @@
 								<h4><?php echo $food->vendor_name?>
 								</h4>
 							</a>
-							<div>
-								<span class="total_order"><?php echo $food->total_orders==""?0:$food->total_orders?> orders</span>
-								<?php if ($food->rating != ""):?>
+							<div class="order_rating_time_container">
+								<span><?php echo $food->total_orders?> orders</span>
+								
+								<?php if ($food->rating > 0):?>
 									<span class="rating">&hearts; <?php echo $food->rating?>%</span>
 								<?php endif?>
+								
+								<span class="prep_time"><?php echo $food->prep_time?></span>
 							</div>
 						</div>
 					</li>

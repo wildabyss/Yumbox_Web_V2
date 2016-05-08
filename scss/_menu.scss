@@ -48,129 +48,151 @@
 
 #menu_filter{
 	margin-top: 20px;
-}
 
-.menu_filter_container{
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
+	.menu_filter_container{
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		
+		.menu_filter_zone{
+			flex: 1;
+			padding-right: 20px;
+			min-width: 400px;
+		}
+	}
+
+	.menu_button_container{
+		margin-top: 30px;
+		text-align: center;
+
+		button{
+			margin: 0 0 10px 10px;
+			width: 170px;
+		}
+	}
 	
-	.menu_filter_zone{
-		flex: 1;
-		padding-right: 20px;
-		min-width: 300px;
+	.search_container{
+		width: 100%;
+		
+		label{
+			vertical-align: top;
+			height: 30px;
+			min-width: 110px;
+			margin-left: 10px;
+		}
+		
+		input#search {
+			margin: 0;
+			width: 80%;
+			height: 30px;
+			padding-right: 28px;
+			
+			background-image: url('/imgs/search.svg');
+			background-size: 25px 25px;
+			background-repeat: no-repeat;
+			background-position: right center;
+		}
+	}	
+
+	.filter_slider{
+		margin-left: 10px;
+		width: 80%;
+		min-width: 365px;
+	}
+
+	#menu_filter_categories{		
+		label{
+			margin: 0 0 10px 10px;
+			width: 100px;
+		}
 	}
 }
 
-.menu_button_container{
-	margin-top: 30px;
-	text-align: center;
-
-	button{
-		margin: 0 0 10px 10px;
-		width: 170px;
-	}
-}
-
-input#search {
-	width: 80%;
-	min-width: 300px;
-	
-	background-image: url('/imgs/search_large.png');
-	background-repeat: no-repeat;
-	background-position: right center;
-}
-
-.filter_slider{
-	margin-left: 10px;
-	width: 80%;
-	min-width: 365px;
-}
-
-#menu_filter_categories{
-	label{
-		margin: 0 0 10px 10px;
-		width: 100px;
-	}
-}
 
 
 // menu listing
 
 #menu_listing{
 	margin-top: 30px;
-	
-}
 
-.food_category_wrapper{
-	diplay: flex;
-	justify-content: center;
-	margin-bottom: 20px;
-}
-
-.food_list_parent{
-	max-width: calc(290px*4);
-	margin: 0 auto;
-	overflow: auto;
-	
-	h2{
-		margin-left: 20px;
-		padding-bottom: 2px;
-		border-bottom: solid 1px $darkGrey;
+	.food_category_wrapper{
+		diplay: flex;
+		justify-content: center;
+		margin-bottom: 20px;
 	}
-	
-	ul.food_list{
-		padding: 0;
+
+	.food_list_parent{
+		max-width: calc(290px*4);
+		margin: 0 auto;
+		overflow: auto;
 		
-		li{
-			float: left;
-			list-style: none;
-			text-align: left;
+		h2{
+			margin-left: 20px;
+			padding-bottom: 2px;
+			border-bottom: solid 1px $darkGrey;
+		}
+		
+		ul.food_list{
+			padding: 0;
 			
-			margin: 0 20px;
-		}
-		
-		.food_pic{
-			display: inline-block;
-			width: 220px;
-			height: 220px;
-			
-			background-position: center;
-			background-repeat: no-repeat;
-			background-size: cover;
-			background-image: url('/imgs/image-not-available.gif');
-			border: solid 1px $almostBlack;
-		}
-		
-		h3{
-			display: inline-block;
-			margin-bottom: 5px;
-		}
-		
-		.alt_name{
-			display: block;
-			h3{
-				margin-top: 2px;
-				margin-bottom: 2px;
+			li{
+				float: left;
+				list-style: none;
+				text-align: left;
+				
+				margin: 0 20px;
 			}
-		}
-		
-		.food_price{
-			display: block;
-			float: right;
-			//font-size: 1.4rem;
-		}
-		
-		.food_maker {
-			display: block;
-		}
-		
-		.total_orders{
-			float: left;
-		}
-		
-		.rating{
-			float: right;
+			
+			.food_pic{
+				display: inline-block;
+				width: 220px;
+				height: 220px;
+				
+				background-position: center;
+				background-repeat: no-repeat;
+				background-size: cover;
+				background-image: url('/imgs/image-not-available.gif');
+				border: solid 1px $almostBlack;
+			}
+			
+			h3{
+				display: inline-block;
+				margin-bottom: 5px;
+			}
+			
+			.alt_name{
+				display: block;
+				h3{
+					margin-top: 2px;
+					margin-bottom: 2px;
+				}
+			}
+			
+			.food_price{
+				display: block;
+				float: right;
+				//font-size: 1.4rem;
+			}
+			
+			.food_maker {
+				display: block;
+			}
+			
+			.order_rating_time_container{
+				display: flex;
+				flex-direction: row;
+				
+				span{
+					flex: 1;
+				}
+				.rating{
+					text-align: center;
+					flex: 1;
+				}
+				.prep_time{
+					text-align: right;
+				}
+			}
 		}
 	}
 }
@@ -179,6 +201,43 @@ input#search {
 // media query
 
 @media (max-width: 600px){
+	#menu_filter{
+		.search_container{
+			text-align: center;
+			display: flex;
+			flex-direction: row;
+			
+			input#search{
+				flex: 1;
+				width: auto;
+			}
+		}
+		
+		.menu_filter_container{
+			.menu_filter_zone{
+				padding: 0;
+				width: 100vw;
+				min-width: initial;
+			}
+		}
+		
+		input#search {
+			margin: 0 auto;
+			width: 95vw;
+			min-width: initial;
+		}
+		
+		.filter_slider{
+			margin: 0 auto;
+			width: 90vw;
+			min-width: initial;
+		}
+		
+		#menu_filter_categories{
+			text-align: center;
+		}
+	}
+	
 	#menu_mega_selection.small{
 		height: auto;
 		

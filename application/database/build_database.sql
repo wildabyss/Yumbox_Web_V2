@@ -13,6 +13,7 @@ create table user
     email varchar(255) not null,
     max_unfilled_orders mediumint unsigned not null default 10,
     is_open tinyint(1) not null default 0,
+    can_deliver tinyint(1) not null default 0,
     
 	fb_id varchar(25),
     google_id varchar(25),
@@ -302,7 +303,7 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 
 drop procedure if exists add_user;
 delimiter //
-create procedure add_user(in user_type tinyint, in name varchar(255), in email varchar(255),
+create procedure add_user(in user_type tinyint unsigned, in name varchar(255), in email varchar(255),
 	in fb_id varchar(25), in google_id varchar(25))
 begin
 	set @id = null;
@@ -335,7 +336,7 @@ delimiter ;
 
 drop procedure if exists add_user_follower;
 delimiter //
-create procedure add_user_follower(in user_id int, in vendor_id int)
+create procedure add_user_follower(in user_id int unsigned, in vendor_id int unsigned)
 begin
 	set @exist = null;
     
@@ -349,6 +350,28 @@ begin
 		insert into user_follow_assoc (user_id, vendor_id)
         values (user_id, vendor_id);
     end if;
+end//
+delimiter ;
+
+
+drop function if exists average_rating;
+delimiter //
+create function average_rating(food_id bigint unsigned) 
+returns float not deterministic
+begin
+	declare average float;
+
+    select avg(r.rating) into average
+    from food_review r
+    where
+		r.food_id = food_id
+	group by r.food_id;
+    
+    if (average is null) then
+		set average = 0;
+	end if;
+    
+    return average;
 end//
 delimiter ;
 

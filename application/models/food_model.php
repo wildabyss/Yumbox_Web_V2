@@ -5,8 +5,25 @@ class Food_model extends CI_Model {
 	public static $INACTIVE_FOOD = 0;
     public static $ACTIVE_FOOD = 1;
 	
-	// max time in hours to be considered a rush item
-	public static $MAX_RUSH_HOURS = 1.0;
+	/*
+	 * From a given filter input, translate it to hours
+	 */
+	public static function getMaxHoursForMaxTimeFilter($max_time_filter){
+		switch ($max_time_filter){
+			case 0:
+				return 0.5;
+			case 1:
+				return 1;
+			case 2:
+				return 2;
+			case 3:
+				return 4;
+			case 4:
+				return 8;
+			default:
+				return 100;		// a very large hours
+		}
+	}
 	
 	/**
 	 * For a given $categoryId, fetch all the foods with its pictures up to $limit
@@ -15,22 +32,29 @@ class Food_model extends CI_Model {
 	 * @param $filters:
 	 *    is_rush		=> bool
 	 *    vendor_id     => int
+	 *    min_rating	=> int
 	 */
 	public function getActiveFoodsAndVendorAndOrdersAndRatingWithPicturesForCategory(
 		$categoryId, $limit, array $filters){
 		
 		// sort through filters
 		$is_rush = isset($filters["is_rush"])?$filters["is_rush"]:false;
+		$can_deliver = isset($filters["can_deliver"])?$filters["can_deliver"]:false;
 		$vendor_id = isset($filters["vendor_id"])?$filters["vendor_id"]:NULL;
+		$min_rating = isset($filters["min_rating"])?$filters["min_rating"]:NULL;
+		$min_price = isset($filters["min_price"])?$filters["min_price"]:NULL;
+		$max_price = isset($filters["max_price"])?$filters["max_price"]:NULL;
+		$max_time = isset($filters["max_time"])?$filters["max_time"]:NULL;
 		
 		// base query
 		$query_str = '
 			select 
-				f.id food_id, f.name food_name, f.alternate_name food_alt_name, f.price food_price,
+				f.id food_id, f.name food_name, f.alternate_name food_alt_name, 
+				f.price food_price, f.prep_time_hours prep_time,
+				average_rating(f.id)/?*100 rating,
 				u.is_open,
 				p.path pic_path,
 				orders.total total_orders,
-				review.rating,
 				u.id vendor_id, u.name vendor_name
 			from food_category_assoc a
 			left join food f
@@ -45,23 +69,27 @@ class Food_model extends CI_Model {
 				group by o.food_id) orders
 			on
 				orders.food_id = f.id
-			left join
-				(select r.food_id, round(avg(r.rating)/?*100) rating
-				from food_review r
-				group by r.food_id) review
-			on
-				review.food_id = f.id
 			where
 				a.food_category_id = ?
 				and f.status = ?
 				and u.status = ?';
 				
-		// filter out non-rush
+		// filter out non-rush items		
 		if ($is_rush){
-			$query_str .= ' and f.prep_time_hours <= ?
-				and u.is_open = 1';
+			$query_str .= ' and u.is_open = 1';
+		} 
+		// filter max prep time
+		if ($max_time != NULL){
+			$query_str .= ' and f.prep_time_hours <= ?';
 		}
-		
+		// filter minimum rating
+		if ($min_rating != NULL){
+			$query_str .= ' and average_rating(f.id) >= ?';
+		}
+		// filter prices
+		if ($min_price != NULL){
+			$query_str .= ' and f.price >= ? and f.price <= ?';
+		}
 		// filter user
 		if ($vendor_id != NULL){
 			$query_str .= ' and u.id = ?';
@@ -75,8 +103,15 @@ class Food_model extends CI_Model {
 			Food_model::$ACTIVE_FOOD, 
 			User_model::$CERTIFIED_VENDOR
 		);
-		if ($is_rush){
-			$bindings[] = self::$MAX_RUSH_HOURS;
+		if ($max_time != NULL){
+			$bindings[] = Food_model::getMaxHoursForMaxTimeFilter($max_time);
+		}
+		if ($min_rating != NULL){
+			$bindings[] = $min_rating;
+		}
+		if ($min_price != NULL){
+			$bindings[] = $min_price;
+			$bindings[] = $max_price;
 		}
 		if ($vendor_id != NULL){
 			$bindings[] = $vendor_id;

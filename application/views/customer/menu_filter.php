@@ -13,8 +13,12 @@
 
 <section id="menu_filter" class="<?php if ($is_rush):?>rush<?php else:?>explore<?php endif?>">
 	<form id="filter_form" action="<?php if ($is_rush):?>/menu/quickmenu<?php else:?>/menu/fullmenu<?php endif?>" method="get">
-		<input id="search" class="ui-corner-all" name="search" placeholder="e.g. burrito" 
-			value="<?php echo $search_query ?>" />
+		<div class="search_container">
+			<input id="search" name="search" placeholder="e.g. burrito" 
+				type="text" value="<?php echo $search_query ?>" />
+			<input id="can_deliver" name="can_deliver" type="checkbox" 
+				<?php if ($can_deliver):?>checked<?php endif?>/><label for="can_deliver">Can Deliver</label>
+		</div>
 		
 		<div class="menu_filter_container">
 			<div class="menu_filter_zone">
@@ -27,19 +31,17 @@
 						value="<?php echo $price_filter['max']?>"/>
 				</div>
 				<div>
-					<p>Rating: <span id="rating_slider_output"></span></p>
+					<p>Minimum rating: <span id="rating_slider_output"></span></p>
 					<div class="filter_slider" id="rating_slider"></div>
 					<input type="hidden" name="rating_min" id="rating_filter_min"
-						value="<?php echo $rating_filter['min']?>"/>
-					<input type="hidden" name="rating_max" id="rating_filter_max"
-						value="<?php echo $rating_filter['max']?>"/>
+						value="<?php echo $rating_filter?>"/>
 				</div>
-				<!--<div>
-					<p>Turnaround time: <span id="time_slider_output"></span></p>
+				<div>
+					<p>Max prep time: <span id="time_slider_output"></span></p>
 					<div class="filter_slider" id="time_slider"></div>
 					<input type="hidden" name="time_max" id="time_filter_max"
 						value="<?php echo $time_filter?>"/>
-				</div>-->
+				</div>
 			</div>
 			
 			<div class="menu_filter_zone">
@@ -85,22 +87,19 @@
 		// update rating slider's equivalent output
 		var updateRatingSliderOutput = function(ui){
 			if (ui==null){
-				var low = $('#rating_slider').slider('values', 0);
-				var high = $('#rating_slider').slider('values', 1);
+				var low = $('#rating_slider').slider('value');
 			} else {
-				var low = ui.values[0];
-				var high = ui.values[1];
+				var low = ui.value;
 			}
 			var max = $('#rating_slider').slider('option', 'max');
 			
-			var output = '&hearts; '+low/max*100+'% - ';
-			output += high/max*100+'%';
+			var output = '&hearts; '+low/max*100+'%';
 			
 			$('#rating_slider_output').html(output);
 		}
 		
 		// update turnaround time slider's equivalent output
-		/*var updateTimeSliderOutput = function(ui){
+		var updateTimeSliderOutput = function(ui){
 			if (ui==null){
 				var high = $('#time_slider').slider('value');
 			} else {
@@ -111,19 +110,19 @@
 			var output = '';
 			switch (high){
 				case 0:
-					output = '<30min';
+					output = '30min';
 					break;
 				case 1:
-					output = '30min-1hr';
+					output = '1hr';
 					break;
 				case 2:
-					output = '1hr-2hr';
+					output = '2hr';
 					break;
 				case 3:
-					output = '2hr-4hr';
+					output = '4hr';
 					break;
 				case 4:
-					output = '4hr-8hr';
+					output = '8hr';
 					break;
 				case 5:
 					output = '>8hr';
@@ -131,7 +130,7 @@
 			}
 			
 			$('#time_slider_output').html(output);
-		}*/
+		}
 	
 		// range sliders
 		$( "#price_slider" ).slider({
@@ -147,18 +146,16 @@
 			}
 		});
 		$( "#rating_slider" ).slider({
-			range: true,
 			min: 0,
 			max: 5,
 			step: 1,
-			values: [$('#rating_filter_min').val(), $('#rating_filter_max').val()],
+			value: $('#rating_filter_min').val(),
 			slide: function(ev, ui){
-				$('#rating_filter_min').val(ui.values[0]);
-				$('#rating_filter_max').val(ui.values[1]);
+				$('#rating_filter_min').val(ui.value);
 				updateRatingSliderOutput(ui);
 			}
 		});
-		/*$( "#time_slider" ).slider({
+		$( "#time_slider" ).slider({
 			min: 0,
 			max: 5,
 			step: 1,
@@ -167,15 +164,18 @@
 				$('#time_filter_max').val(ui.value);
 				updateTimeSliderOutput(ui);
 			}
-		});*/
+		});
 		
 		// initially update the ranged outputs
 		updatePriceSliderOutput();
 		updateRatingSliderOutput();
-		//updateTimeSliderOutput();
+		updateTimeSliderOutput();
+		
+		// can deliver checkbox
+		$("#can_deliver").button();
 		
 		// category filter checkboxes
-		$( "#menu_filter_categories" ).buttonset();
+		$("#menu_filter_categories").buttonset();
 		
 		// submit buttons
 		var filter_button_click = function(e, is_list){

@@ -12,7 +12,7 @@ class Menu extends Yumbox_Controller {
 	 * @return an array of data to be passed to view
 	 */
 	protected function dataForMenuFilter($is_rush, $is_list, $search_query, 
-		array $chosen_categories, array $price_filter, array $rating_filter){
+		array $chosen_categories, $can_deliver, array $price_filter, $rating_filter, $time_filter){
 		// load language
 		$this->lang->load("landing");
 		
@@ -28,10 +28,11 @@ class Menu extends Yumbox_Controller {
 		$data['is_rush'] = $is_rush;
 		$data['is_list'] = $is_list;
 		$data['chosen_categories'] = $chosen_categories;
+		$data['can_deliver'] = $can_deliver;
 		$data['search_query'] = $search_query;
 		$data['price_filter'] = $price_filter;
 		$data['rating_filter'] = $rating_filter;
-		//$data['time_filter'] = $time_filter;
+		$data['time_filter'] = $time_filter;
 		
 		return $data;
 	}
@@ -42,10 +43,15 @@ class Menu extends Yumbox_Controller {
 	 * @return: an array with "foods" => array of foods and "categories" => array of categories
 	 */
 	protected function dataForFoodListing($is_rush, $search_query, 
-		array $chosen_categories, array $price_filter, array $rating_filter){
+		array $chosen_categories, $can_deliver, array $price_filter, $rating_filter, $time_filter){
 		// filters
 		$filters = array();
 		$filters["is_rush"] = $is_rush;
+		$filters["can_deliver"] = $can_deliver;
+		$filters["min_rating"] = $rating_filter;
+		$filters["min_price"] = $price_filter["min"];
+		$filters["max_price"] = $price_filter["max"];
+		$filters["max_time"] = $time_filter;
 		
 		// search for foods with the chosen categories
 		$foods = array();
@@ -53,7 +59,7 @@ class Menu extends Yumbox_Controller {
 			// show everything
 			
 			// get all categories
-			$categories = $this->food_category_model->getAllActiveCategories($is_rush);
+			$categories = $this->food_category_model->getAllActiveCategories($filters);
 			
 			// get all foods
 			foreach ($categories as $category){
@@ -64,7 +70,7 @@ class Menu extends Yumbox_Controller {
 			// show selected
 			
 			// get all related categories
-			$categories = $this->food_category_model->getAllActiveRelatedCategories($chosen_categories, $is_rush);
+			$categories = $this->food_category_model->getAllActiveRelatedCategories($chosen_categories, $filters);
 		
 			// get all foods
 			foreach ($categories as $category){
@@ -81,7 +87,21 @@ class Menu extends Yumbox_Controller {
 		return $ret;
 	}
 	
-	public function fullmenu($view="list"){
+	
+	/**
+	 * Translate the preparation time returned from the database to
+	 * a format to be displayed in the view
+	 */
+	protected function prepTimeForDisplay($prep_time){
+		if ($prep_time <= 1){
+			return round($prep_time*60)."min";
+		} else {
+			return round($prep_time, 1)."hr";
+		}
+	}
+	
+	
+	protected function displayMenu($is_rush, $view){
 		// load language
 		$this->lang->load("menu");
 		
@@ -90,15 +110,13 @@ class Menu extends Yumbox_Controller {
 		$chosen_categories = $this->input->get('category', true);
 		if ($chosen_categories==NULL)
 			$chosen_categories = array();
+		$can_deliver = $this->input->get('can_deliver', true)==""?false:$this->input->get('can_deliver', true);
 		$price_filter = array(
 			"min"=>$this->input->get('price_min', true)==""?0:$this->input->get('price_min', true), 
 			"max"=>$this->input->get('price_max', true)==""?50:$this->input->get('price_max', true)
 		);
-		$rating_filter = array(
-			"min"=>$this->input->get('rating_min', true)==""?0:$this->input->get('rating_min', true), 
-			"max"=>$this->input->get('rating_max', true)==""?5:$this->input->get('rating_max', true)
-		);
-		//$time_filter = $this->input->get('time_max', true)==""?5:$this->input->get('time_max', true);
+		$rating_filter = $this->input->get('rating_min', true)==""?0:$this->input->get('rating_min', true);
+		$time_filter = $this->input->get('time_max', true)==""?5:$this->input->get('time_max', true);
 		
 		// fetch data
 		if ($view==self::$MAP_VIEW){
@@ -108,17 +126,25 @@ class Menu extends Yumbox_Controller {
 		} else {
 			// list view
 			
-			$foods_and_cats = $this->dataForFoodListing(false, $search_query, $chosen_categories, $price_filter, $rating_filter);
+			$foods_and_cats = $this->dataForFoodListing($is_rush, $search_query, $chosen_categories, 
+				$can_deliver, $price_filter, $rating_filter, $time_filter);
 			$foods = $foods_and_cats["foods"];
 			$categories = $foods_and_cats["categories"];
 		}
 		
-		// language
-		$this->lang->load("menu");
+		// massage food data for display
+		foreach ($foods as $cat_id=>$foods_for_cat){
+			foreach ($foods_for_cat as $food){
+				if ($food->total_orders=="")
+					$food->total_orders=0;
+				
+				$food->prep_time = $this->prepTimeForDisplay($food->prep_time);
+			}
+		}
 		
 		// bind to data
-		$filter_data = $this->dataForMenuFilter(false, $view!=self::$MAP_VIEW, $search_query, 
-			$chosen_categories, $price_filter, $rating_filter);
+		$filter_data = $this->dataForMenuFilter($is_rush, $view!=self::$MAP_VIEW, $search_query, 
+			$chosen_categories, $can_deliver, $price_filter, $rating_filter, $time_filter);
 		$data['foods'] = $foods;
 		$data['categories'] = $categories;
 		$data['empty_string'] = $this->lang->line("no_result");
@@ -134,54 +160,13 @@ class Menu extends Yumbox_Controller {
 		$this->footer();
 	}
 	
+	
+	public function fullmenu($view="list"){
+		$this->displayMenu(false, $view);
+	}
+	
 	public function quickmenu($view="map"){
-		// load language
-		$this->lang->load("menu");
-		
-		// get user inputs
-		$search_query = $this->input->get('search', true);
-		$chosen_categories = $this->input->get('category', true);
-		if ($chosen_categories==NULL)
-			$chosen_categories = array();
-		$price_filter = array(
-			"min"=>$this->input->get('price_min', true)==""?0:$this->input->get('price_min', true), 
-			"max"=>$this->input->get('price_max', true)==""?50:$this->input->get('price_max', true)
-		);
-		$rating_filter = array(
-			"min"=>$this->input->get('rating_min', true)==""?0:$this->input->get('rating_min', true), 
-			"max"=>$this->input->get('rating_max', true)==""?5:$this->input->get('rating_max', true)
-		);
-		//$time_filter = $this->input->get('time_max', true)==""?5:$this->input->get('time_max', true);
-		
-		// fetch data
-		if ($view==self::$MAP_VIEW){
-			// map view
-			
-			
-		} else {
-			// list view
-			
-			$foods_and_cats = $this->dataForFoodListing(true, $search_query, $chosen_categories, $price_filter, $rating_filter);
-			$foods = $foods_and_cats["foods"];
-			$categories = $foods_and_cats["categories"];
-		}
-		
-		// bind to data
-		$filter_data = $this->dataForMenuFilter(true, $view==self::$LIST_VIEW, $search_query, 
-			$chosen_categories, $price_filter, $rating_filter);
-		$data['foods'] = $foods;
-		$data['categories'] = $categories;
-		$data['empty_string'] = $this->lang->line("no_result");
-
-		// Load views
-		$this->header();
-		$this->navigation();
-		$this->load->view("customer/menu_filter", $filter_data);
-		if ($view == self::$LIST_VIEW)
-			$this->load->view("customer/menu", $data);
-		else
-			$this->load->view("customer/map", $data);
-		$this->footer();
+		$this->displayMenu(true, $view);
 	}
 
 	public function item($food_id){

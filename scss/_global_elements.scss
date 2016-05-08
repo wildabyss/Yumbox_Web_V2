@@ -41,6 +41,14 @@ nav{
 		display: block;
 	}
 	
+	.nav_about{
+		line-height: 50px;
+		float:left;
+		margin-left: 20px;
+		
+		display: block;
+	}
+	
 	#mobile_user_menu_trigger{
 		background-image: url("/imgs/menu_burger.png");
 		background-repeat: no-repeat;
@@ -61,8 +69,21 @@ nav{
 		
 		li{
 			line-height: 50px;
-			display: inline-block;
+			display: block;
+			float: right;
 			margin: 0 10px 0 10px;
+		}
+		
+		#order_cart{
+			display: block;
+			background-image: url("/imgs/shopping_box.png");
+			background-repeat: no-repeat;
+			background-position: center;
+			background-size: 40px 40px;
+			cursor: pointer;
+			
+			height: 50px;
+			width: 50px;
 		}
 		
 		// the clickable button for showing/hiding the user menu
@@ -89,6 +110,7 @@ nav{
 		display: none;
 		
 		li{
+			float: none;
 			margin: 0;
 			height: 50px;
 			display: block;
@@ -146,15 +168,15 @@ nav{
 			display: none;
 		}
 		
+		.nav_about{
+			display: none;
+		}
+		
 		#mobile_user_menu_trigger{
 			display: block;
 		}
 		
 		ul#pc_nav_buttons{
-			li.nav_about{
-				display: none;
-			}
-			
 			li.user_menu_trigger_wrapper{
 				display:none;
 			}

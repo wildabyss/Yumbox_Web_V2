@@ -18,7 +18,16 @@ class Food_category_model extends CI_Model {
 	/*
 	 * Fetch all categories that have associations with the provided categories
 	 */
-	public function getAllActiveRelatedCategories(array $category_ids, $is_rush=false){
+	public function getAllActiveRelatedCategories(array $category_ids, array $filters){
+		// sort through filters
+		$is_rush = isset($filters["is_rush"])?$filters["is_rush"]:false;
+		$can_deliver = isset($filters["can_deliver"])?$filters["can_deliver"]:false;
+		$vendor_id = isset($filters["vendor_id"])?$filters["vendor_id"]:NULL;
+		$min_rating = isset($filters["min_rating"])?$filters["min_rating"]:NULL;
+		$min_price = isset($filters["min_price"])?$filters["min_price"]:NULL;
+		$max_price = isset($filters["max_price"])?$filters["max_price"]:NULL;
+		$max_time = isset($filters["max_time"])?$filters["max_time"]:NULL;
+		
 		// base query
 		$query_str = '
 			select distinct c.id, c.name
@@ -38,8 +47,19 @@ class Food_category_model extends CI_Model {
 					
 		// filter out non-rush items		
 		if ($is_rush){
-			$query_str .= ' and f.prep_time_hours <= ? 
-				and u.is_open = 1';
+			$query_str .= ' and u.is_open = 1';
+		} 
+		// filter max prep time
+		if ($max_time != NULL){
+			$query_str .= ' and f.prep_time_hours <= ?';
+		}
+		// filter minimum rating
+		if ($min_rating != NULL){
+			$query_str .= ' and average_rating(f.id) >= ?';
+		}
+		// filter prices
+		if ($min_price != NULL){
+			$query_str .= ' and f.price >= ? and f.price <= ?';
 		}
 					
 		$query_str .= ' and a.food_category_id in (';
@@ -58,8 +78,15 @@ class Food_category_model extends CI_Model {
 			Food_model::$ACTIVE_FOOD,
 			User_model::$CERTIFIED_VENDOR
 		);
-		if ($is_rush){
-			$bindings[] = Food_model::$MAX_RUSH_HOURS;
+		if ($max_time != NULL){
+			$bindings[] = Food_model::getMaxHoursForMaxTimeFilter($max_time);
+		}
+		if ($min_rating != NULL){
+			$bindings[] = $min_rating;
+		}
+		if ($min_price != NULL){
+			$bindings[] = $min_price;
+			$bindings[] = $max_price;
 		}
 		
 		// perform database query
@@ -72,7 +99,16 @@ class Food_category_model extends CI_Model {
 	 * @param DateTime $orderDateTime filter with datetime cutoff
 	 * @param $user_id filter with foods belonging to user_id
 	 */
-    public function getAllActiveCategories($is_rush=false, $user_id=NULL){
+    public function getAllActiveCategories(array $filters){
+		// sort through filters
+		$is_rush = isset($filters["is_rush"])?$filters["is_rush"]:false;
+		$can_deliver = isset($filters["can_deliver"])?$filters["can_deliver"]:false;
+		$vendor_id = isset($filters["vendor_id"])?$filters["vendor_id"]:NULL;
+		$min_rating = isset($filters["min_rating"])?$filters["min_rating"]:NULL;
+		$min_price = isset($filters["min_price"])?$filters["min_price"]:NULL;
+		$max_price = isset($filters["max_price"])?$filters["max_price"]:NULL;
+		$max_time = isset($filters["max_time"])?$filters["max_time"]:NULL;
+		
 		// base query string
 		$query_str = '
 			select distinct c.id, c.name 
@@ -87,14 +123,24 @@ class Food_category_model extends CI_Model {
 				f.status = ?
 				and u.status = ?';
 		
-		// filter out non-rush items
+		// filter out non-rush items		
 		if ($is_rush){
-			$query_str .= ' and f.prep_time_hours <= ?
-				and u.is_open = 1';
+			$query_str .= ' and u.is_open = 1';
+		} 
+		// filter max prep time
+		if ($max_time != NULL){
+			$query_str .= ' and f.prep_time_hours <= ?';
 		}
-		
+		// filter minimum rating
+		if ($min_rating != NULL){
+			$query_str .= ' and average_rating(f.id) >= ?';
+		}
+		// filter prices
+		if ($min_price != NULL){
+			$query_str .= ' and f.price >= ? and f.price <= ?';
+		}
 		// user filter
-		if ($user_id != NULL){
+		if ($vendor_id != NULL){
 			$query_str .= ' and u.id = ?';
 		}
 	
@@ -103,11 +149,18 @@ class Food_category_model extends CI_Model {
 			Food_model::$ACTIVE_FOOD,
 			User_model::$CERTIFIED_VENDOR
 		);
-		if ($is_rush){
-			$bindings[] = Food_model::$MAX_RUSH_HOURS;
+		if ($max_time != NULL){
+			$bindings[] = Food_model::getMaxHoursForMaxTimeFilter($max_time);
 		}
-		if ($user_id != NULL){
-			$bindings[] = $user_id;
+		if ($min_rating != NULL){
+			$bindings[] = $min_rating;
+		}
+		if ($min_price != NULL){
+			$bindings[] = $min_price;
+			$bindings[] = $max_price;
+		}
+		if ($vendor_id != NULL){
+			$bindings[] = $vendor_id;
 		}
 		
 		// perform database query

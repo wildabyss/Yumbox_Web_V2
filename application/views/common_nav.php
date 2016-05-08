@@ -5,6 +5,8 @@
 				YUMBOX
 			</a>
 			<a id="mobile_user_menu_trigger"></a>
+			<a class="nav_about" href="/#about">ABOUT</a>
+			
 			<ul id="mobile_user_menu">
 				<li class="menu_item_home"><a href="/" class="logo">Yumbox</a></li>
 				<?php if (isset($sign_in_button)):?>
@@ -18,11 +20,10 @@
 			</ul>
 			
 			<ul id="pc_nav_buttons">
-				<li class="nav_about"><a href="/#about">ABOUT</a></li>
 				<li class="user_menu_trigger_wrapper">
 					<?php if (isset($sign_in_button)):?>
 						<a class="banner_button" href="<?php echo $sign_in_link?>"><?php echo $sign_in_button?></a>
-					<?php else:?>
+					<?php elseif (isset($user_name)):?>
 						<div id="user_menu_trigger">
 							<a class="banner_button"><?php echo strtoupper($user_name)?></a>
 							<a id="user_menu_visual">&#9660;</a>
@@ -35,6 +36,11 @@
 						<li class="menu_item_logout"><a href="<?php echo $sign_out_link?>">Logout</a></li>
 						<?php endif?>
 					</ul>
+				</li>
+				<li class="cart">
+					<?php if (isset($user_name)):?>
+						<a id="order_cart"></a>
+					<?php endif?>
 				</li>
 			</ul>
 		</div>
