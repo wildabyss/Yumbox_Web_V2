@@ -1,5 +1,8 @@
 drop database if exists yumbox_dev;
 create database yumbox_dev default character set utf8 default collate utf8_general_ci;
+
+grant all on yumbox_dev.* to 'yumbox'@'localhost';
+
 use yumbox_dev;
 
 drop table if exists user;
