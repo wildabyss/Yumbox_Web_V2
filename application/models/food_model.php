@@ -6,6 +6,11 @@ class Food_model extends CI_Model {
 	public static $INACTIVE_FOOD = 0;
     public static $ACTIVE_FOOD = 1;
 	
+	public function __construct()
+	{
+		parent::__construct();
+	}
+	
 	/*
 	 * From a given filter input, translate it to hours
 	 */
