@@ -98,18 +98,18 @@ class Menu extends Yumbox_Controller {
 		$time_filter = $this->input->get('time_max', true)==""?5:$this->input->get('time_max', true);
 		
 		// fetch data
-		if ($view==self::$MAP_VIEW){
+		/*if ($view==self::$MAP_VIEW){
 			// map view
 			
 			
-		} else {
+		} else {*/
 			// list view
 			
 			$foods_and_cats = $this->dataForFoodListing($is_rush, $search_query, $chosen_categories, 
 				$can_deliver, $price_filter, $rating_filter, $time_filter);
 			$foods = $foods_and_cats["foods"];
 			$categories = $foods_and_cats["categories"];
-		}
+		//}
 		
 		// massage food data for display
 		foreach ($foods as $cat_id=>$foods_for_cat){
