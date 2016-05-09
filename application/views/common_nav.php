@@ -1,14 +1,18 @@
 <header>
 	<nav>
 		<div class="nav_wrapper">
-			<a href="/" class="logo">
-				YUMBOX
-			</a>
 			<a id="mobile_user_menu_trigger"></a>
-			<a class="nav_about" href="/#about">ABOUT</a>
-			
+			<ul id="pc_nav_buttons_left">
+				<li><a href="/" class="logo"></a></li>
+				<li><a href="/menu/rush">YUM RUSH</a></li>
+				<li><a href="/menu/explore">YUM EXPLORE</a></li>
+				<li><a href="/#about">ABOUT</a></li>
+			</ul>
+
 			<ul id="mobile_user_menu">
 				<li class="menu_item_home"><a href="/" class="logo">Yumbox</a></li>
+				<li><a href="/menu/rush">Yum Rush</a></li>
+				<li><a href="/menu/explore">Yum Explore</a></li>
 				<?php if (isset($sign_in_button)):?>
 					<li class="menu_item_log"><a class="banner_button" href="<?php echo $sign_in_link?>">Log In</a></li>
 				<?php else:?>
@@ -19,7 +23,7 @@
 				<li class="menu_item_about"><a href="/#about">About</a></li>
 			</ul>
 			
-			<ul id="pc_nav_buttons">
+			<ul id="pc_nav_buttons_right">
 				<li class="user_menu_trigger_wrapper">
 					<?php if (isset($sign_in_button)):?>
 						<a class="banner_button" href="<?php echo $sign_in_link?>"><?php echo $sign_in_button?></a>

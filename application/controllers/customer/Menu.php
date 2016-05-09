@@ -140,11 +140,11 @@ class Menu extends Yumbox_Controller {
 	}
 	
 	
-	public function fullmenu($view="list"){
+	public function explore($view="list"){
 		$this->displayMenu(false, $view);
 	}
 	
-	public function quickmenu($view="map"){
+	public function rush($view="map"){
 		$this->displayMenu(true, $view);
 	}
 

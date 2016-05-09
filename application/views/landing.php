@@ -26,13 +26,13 @@
 	
 	<section id="menu_mega_selection">
 		<div class="button_parent">
-			<a class="rush" href="/menu/quickmenu">
+			<a class="rush" href="/menu/rush">
 				<h2><?php echo strtoupper($quick_menu_text)?></h2>
 				<p>Get your gourmet right away</p>
 			</a>
 		</div>
 		<div class="button_parent">
-			<a class="explore" href="/menu/fullmenu">
+			<a class="explore" href="/menu/explore">
 				<h2><?php echo Strtoupper($full_menu_text)?></h2>
 				<p>Experience the world of home kitchen</p>
 			</a>

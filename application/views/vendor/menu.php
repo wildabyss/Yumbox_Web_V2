@@ -33,6 +33,12 @@
 								
 								<span class="prep_time"><?php echo $food->prep_time?></span>
 							</div>
+							
+							<div class="categories_container">
+							<?php foreach ($categories[$food->food_id] as $category):?>
+								<a class="category_tag"><?php echo ucfirst($category->name)?></a>
+							<?php endforeach?>
+							</div>
 						</div>
 					</li>
 					<?php endforeach?>

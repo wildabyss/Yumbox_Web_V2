@@ -50,8 +50,13 @@
 		
 		.pic_wrapper{
 			float: none;
-			
 			margin: 0 auto;
+			width: 150px;
+			
+			#profile_pic{
+				width: 150px;
+				height: 150px;
+			}
 		}
 		
 		.intro_wrapper{

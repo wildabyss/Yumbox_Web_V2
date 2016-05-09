@@ -35,6 +35,7 @@ class Profile extends Yumbox_Controller {
 		// get food data
 		$foods = $this->food_model->
 			getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_RESULTS, $filters);
+		$categories = array();
 		foreach ($foods as $food){
 			$categories[$food->food_id] = $this->food_category_model->getAllCategoriesForFood($food->food_id);
 			

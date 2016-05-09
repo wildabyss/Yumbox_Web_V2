@@ -13,7 +13,7 @@ class Landing extends Yumbox_Controller {
 		$rush_food = $this->food_model->getFoodAndVendorForFoodId($rush_food_id);
 		$data["rush_food_id"] = $rush_food_id;
 		$data["rush_food_name"] = $rush_food==NULL?"":$rush_food->food_name;
-		$data["rush_food_descr"] = $rush_food==NULL?"":$rush_food->descr;
+		$data["rush_food_descr"] = limit_text($rush_food==NULL?"":$rush_food->descr, 20);
 		$rush_food_pic = $this->food_model->getFoodPicturesForFoodId($rush_food_id)[0];
 		$data["rush_food_pic"] = $rush_food_pic==NULL?"":$rush_food_pic->path;
 		$data["rush_vendor"] = $rush_food==NULL?"":$rush_food->user_name;
@@ -22,7 +22,7 @@ class Landing extends Yumbox_Controller {
 		$explore_food = $this->food_model->getFoodAndVendorForFoodId($explore_food_id);
 		$data["explore_food_id"] = $explore_food_id;
 		$data["explore_food_name"] = $explore_food==NULL?"":$explore_food->food_name;
-		$data["explore_food_descr"] = $explore_food==NULL?"":$explore_food->descr;
+		$data["explore_food_descr"] = limit_text($explore_food==NULL?"":$explore_food->descr, 20);
 		$explore_food_pic = $this->food_model->getFoodPicturesForFoodId($explore_food_id)[0];
 		$data["explore_food_pic"] = $explore_food_pic==NULL?"":$explore_food_pic->path;
 		$data["explore_vendor"] = $explore_food==NULL?"":$explore_food->user_name;

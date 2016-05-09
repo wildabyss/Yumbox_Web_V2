@@ -1,18 +1,18 @@
 <section id="menu_mega_selection" class="small <?php if ($is_rush):?>rush<?php else:?>explore<?php endif?>">
 	<div class="button_parent">
-		<a <?php if (!$is_rush):?>class="rush"<?php endif?> href="/menu/quickmenu">
+		<a <?php if (!$is_rush):?>class="rush"<?php endif?> href="/menu/rush">
 			<h3><?php echo strtoupper($quick_menu_text)?></h3>
 		</a>
 	</div>
 	<div class="button_parent">
-		<a <?php if ($is_rush):?>class="explore"<?php endif?> href="/menu/fullmenu">
+		<a <?php if ($is_rush):?>class="explore"<?php endif?> href="/menu/explore">
 			<h3><?php echo Strtoupper($full_menu_text)?></h3>
 		</a>
 	</div>
 </section>
 
 <section id="menu_filter" class="<?php if ($is_rush):?>rush<?php else:?>explore<?php endif?>">
-	<form id="filter_form" action="<?php if ($is_rush):?>/menu/quickmenu<?php else:?>/menu/fullmenu<?php endif?>" method="get">
+	<form id="filter_form" action="<?php if ($is_rush):?>/menu/rush<?php else:?>/menu/explore<?php endif?>" method="get">
 		<div class="search_container">
 			<input id="search" name="search" placeholder="e.g. burrito" 
 				type="text" value="<?php echo $search_query ?>" />

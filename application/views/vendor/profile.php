@@ -15,7 +15,7 @@
 		<?php endif?>
 		<h3>ABOUT ME</h3>
 		<?php if ($user->descr == ""):?>
-			<p>Nothing interesting to say about this vendor</p>
+			<p>Nothing too interesting to note.</p>
 		<?php else:?>
 			<p><?php echo $user->descr?></p>
 		<?php endif?>
