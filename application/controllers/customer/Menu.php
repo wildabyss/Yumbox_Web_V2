@@ -171,6 +171,6 @@ class Menu extends Yumbox_Controller {
 
 	public function index()
 	{
-		$this->fullmenu();
+		$this->explore();
 	}
 }
