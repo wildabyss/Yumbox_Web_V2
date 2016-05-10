@@ -117,7 +117,7 @@ class Menu extends Yumbox_Controller {
 				if ($food->total_orders=="")
 					$food->total_orders=0;
 				
-				$food->prep_time = prepTimeForDisplay($food->prep_time);
+				$food->prep_time = prep_time_for_display($food->prep_time);
 			}
 		}
 		
@@ -151,16 +151,37 @@ class Menu extends Yumbox_Controller {
 	public function item($food_id){
 		// get food data
 		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
-		if ($food == NULL){
+		if ($food === false){
 			show_404();
 		}
 		
+		// massage food data
+		$food->prep_time = prep_time_for_display($food->prep_time);
+		
 		// get food pictures
 		$food_pictures = $this->food_model->getFoodPicturesForFoodId($food_id);
+		// for now, grab only one picture
+		if (count($food_pictures>1))
+			$food_pictures = array_slice($food_pictures, 0, 1);
+		
+		// get food categories
+		$categories = $this->food_category_model->getAllCategoriesForFood($food_id);
+		
+		// get food reviews
+		$reviews = $this->food_review_model->getAllReviewsAndUsersForFood($food_id, 5);
+		$user_pictures = array();
+		// for each review, get the first user picture
+		foreach ($reviews as $review){
+			$user_id = $review->user_id;
+			$user_pictures[$user_id] = $this->user_model->getUserPicture($user_id);
+		}
 		
 		// bind to data
 		$data['food'] = $food;
 		$data['food_pictures'] = $food_pictures;
+		$data['categories'] = $categories;
+		$data['reviews'] = $reviews;
+		$data['user_pictures'] = $user_pictures;
 		
 		// Load views
 		$this->header();

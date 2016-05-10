@@ -99,4 +99,25 @@ class User_model extends CI_Model {
 		
 		return true;
 	}
+	
+	
+	/**
+	 * Fetch the path to a single user picture
+	 * Return false if non-existent
+	 */
+	public function getUserPicture($user_id){
+		$query = $this->db->query('
+			select p.path
+			from user_picture p
+			where p.user_id = ?
+			limit 1', array($user_id)
+		);
+		
+		$results = $query->result();
+		
+		if (count($results)==0)
+			return false;
+		else
+			return $results[0]->path;
+	}
 }

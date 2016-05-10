@@ -43,7 +43,7 @@ class Profile extends Yumbox_Controller {
 			if ($food->total_orders=="")
 				$food->total_orders=0;
 			
-			$food->prep_time = prepTimeForDisplay($food->prep_time);
+			$food->prep_time = prep_time_for_display($food->prep_time);
 		}
 		
 		// get followers

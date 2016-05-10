@@ -204,11 +204,31 @@ nav{
 	text-align: center;
 	padding: 5px;
 	padding-right: 10px;
-	margin-right: 5px;
+	margin: 3px;
+	margin-left: 0;
 	
 	background-image: url('/imgs/tag_blue.svg');
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
+}
+
+
+// is open/closed
+.is_open{
+	display: inline-block;
+	width: 200px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	background-color: $blue;
+}
+.is_closed{
+	display: inline-block;
+	width: 200px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	background-color: $red;
 }
 
 

@@ -19,34 +19,102 @@
 	
 	<div class="tight_cluster">
 		<div class="order_info">
-			<h2>Can Deliver</h2>
-			<h2 class="price">$<?php echo $food->price?></h2>
-			<a id="add_to_order">ADD TO ORDER &#x2795;</a>
+			<h3>Can Deliver</h3>
+			<h3 class="price">$<?php echo $food->price?></h3>
+			<a id="add_to_order">ADD ORDER &#x2795;</a>
 		</div>
 		
 		<p>
-			<span><?php echo $food->total_orders?> orders</span>
-			<span>&hearts; <?php echo $food->rating?>%</span>
+			<span class="orders"><?php echo $food->total_orders?> orders</span>
+			<span class="rating">&hearts; <?php echo $food->rating?>%</span>
 		</p>
+		
+		<p>Preparation time: <?php echo $food->prep_time?></p>
+		
+		<?php if ($food->is_open):?>
+		<h3 class="is_open">KITCHEN OPEN</h3>
+		<?php else:?>
+		<h3 class="is_closed">KITCHEN CLOSED</h3>
+		<?php endif?>
 	</div>
 	
 	<h2 class="title center">ABOUT THE DISH</h2>
 	<div class="about_dish">
 		<div class="about_dish_section">
 			<h2>Description</h2>
-			<p><?php echo $food->descr?></p>
+			<p>
+				<?php if ($food->descr == ""):?>
+				N/A
+				<?php else:?>
+				<?php echo $food->descr?>
+				<?php endif?>
+			</p>
+			
+			<div class="categories_container">
+			<?php foreach ($categories as $category):?>
+				<a class="category_tag"><?php echo ucfirst($category->name)?></a>
+			<?php endforeach?>
+			</div>
 		</div>
 		
 		<div class="about_dish_section">
 			<h2>Ingredients</h2>
-			<p><?php echo $food->ingredients?></p>
+			<p>
+				<?php if ($food->ingredients == ""):?>
+				N/A
+				<?php else:?>
+				<?php echo $food->ingredients?>
+				<?php endif?>
+			</p>
 		</div>
 		
 		<div class="about_dish_section">
 			<h2>Health Benefits</h2>
-			<p><?php echo $food->health_benefits?></p>
+			<p>
+				<?php if ($food->health_benefits == ""):?>
+				N/A
+				<?php else:?>
+				<?php echo $food->health_benefits?>
+				<?php endif?>
+			</p>
+		</div>
+		
+		<div class="about_dish_section">
+			<h2>Eating Instructions</h2>
+			<p>
+				<?php if ($food->eating_instructions == ""):?>
+				N/A
+				<?php else:?>
+				<?php echo $food->eating_instructions?>
+				<?php endif?>
+			</p>
 		</div>
 	</div>
+	
+	<h2 class="title center">REVIEWS</h2>
+	<?php if (count($reviews)==0):?>
+		<p>No review for this item.</p>
+	<?php else:?>
+		<ul class="reviews">
+			<?php foreach ($reviews as $review):?>
+				<li>
+					<?php if ($user_pictures[$review->user_id]!==false):?>
+					<a class="profile_pic" style="background-image:url('<?php echo $user_pictures[$review->user_id]?>')"></a>
+					<?php else:?>
+					<a class="profile_pic"></a>
+					<?php endif?>
+					
+					<div>
+						<span><?php echo $review->user_name?></span>
+						<p>&hearts; <?php echo $review->rating?>%</p>
+						<?php if ($review->review != ""):?>
+						<p>"<?php echo $review->review?>"</p>
+						<?php endif?>
+					</div>
+				</li>
+			<?php endforeach?>
+		</ul>
+	<?php endif?>
 
 	<h2 class="title center">PEOPLE HAVE ALSO ORDERED</h2>
 

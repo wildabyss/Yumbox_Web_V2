@@ -1,17 +1,24 @@
 #food_detail{
+	max-width: 900px;
+	margin: 0 auto;
+	
 	.center{
 		text-align: center;
 	}
+
 	
 	.title{
 		padding-bottom: 5px;
 		border-bottom: solid 1px $darkGrey;
-		margin: 5px 0 5px 0;
+		margin: 20px 0 5px 0;
 	}
 	
 	.tight_cluster{
-		max-width: 900px;
 		margin: 0 auto;
+		
+		.rating{
+			margin-left: 30px;
+		}
 	}
 	
 	.order_info{
@@ -26,7 +33,9 @@
 		
 		#add_to_order{
 			display: block;
+			white-space:nowrap;
 			height: 32px;
+			width: 145px;
 		}
 	}
 	
@@ -37,7 +46,6 @@
 			position: relative;
 			display: block;
 			list-style: none;
-			max-width: 900px;
 			height: 500px;
 			margin: 0 auto;
 		}
@@ -57,13 +65,41 @@
 	}
 	
 	.about_dish{
+		overflow: auto;
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
-		
+	
 		.about_dish_section{
-			flex: 1;
-			min-width: 400px;
+			width: 50%;
+			padding-right: 10px;
+		}
+	}
+	
+	ul.reviews{
+		padding: 0;
+		
+		li{
+			list-style: none;
+			overflow: auto;
+			margin-top: 10px;
+			margin-bottom: 10px;
+			
+			display: flex;
+			flex-direction: row;
+		}
+		
+		.profile_pic{
+			display: block;
+			width: 80px;
+			height: 80px;
+			margin-right: 10px;
+			
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-image: url('/imgs/profile.svg');
+			border: solid 1px $almostBlack;
 		}
 	}
 }
@@ -74,6 +110,16 @@
 			li{
 				height: 0;
 				padding-bottom: 56%;
+			}
+		}
+	}
+}
+
+@media (max-width: 500px){
+	#food_detail{
+		.about_dish{
+			.about_dish_section{
+				width: 100%;
 			}
 		}
 	}

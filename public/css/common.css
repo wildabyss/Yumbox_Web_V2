@@ -263,11 +263,11 @@ nav .nav_wrapper {
 }
 
 nav .ui-state-hover {
-  background-color: #B3CCC8 !important;
+  background-color: #95d1d1 !important;
 }
 
 nav .ui-state-focus {
-  background-color: #B3CCC8 !important;
+  background-color: #95d1d1 !important;
 }
 
 nav .logo {
@@ -423,10 +423,29 @@ nav ul#mobile_user_menu a.logo {
   text-align: center;
   padding: 5px;
   padding-right: 10px;
-  margin-right: 5px;
+  margin: 3px;
+  margin-left: 0;
   background-image: url("/imgs/tag_blue.svg");
   background-size: 100% 100%;
   background-repeat: no-repeat;
+}
+
+.is_open {
+  display: inline-block;
+  width: 200px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  background-color: #95d1d1;
+}
+
+.is_closed {
+  display: inline-block;
+  width: 200px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  background-color: #ed7a5d;
 }
 
 .ui-button-text {
@@ -434,19 +453,19 @@ nav ul#mobile_user_menu a.logo {
 }
 
 .ui-state-default {
-  border-color: #B3CCC8;
+  border-color: #95d1d1;
 }
 
 .ui-state-active {
-  background-color: #B3CCC8;
+  background-color: #95d1d1;
 }
 
 .ui-state-hover {
-  background-color: #B3CCC8;
+  background-color: #95d1d1;
 }
 
 .ui-state-focus {
-  background-color: #B3CCC8;
+  background-color: #95d1d1;
 }
 
 .rush .ui-state-default {
@@ -787,18 +806,22 @@ div.about_text h1 {
 
 #menu_listing ul.food_list {
   padding: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 #menu_listing ul.food_list li {
-  float: left;
+  display: block;
   list-style: none;
   text-align: left;
+  width: 220px;
   margin: 20px 20px;
 }
 
 #menu_listing ul.food_list .food_pic {
   display: inline-block;
-  width: 220px;
+  width: 100%;
   height: 220px;
   background-position: center;
   background-repeat: no-repeat;
@@ -854,10 +877,6 @@ div.about_text h1 {
   margin-top: 10px;
 }
 
-#menu_listing ul.food_list .category_tag {
-  width: 70px;
-}
-
 @media (max-width: 600px) {
   #menu_filter .search_container {
     text-align: center;
@@ -895,6 +914,11 @@ div.about_text h1 {
   }
 }
 
+#food_detail {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
 #food_detail .center {
   text-align: center;
 }
@@ -902,12 +926,15 @@ div.about_text h1 {
 #food_detail .title {
   padding-bottom: 5px;
   border-bottom: solid 1px #b5b3ac;
-  margin: 5px 0 5px 0;
+  margin: 20px 0 5px 0;
 }
 
 #food_detail .tight_cluster {
-  max-width: 900px;
   margin: 0 auto;
+}
+
+#food_detail .tight_cluster .rating {
+  margin-left: 30px;
 }
 
 #food_detail .order_info {
@@ -923,7 +950,9 @@ div.about_text h1 {
 
 #food_detail .order_info #add_to_order {
   display: block;
+  white-space: nowrap;
   height: 32px;
+  width: 145px;
 }
 
 #food_detail ul#food_detail_gallery {
@@ -934,7 +963,6 @@ div.about_text h1 {
   position: relative;
   display: block;
   list-style: none;
-  max-width: 900px;
   height: 500px;
   margin: 0 auto;
 }
@@ -952,20 +980,52 @@ div.about_text h1 {
 }
 
 #food_detail .about_dish {
+  overflow: auto;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
 
 #food_detail .about_dish .about_dish_section {
-  flex: 1;
-  min-width: 400px;
+  width: 50%;
+  padding-right: 10px;
+}
+
+#food_detail ul.reviews {
+  padding: 0;
+}
+
+#food_detail ul.reviews li {
+  list-style: none;
+  overflow: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+}
+
+#food_detail ul.reviews .profile_pic {
+  display: block;
+  width: 80px;
+  height: 80px;
+  margin-right: 10px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("/imgs/profile.svg");
+  border: solid 1px #251F1E;
 }
 
 @media (max-width: 900px) {
   #food_detail ul#food_detail_gallery li {
     height: 0;
     padding-bottom: 56%;
+  }
+}
+
+@media (max-width: 500px) {
+  #food_detail .about_dish .about_dish_section {
+    width: 100%;
   }
 }
 
@@ -1019,7 +1079,7 @@ div.about_text h1 {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: url("/imgs/image-not-available.gif");
+  background-image: url("/imgs/profile.svg");
   border: solid 1px #251F1E;
 }
 
@@ -1038,13 +1098,13 @@ div.about_text h1 {
 
 #profile_intro .intro_wrapper h1 {
   margin-top: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   padding-bottom: 5px;
   border-bottom: solid 1px #b5b3ac;
 }
 
 #profile_intro .intro_wrapper .closed {
-  color: #991f00;
+  color: #ed7a5d;
 }
 
 @media (max-width: 600px) {

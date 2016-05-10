@@ -120,6 +120,7 @@ create table food
     descr text,
     ingredients text,
     health_benefits text,
+    eating_instructions text,
     
     primary key (id),
     index user_id_food_index (user_id),

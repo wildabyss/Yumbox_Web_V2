@@ -11,7 +11,9 @@
 	<div class="intro_wrapper">
 		<h1><?php echo $user->name?></h1>
 		<?php if (!$is_my_profile && !$user->is_open):?>
-		<h3 class="closed">KITCHEN IS CLOSED</h3>
+		<h3 class="is_closed">KITCHEN CLOSED</h3>
+		<?php elseif (!$is_my_profile):?>
+		<h3 class="is_open">KITCHEN OPEN</h3>
 		<?php endif?>
 		<h3>ABOUT ME</h3>
 		<?php if ($user->descr == ""):?>

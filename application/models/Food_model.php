@@ -139,12 +139,13 @@ class Food_model extends CI_Model {
 	 * Only select food whose status is active and whose vendor is certified
 	 *
 	 * @param: $food_id
-	 * @return: an object with food and vendor info, or NULL if unavailable
+	 * @return: an object with food and vendor info, or false if unavailable
 	 */
 	public function getFoodAndVendorForFoodId($food_id){
 		$query = $this->db->query('
 			select 
-				f.name as food_name, f.alternate_name, f.price, f.descr, f.ingredients, f.health_benefits,
+				f.name as food_name, f.alternate_name, f.price, f.descr, f.ingredients, 
+				f.health_benefits, f.eating_instructions, f.prep_time_hours prep_time,
 				average_rating(f.id)/?*100 rating,
 				total_orders(f.id) total_orders,
 				u.id as user_id, u.name as user_name, u.email, u.phone, u.return_date,
@@ -165,7 +166,7 @@ class Food_model extends CI_Model {
 		$results = $query->result();
 		
 		if (count($results) == 0)
-			return NULL;
+			return false;
 		else
 			return $results[0];
 	}
