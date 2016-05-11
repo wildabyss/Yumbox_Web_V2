@@ -12,7 +12,7 @@
 </section>
 
 <section id="menu_filter" class="<?php if ($is_rush):?>rush<?php else:?>explore<?php endif?>">
-	<form id="filter_form" action="<?php if ($is_rush):?>/menu/rush<?php else:?>/menu/explore<?php endif?>" method="get">
+	<?php echo form_open($form_action, array('method'=>'get', 'id'=>'filter_form'))?>
 		<div class="search_container">
 			<input id="search" name="search" placeholder="e.g. burrito" 
 				type="text" value="<?php echo $search_query ?>" />
@@ -61,7 +61,7 @@
 			<button id="btn_map" class="<?php if (!$is_list):?>ui-state-active<?php endif?>">UPDATE MAP</button>
 			<button id="btn_list" class="<?php if ($is_list):?>ui-state-active<?php endif?>">UPDATE LIST</button>
 		</div>
-	</form>
+	<?php echo form_close()?>
 	
 	<script>
 		// update price slider's equivalent output

@@ -17,11 +17,15 @@
 		<?php endif?>
 	</ul>
 	
+	<!-- add order form -->
+	<?php echo form_open($form_action, array('method'=>'get'))?>
+	<input type="hidden" name="redirect" value="<?php echo $_SERVER['REQUEST_URI']?>" />
+	
 	<div class="tight_cluster">
 		<div class="order_info">
 			<h3>Can Deliver</h3>
 			<h3 class="price">$<?php echo $food->price?></h3>
-			<a id="add_to_order">ADD ORDER &#x2795;</a>
+			<button id="add_to_order">ADD ORDER &#x2795;</button>
 		</div>
 		
 		<p>
@@ -37,6 +41,7 @@
 		<h3 class="is_closed">KITCHEN CLOSED</h3>
 		<?php endif?>
 	</div>
+	<?php echo form_close()?>
 	
 	<h2 class="title center">ABOUT THE DISH</h2>
 	<div class="about_dish">
@@ -93,7 +98,7 @@
 	
 	<h2 class="title center">REVIEWS</h2>
 	<?php if (count($reviews)==0):?>
-		<p>No review for this item.</p>
+		<p class="reviews">No review for this item.</p>
 	<?php else:?>
 		<ul class="reviews">
 			<?php foreach ($reviews as $review):?>
@@ -115,9 +120,6 @@
 			<?php endforeach?>
 		</ul>
 	<?php endif?>
-
-	<h2 class="title center">PEOPLE HAVE ALSO ORDERED</h2>
-
 </section>
 
 <script>

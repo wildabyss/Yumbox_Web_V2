@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Login extends Yumbox_Controller {
-	protected function display_login($requestUrl, $error=NULL){
+	protected function display_login($requestUrl, $error=false){
 		// Initialize Facebook
 		$fb_config = array(
 			'app_id' => $this->config->item('facebook_app_id'),
@@ -25,15 +25,15 @@ class Login extends Yumbox_Controller {
 		
 		// Set up Google login button
 		$scopes = $this->google_scopes();
-		$redirectUrl = $this->google_redirect_url($requestUrl);
+		$redirectUrl = $this->google_redirect_url();
 		$google->setRedirectUri($redirectUrl);
 		$google->setScopes($scopes);
-		$googleLoginUrl = $google->createAuthUrl();
+		$googleLoginUrl = $google->createAuthUrl()."&state=".urlencode($requestUrl);
 		
 		// bind to data
 		$data['fb_login_url'] = $fbLoginUrl;
 		$data['google_login_url'] = $googleLoginUrl;
-		if (isset($error))
+		if ($error !== false)
 			$data['error'] = $error;
 		
 		// Load views
@@ -44,22 +44,23 @@ class Login extends Yumbox_Controller {
 	}
 	
 	protected function facebook_redirect_url($requestUrl){
-		return $this->config->item('base_url')."login/facebook/".urlencode($requestUrl);
+		return $this->config->item('base_url')."login/facebook?redirect=".urlencode($requestUrl);
 	}
 	
 	protected function facebook_permissions(){
 		return array('email');
 	}
 	
-	protected function google_redirect_url($requestUrl){
-		return $this->config->item('base_url')."login/google/".urlencode($requestUrl);
+	protected function google_redirect_url(){
+		// the requestUrl will be passed to the state parameter
+		return $this->config->item('base_url')."login/google";
 	}
 	
 	protected function google_scopes(){
 		return array('profile', 'email');
 	}
 	
-	public function facebook($requestUrl="menu"){
+	public function facebook(){
 		// Initialize Facebook
 		$fb_config = array(
 			'app_id' => $this->config->item('facebook_app_id'),
@@ -67,6 +68,9 @@ class Login extends Yumbox_Controller {
 		);
 		$fb = new Facebook\Facebook($fb_config);
 		$fbHelper = $fb->getRedirectLoginHelper();
+		
+		// get redirect URL
+		$requestUrl = $this->input->get("redirect", true);
 			
 		// Try to get the access token
 		try {
@@ -127,7 +131,7 @@ class Login extends Yumbox_Controller {
 		$this->display_login($requestUrl);
 	}
 	
-	public function google($requestUrl="menu"){
+	public function google(){
 		// Initialize Google
 		$client_id = $this->config->item('google_client_id');
 		$client_secret = $this->config->item('google_client_secret');
@@ -135,8 +139,11 @@ class Login extends Yumbox_Controller {
 		$google->setClientId($client_id);
 		$google->setClientSecret($client_secret);
 		$google->setScopes($this->google_scopes());
-		$redirectUrl = $this->google_redirect_url($requestUrl);
+		$redirectUrl = $this->google_redirect_url();
 		$google->setRedirectUri($redirectUrl);
+		
+		// for Google, the request URL is set in the state parameter
+		$requestUrl = $this->input->get("state", true);
 		
 		if (isset($_GET['error'])){
 			$error = "Google login error";
@@ -161,7 +168,7 @@ class Login extends Yumbox_Controller {
 			$googleId = $user->id;
 			$name = $user->displayName;
 			$email = $user->emails[0]['value'];
-			
+		
 			// fetch user object from the database
 			if ($this->user_model->getUserForGoogleId($googleId) === false){
 				// If it doesn't exist in the db, add the user
@@ -186,8 +193,10 @@ class Login extends Yumbox_Controller {
 		$this->display_login($requestUrl);
 	}
 
-	public function index($requestUrl="menu")
+	public function index()
 	{
+		$requestUrl = $this->input->get("redirect", true);
+		
 		if ($this->login_util->isUserLoggedIn()){
 			// session exists
 			redirect($requestUrl, 'refresh');

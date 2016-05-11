@@ -931,6 +931,7 @@ div.about_text h1 {
 
 #food_detail .tight_cluster {
   margin: 0 auto;
+  margin-bottom: 40px;
 }
 
 #food_detail .tight_cluster .rating {
@@ -984,6 +985,7 @@ div.about_text h1 {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  margin-bottom: 40px;
 }
 
 #food_detail .about_dish .about_dish_section {
@@ -991,11 +993,12 @@ div.about_text h1 {
   padding-right: 10px;
 }
 
-#food_detail ul.reviews {
+#food_detail .reviews {
   padding: 0;
+  margin-bottom: 40px;
 }
 
-#food_detail ul.reviews li {
+#food_detail .reviews li {
   list-style: none;
   overflow: auto;
   margin-top: 10px;
@@ -1004,7 +1007,7 @@ div.about_text h1 {
   flex-direction: row;
 }
 
-#food_detail ul.reviews .profile_pic {
+#food_detail .reviews .profile_pic {
   display: block;
   width: 80px;
   height: 80px;

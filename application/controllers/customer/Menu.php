@@ -27,6 +27,7 @@ class Menu extends Yumbox_Controller {
 		// bind user data
 		$data['is_rush'] = $is_rush;
 		$data['is_list'] = $is_list;
+		$data['form_action'] = $is_rush?'/menu/rush':'/menu/explore';
 		$data['chosen_categories'] = $chosen_categories;
 		$data['can_deliver'] = $can_deliver;
 		$data['search_query'] = $search_query;
@@ -148,7 +149,7 @@ class Menu extends Yumbox_Controller {
 		$this->displayMenu(true, $view);
 	}
 
-	public function item($food_id){
+	public function item($food_id=false){
 		// get food data
 		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
 		if ($food === false){
@@ -182,6 +183,7 @@ class Menu extends Yumbox_Controller {
 		$data['categories'] = $categories;
 		$data['reviews'] = $reviews;
 		$data['user_pictures'] = $user_pictures;
+		$data['form_action'] = "/customer/order/add/{$food_id}";
 		
 		// Load views
 		$this->header();

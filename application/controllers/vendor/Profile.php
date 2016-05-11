@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Profile extends Yumbox_Controller {
 	public static $MAX_RESULTS = 5;
 
-	public function id($user_id){
+	public function id($user_id=NULL){
 		// language
 		$this->lang->load("menu");
 		
