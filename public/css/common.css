@@ -243,6 +243,10 @@ input {
   margin: 20px 0 5px 0;
 }
 
+.round_border {
+  border-radius: 50%;
+}
+
 div#global {
   max-width: 1440px;
   margin: 0 auto;
@@ -339,7 +343,13 @@ nav ul#pc_nav_buttons_right li {
   margin: 0 10px 0 10px;
 }
 
-nav ul#pc_nav_buttons_right #order_cart {
+nav ul#pc_nav_buttons_right .cart {
+  position: relative;
+  display: block;
+  overflow: auto;
+}
+
+nav ul#pc_nav_buttons_right .cart .order_cart {
   display: block;
   background-image: url("/imgs/bentobox.svg");
   background-repeat: no-repeat;
@@ -348,6 +358,19 @@ nav ul#pc_nav_buttons_right #order_cart {
   cursor: pointer;
   height: 50px;
   width: 50px;
+}
+
+nav ul#pc_nav_buttons_right .cart #order_count {
+  position: absolute;
+  line-height: initial;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  top: 28px;
+  right: 3px;
+  border: solid 1px #4A4A4A;
+  background-color: #4A4A4A;
+  color: white;
 }
 
 nav ul#pc_nav_buttons_right #user_menu_trigger {
@@ -919,6 +942,9 @@ div.about_text h1 {
     width: 100vw;
     min-width: initial;
   }
+  #menu_filter .menu_button_container button {
+    width: 140px;
+  }
   #menu_filter input#search {
     margin: 0 auto;
     width: 95vw;
@@ -938,6 +964,16 @@ div.about_text h1 {
   #menu_mega_selection.small a {
     margin-top: 5px;
     margin-bottom: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  #menu_listing .food_list_parent h2 {
+    margin-right: 20px;
+    text-align: center;
+  }
+  #menu_listing ul.food_list {
+    justify-content: center;
   }
 }
 
@@ -1149,15 +1185,19 @@ div.about_text h1 {
   margin: 0 auto;
 }
 
+#order_checkout button {
+  margin: 0 0 0 10px;
+  width: 170px;
+}
+
 #order_checkout .button_container {
   text-align: center;
   margin-top: 20px;
   margin-bottom: 40px;
 }
 
-#order_checkout .button_container a {
-  margin: 0 0 0 10px;
-  width: 170px;
+#order_checkout .vendor_section .title {
+  margin-bottom: 20px;
 }
 
 #order_checkout .vendor_section h3 {
@@ -1165,7 +1205,7 @@ div.about_text h1 {
 }
 
 #order_checkout .vendor_section .order_item {
-  margin-top: 20px;
+  margin-bottom: 30px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -1193,6 +1233,10 @@ div.about_text h1 {
   display: inline-block;
 }
 
+#order_checkout .vendor_section .order_item .price_descr h3.child {
+  width: 50px;
+}
+
 #order_checkout .vendor_section .order_item .price_descr .ui-spinner {
   margin-left: 20px;
 }
@@ -1200,4 +1244,28 @@ div.about_text h1 {
 #order_checkout .vendor_section .order_item .price_descr input {
   font-size: 1.5rem;
   width: 20px;
+}
+
+#order_checkout .vendor_section .order_item .modify_order {
+  margin-top: 5px;
+}
+
+#order_checkout .vendor_section .order_item .modify_order {
+  font-size: 1.3rem;
+}
+
+#order_checkout .total {
+  border-top: solid 1px #b5b3ac;
+  display: flex;
+  flex-direction: row;
+}
+
+#order_checkout .total .total_amount {
+  flex: 1;
+  text-align: right;
+}
+
+#order_checkout .action_buttons_container {
+  margin-top: 30px;
+  float: right;
 }

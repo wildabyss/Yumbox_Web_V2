@@ -231,6 +231,12 @@
 			}
 		}
 		
+		.menu_button_container{
+			button{
+				width: 140px;
+			}
+		}
+		
 		input#search {
 			margin: 0 auto;
 			width: 95vw;
@@ -254,6 +260,21 @@
 		a{
 			margin-top: 5px;
 			margin-bottom: 5px;
+		}
+	}
+}
+
+@media (max-width: 480px){
+	#menu_listing{
+		.food_list_parent{
+			h2{
+				margin-right: 20px;
+				text-align: center;
+			}
+		}
+		
+		ul.food_list{
+			justify-content: center;
 		}
 	}
 }

@@ -14,12 +14,12 @@
 				<li><a href="/menu/rush">Yum Rush</a></li>
 				<li><a href="/menu/explore">Yum Explore</a></li>
 				<?php if (isset($sign_in_button)):?>
-					<li class="menu_item_log"><a class="banner_button" href="<?php echo $sign_in_link?>">Log In</a></li>
+				<li class="menu_item_log"><a class="banner_button" href="<?php echo $sign_in_link?>">Log In</a></li>
 				<?php else:?>
-					<li class="menu_item_kitchen"><a href="/vendor/profile">My Kitchen</a></li>
-					<li class="menu_item_dashboard"><a>Chef's Dashboard</a></li>
-					<li class="menu_item_settings"><a>User Settings</a></li>
-					<li class="menu_item_log"><a class="banner_button" href="<?php echo $sign_out_link?>">Log Out</a></li>
+				<li class="menu_item_kitchen"><a href="/vendor/profile">My Kitchen</a></li>
+				<li class="menu_item_dashboard"><a>Chef's Dashboard</a></li>
+				<li class="menu_item_settings"><a>User Settings</a></li>
+				<li class="menu_item_log"><a class="banner_button" href="<?php echo $sign_out_link?>">Log Out</a></li>
 				<?php endif?>
 				<li class="menu_item_about"><a href="/#about">About</a></li>
 				<li class="filler"></li>
@@ -28,12 +28,12 @@
 			<ul id="pc_nav_buttons_right">
 				<li class="user_menu_trigger_wrapper">
 					<?php if (isset($sign_in_button)):?>
-						<a class="banner_button" href="<?php echo $sign_in_link?>"><?php echo $sign_in_button?></a>
+					<a class="banner_button" href="<?php echo $sign_in_link?>"><?php echo $sign_in_button?></a>
 					<?php elseif (isset($user_name)):?>
-						<div id="user_menu_trigger">
-							<a class="banner_button"><?php echo strtoupper($user_name)?></a>
-							<a id="user_menu_visual">&#9660;</a>
-						</div>
+					<div id="user_menu_trigger">
+						<a class="banner_button"><?php echo strtoupper($user_name)?></a>
+						<a id="user_menu_visual">&#9660;</a>
+					</div>
 					<?php endif?>
 					<ul id="user_menu">
 						<li class="menu_item_kitchen"><a href="/vendor/profile">My Kitchen</a></li>
@@ -44,11 +44,14 @@
 						<?php endif?>
 					</ul>
 				</li>
-				<li class="cart">
-					<?php if (isset($user_name)):?>
-						<a id="order_cart" href="/customer/order"></a>
-					<?php endif?>
+				<?php if (isset($user_name)):?>
+				<li>
+					<a class="cart" href="/customer/order">
+						<span class="order_cart"></span>
+						<span id="order_count" class="round_border"><?php echo $order_count?></span>
+					</a>
 				</li>
+				<?php endif?>
 			</ul>
 		</div>
 	</nav>

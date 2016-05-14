@@ -24,6 +24,12 @@ class Yumbox_Controller extends CI_Controller {
 				$data["user_name"] = $user->name;
 				$data["sign_out_link"] = "/logout";
 				
+				// retrieve total orders in the open basket
+				$open_basket = $this->order_basket_model->getOrCreateOpenBasket($user_id);
+				$order_count = $this->order_basket_model->getTotalOrdersInBasket($open_basket->id);
+				if ($order_count===false) $order_count = 0;
+				$data["order_count"] = $order_count;
+				
 				return $this->load->view("common_nav", $data, !$display);
 			}
 		}

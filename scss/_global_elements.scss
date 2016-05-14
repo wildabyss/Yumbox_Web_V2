@@ -98,16 +98,36 @@ nav{
 			margin: 0 10px 0 10px;
 		}
 		
-		#order_cart{
+		.cart{
+			position: relative;
 			display: block;
-			background-image: url("/imgs/bentobox.svg");
-			background-repeat: no-repeat;
-			background-position: center;
-			background-size: 40px 40px;
-			cursor: pointer;
+			overflow: auto;
 			
-			height: 50px;
-			width: 50px;
+			.order_cart{
+				display: block;
+				background-image: url("/imgs/bentobox.svg");
+				background-repeat: no-repeat;
+				background-position: center;
+				background-size: 40px 40px;
+				cursor: pointer;
+				
+				height: 50px;
+				width: 50px;
+			}
+			
+			#order_count{
+				position: absolute;
+				line-height: initial;
+				width: 20px;
+				height: 20px;
+				text-align: center;
+				top: 28px;
+				right: 3px;
+				
+				border: solid 1px $mediumGrey;
+				background-color: $mediumGrey;
+				color: white;
+			}
 		}
 		
 		// the clickable button for showing/hiding the user menu

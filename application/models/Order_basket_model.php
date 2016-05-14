@@ -69,7 +69,28 @@ class Order_basket_model extends CI_Model {
 	
 	
 	/**
-	 * Fetch all vendor information in the order basket
+	 * Attempt to fetch the open basket for $user_id
+	 * Create one if it doesn't exist
+	 */
+	public function getOrCreateOpenBasket($user_id){
+		do {
+			$order_basket = $this->getOpenBasketForUser($user_id);
+			if ($order_basket === false){
+				// create one if it doesn't exist
+				$res = $this->createOpenBasketForUser($user_id);
+				if ($res !== true){
+					throw new Exception($error);
+					return;
+				}
+			}
+		} while ($order_basket === false);
+		
+		return $order_basket;
+	}
+	
+	
+	/**
+	 * Fetch all vendors in the order basket
 	 */
 	public function getAllVendorsInBasket($basket_id){
 		$query = $this->db->query('
@@ -90,10 +111,51 @@ class Order_basket_model extends CI_Model {
 	}
 	
 	
+	/**
+	 * Fetch all food and order information for a given vendor in the basket
+	 */
 	public function getFoodsPerVendorInBasket($basket_id, $vendor_id){
-		/*$query = $this->db->query('
+		$query = $this->db->query('
 			select
-				f.id, f.name, f.alternate_name, f.price, f.prep_time_hours,
-				o.quantity)*/
+				f.id food_id, f.name, f.alternate_name, f.price, f.prep_time_hours,
+				o.id order_id, o.quantity,
+				p.path
+			from
+				order_item o
+			left join
+				food f
+			on f.id = o.food_id
+			left join
+				food_picture p
+			on p.food_id = f.id
+			where
+				o.order_basket_id = ?
+				and f.user_id = ?
+			group by f.id',
+			array(
+				$basket_id,
+				$vendor_id
+			)
+		);
+		
+		return $query->result();
+	}
+	
+	
+	/**
+	 * Fetch the total number of order items in the basket
+	 * @return false if failed
+	 */
+	public function getTotalOrdersInBasket($basket_id){
+		$query = $this->db->query('
+			select sum(o.quantity) total
+			from order_item o
+			where o.order_basket_id = ?', array($basket_id));
+		$results = $query->result();
+		
+		if (count($results)==0)
+			return false;
+		else
+			return $results[0]->total;
 	}
 }

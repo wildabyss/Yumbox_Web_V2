@@ -2,9 +2,11 @@
 	<h1 class="center title">MY YUMBOX</h1>
 	
 	<div class="button_container">
-		<a id="current_btn" class="ui-state-active" href="/customer/order/current">Current Order</a>
-		<a id="past_btn" href="/customer/order/basket">Past Orders</a>
+		<button id="btn_current" <?php if ($is_open_basket):?>class="ui-state-active"<?php endif?>>CURRENT</button>
+		<button id="btn_past" <?php if (!$is_open_basket):?>class="ui-state-active"<?php endif?>>PAST</button>
 	</div>
+	
+	<?php echo form_open("", array("id"=>"checkout_form"))?>
 	
 	<?php foreach ($vendors as $vendor):?>
 	<div class="vendor_section">
@@ -12,29 +14,70 @@
 			<h3><?php echo strtoupper($vendor->name)?></h3>
 		</div>
 		
+		<?php foreach ($foods_orders[$vendor->id] as $food_order):?>
 		<div class="order_item">
 			<div class="order_descr">
-				<a class="small_pic" style="background-image:url('/food_pics/Easy-Kung-Pao-Chicken-Recipe-48.jpg')"></a>
-				<h3>Best steak in town</h3>
+				<a class="small_pic" 
+					<?php if ($food_order->path !=""):?>
+					style="background-image:url('<?php echo $food_order->path?>')"
+					<?php endif?>
+				></a>
+				<h3><?php echo $food_order->name?></h3>
+				<?php if ($food_order->alternate_name != ""):?>
+				<h3><?php echo $food_order->alternate_name?></h3>
+				<?php endif?>
+				<div class="modify_order">
+					<a>Remove</a>
+				</div>
 			</div>
 			<div class="price_descr">
-				<h3 class="child">$20.00</h3>
+				<input class="quantity_food" name="quantity" value="<?php echo $food_order->quantity?>">
 				<a class="child">X</a>
-				<input class="quantity_food" name="value">
+				<h3 class="child">$<?php echo $food_order->price?></h3>
 			</div>
 		</div>
+		<?php endforeach?>
 	</div>
 	<?php endforeach?>
 	
 	<div class="total">
-	
+		<h3>TOTAL</h3>
+		<h3 class="total_amount">$<?php echo number_format($total_cost, 2)?></h3>
 	</div>
+	
+	<div class="action_buttons_container">
+		<button id="btn_update">Update</button>
+		<button id="btn_checkout">Checkout</button>
+	</div>
+	
+	<?php echo form_close()?>
 </section>
 
 <script>
-	$("#current_btn").button();
-	$("#past_btn").button();
+	$("#btn_current")
+		.button()
+		.click(function(e){
+			window.location = "/customer/order/current";
+		});
+	$("#btn_past")
+		.button()
+		.click(function(e){
+			window.location = "/customer/order/basket";
+		});
+	$("#btn_update").button();
+	$("#btn_checkout").button();
 	
 	// quantity spinners
-	$(".quantity_food").spinner();
+	$(".quantity_food").spinner({
+		min: 1
+	});
+	
+	// prevent default hover and focus behaviours on the buttons
+	$("<?php if (!$is_open_basket):?>#btn_past<?php else:?>#btn_current<?php endif?>").hover(function(){
+		$(this).toggleClass( "ui-state-active", true );
+	}).focusout(function(e){
+		$(this).addClass( "ui-state-active", true );
+		e.preventDefault();
+		e.stopPropagation();
+	});
 </script>

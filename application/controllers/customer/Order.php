@@ -2,25 +2,6 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Order extends Yumbox_Controller {
-	/**
-	 * Attempt to fetch the open basket for $user_id
-	 * Create one if it doesn't exist
-	 */
-	protected function getOrCreateOpenBasket($user_id){
-		do {
-			$order_basket = $this->order_basket_model->getOpenBasketForUser($user_id);
-			if ($order_basket === false){
-				// create one if it doesn't exist
-				$res = $this->order_basket_model->createOpenBasketForUser($user_id);
-				if ($res !== true){
-					throw new Exception($error);
-					return;
-				}
-			}
-		} while ($order_basket === false);
-		
-		return $order_basket;
-	}
 	
 	/**
 	 * Add order to the un-paid (open) order_basket
@@ -44,10 +25,10 @@ class Order extends Yumbox_Controller {
 		$user_id = $this->login_util->getUserId();
 		
 		// fetch open order basket
-		$open_basket = $this->getOrCreateOpenBasket($user_id);
+		$open_basket = $this->order_basket_model->getOrCreateOpenBasket($user_id);
 		
 		// add order to this basket
-		$res = $this->order_model->addOrderToBasket($food_id, $order_basket->id);
+		$res = $this->order_model->addOrderToBasket($food_id, $open_basket->id);
 		if ($res !== true){
 			throw new Exception($error);
 			return;
@@ -79,7 +60,8 @@ class Order extends Yumbox_Controller {
 		} else {
 			// get a particular order basket
 			
-			// fetch the basket with $basket_id
+			// Fetch the basket with $basket_id for our current user
+			// This is a security precaution
 			$order_basket = $this->order_basket_model->getOrderBasketForUser($basket_id, $user_id);
 			
 			if ($order_basket === false){
@@ -88,16 +70,25 @@ class Order extends Yumbox_Controller {
 				// is this the open basket?
 				$is_open_basket = $order_basket->payment_id =="";
 				
+				$total_cost = 0;
+				
 				// get vendor information
 				$vendors = $this->order_basket_model->getAllVendorsInBasket($basket_id);
 				
-				
-				
-				
-				
+				// get foods per vendor
+				$foods_orders = array();
+				foreach ($vendors as $vendor){
+					$foods_orders[$vendor->id] = $this->order_basket_model->getFoodsPerVendorInBasket($basket_id, $vendor->id);
+					foreach ($foods_orders[$vendor->id] as $food_order){
+						$total_cost += $food_order->quantity*$food_order->price;
+					}
+				}
+
 				// bind data
 				$data["is_open_basket"] = $is_open_basket;
 				$data["vendors"] = $vendors;
+				$data["foods_orders"] = $foods_orders;
+				$data["total_cost"] = $total_cost;
 				
 				// Load views
 				$this->header();
@@ -119,7 +110,7 @@ class Order extends Yumbox_Controller {
 		$user_id = $this->login_util->getUserId();
 		
 		// fetch open order basket
-		$open_basket = $this->getOrCreateOpenBasket($user_id);
+		$open_basket = $this->order_basket_model->getOrCreateOpenBasket($user_id);
 		
 		$this->basket($open_basket->id);
 	}
