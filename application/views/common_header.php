@@ -25,4 +25,5 @@
 		<!-- global js loading -->
 		<script src="/js/global.js"></script>
 	
+		<div id="haze"></div>
 		<div id="global">

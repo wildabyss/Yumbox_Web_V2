@@ -18,9 +18,11 @@
 				<?php else:?>
 					<li class="menu_item_kitchen"><a href="/vendor/profile">My Kitchen</a></li>
 					<li class="menu_item_dashboard"><a>Chef's Dashboard</a></li>
+					<li class="menu_item_settings"><a>User Settings</a></li>
 					<li class="menu_item_log"><a class="banner_button" href="<?php echo $sign_out_link?>">Log Out</a></li>
 				<?php endif?>
 				<li class="menu_item_about"><a href="/#about">About</a></li>
+				<li class="filler"></li>
 			</ul>
 			
 			<ul id="pc_nav_buttons_right">
@@ -36,6 +38,7 @@
 					<ul id="user_menu">
 						<li class="menu_item_kitchen"><a href="/vendor/profile">My Kitchen</a></li>
 						<li class="menu_item_dashboard"><a>Chef's Dashboard</a></li>
+						<li class="menu_item_settings"><a>User Settings</a></li>
 						<?php if (isset($sign_out_link)):?>
 						<li class="menu_item_logout"><a href="<?php echo $sign_out_link?>">Logout</a></li>
 						<?php endif?>
@@ -43,7 +46,7 @@
 				</li>
 				<li class="cart">
 					<?php if (isset($user_name)):?>
-						<a id="order_cart"></a>
+						<a id="order_cart" href="/customer/order"></a>
 					<?php endif?>
 				</li>
 			</ul>
@@ -58,24 +61,20 @@
 		// large screen user menu trigger
 		$('#user_menu_trigger').click(function(e){
 			if ($(this).hasClass("selected")){
-				$('#user_menu').slideUp(300);
+				hideUserMenu();
 			} else {
-				$('#user_menu').slideDown(300);
+				showUserMenu();
 			}
 			
-			$(this).toggleClass("selected");
+			e.stopPropagation();
+		});
+		$('li.filler').click(function(e){
 			e.stopPropagation();
 		});
 		
 		// small screen user menu trigger
 		$('#mobile_user_menu_trigger').click(function(e){
-			if ($(this).hasClass("selected")){
-				$('#mobile_user_menu').slideUp(300);
-			} else {
-				$('#mobile_user_menu').slideDown(300);
-			}
-			
-			$(this).toggleClass("selected");
+			showMobileMenu();
 			e.stopPropagation();
 		});
 	</script>

@@ -404,6 +404,35 @@ end//
 delimiter ;
 
 
+drop procedure if exists add_order;
+delimiter //
+create procedure add_order(in order_basket_id bigint unsigned, in food_id bigint unsigned, in quantity smallint unsigned)
+begin
+	declare o_id bigint unsigned;
+    
+    select o.id into o_id
+    from order_item o
+    where
+		o.food_id = food_id
+        and o.order_basket_id = order_basket_id;
+        
+	if (o_id is null) then
+		insert into order_item
+			(food_id, quantity, order_basket_id)
+		values
+			(food_id, quantity, order_basket_id);
+	else
+		update order_item o
+        set
+			o.quantity = o.quantity + quantity
+		where
+			o.order_basket_id = order_basket_id
+            and o.food_id = food_id;
+	end if;
+end//
+delimiter ;
+
+
 /** essential data **/
 insert into food_category (name, main) values ('dessert', 1); #1
 insert into food_category (name, main) values ('indian', 1); #2

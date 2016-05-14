@@ -2,17 +2,6 @@
 	max-width: 900px;
 	margin: 0 auto;
 	
-	.center{
-		text-align: center;
-	}
-
-	
-	.title{
-		padding-bottom: 5px;
-		border-bottom: solid 1px $darkGrey;
-		margin: 20px 0 5px 0;
-	}
-	
 	.tight_cluster{
 		margin: 0 auto;
 		margin-bottom: 40px;
@@ -56,12 +45,12 @@
 			position: absolute;
 			height: 100%;
 			width: 100%;
+			border: solid 1px $almostBlack;
 			
 			background-position: center;
 			background-repeat: no-repeat;
 			background-size: cover;
 			background-image: url('/imgs/image-not-available.gif');
-			border: solid 1px $almostBlack;
 		}
 	}
 	

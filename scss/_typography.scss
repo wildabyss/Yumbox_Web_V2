@@ -1,8 +1,8 @@
 // import font
-@font-face {
+/*@font-face {
 	font-family: 'ButlerStencil-Bold';
 	src: url("/font/Butler_Bold_Stencil.otf") format("opentype");
-}
+}*/
 
 // TYPOGRAPHY STYLES
 html{
@@ -18,6 +18,7 @@ body{
 h1{
 	font-family: $specialFont;
 	font-size: 3.8rem;
+	
 }
 
 h2{
@@ -65,4 +66,15 @@ a:visited {
 input {
 	font-size: 1.5rem;
 	border : 1px solid $darkGrey;
+}
+
+// centering text
+.center{
+	text-align: center;
+}
+
+.title{
+	padding-bottom: 5px;
+	border-bottom: solid 1px $darkGrey;
+	margin: 20px 0 5px 0;
 }

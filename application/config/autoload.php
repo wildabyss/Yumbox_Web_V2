@@ -143,5 +143,6 @@ $autoload['model'] = array(
 	'food_review_model',
 	'user_model',
 	'user_follow_model',
-	'order_model'
+	'order_model',
+	'order_basket_model'
 );

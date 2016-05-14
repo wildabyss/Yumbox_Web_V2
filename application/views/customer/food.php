@@ -18,7 +18,7 @@
 	</ul>
 	
 	<!-- add order form -->
-	<?php echo form_open($form_action, array('method'=>'get'))?>
+	<?php echo form_open($form_action)?>
 	<input type="hidden" name="redirect" value="<?php echo $_SERVER['REQUEST_URI']?>" />
 	
 	<div class="tight_cluster">
@@ -123,9 +123,5 @@
 </section>
 
 <script>
-	$("#add_to_order").button()
+	$("#add_to_order").button();
 </script>
-
-<section id="review_section">
-	
-</section>
