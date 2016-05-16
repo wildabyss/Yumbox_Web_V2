@@ -13,7 +13,8 @@
 		</div>
 		
 		<?php foreach ($foods_orders[$vendor->id] as $food_order):?>
-		<div class="order_item">
+		<div class="order_item" id="order_item_<?php echo $food_order->order_id?>">
+			<button class="btn_remove" order_id="<?php echo $food_order->order_id?>">X</button>
 			<div class="order_descr">
 				<a class="small_pic" 
 					<?php if ($food_order->path !=""):?>
@@ -24,12 +25,9 @@
 				<?php if ($food_order->alternate_name != ""):?>
 				<h3><?php echo $food_order->alternate_name?></h3>
 				<?php endif?>
-				<div class="modify_order">
-					<a class="btn_remove">Remove</a>
-				</div>
 			</div>
 			<div class="price_descr">
-				<input class="quantity_food" name="quantity" value="<?php echo $food_order->quantity?>">
+				<input class="quantity_food" order_id="<?php echo $food_order->order_id?>" value="<?php echo $food_order->quantity?>" />
 				<a class="child">X</a>
 				<h3 class="child">$<?php echo $food_order->price?></h3>
 			</div>
@@ -38,9 +36,13 @@
 	</div>
 	<?php endforeach?>
 	
+	<div id="no_items" <?php if (count($foods_orders)>0):?>style="display:none"<?php endif?>>
+		<p>No item in the cart.</p>
+	</div>
+	
 	<div class="total">
 		<h3>TOTAL</h3>
-		<h3 class="total_amount">$<?php echo number_format($total_cost, 2)?></h3>
+		<h3 id="total_amount">$<?php echo number_format($total_cost, 2)?></h3>
 	</div>
 	
 	<div class="action_buttons_container">
@@ -68,9 +70,43 @@
 			
 		});
 		
-	$(".btn_remove").click(function(e)){
-		
-	}
+	$(".btn_remove")
+		.button()
+		.click(function(e){
+			var order_id = $(this).attr("order_id");
+			
+			$.ajax({
+				type: 		"post",
+				url: 		"/customer/order/remove/"+order_id,
+				data:		csrfData,
+				success:	function(data){
+					var respArr = $.parseJSON(data);
+					if ("success" in respArr){
+						
+						// update order count
+						$("#order_count").html(respArr["order_count"]);
+						
+						// update total cost
+						$("#total_amount").html("$"+parseFloat(respArr["total_cost"]).toFixed(2));
+						
+						// parent of order item
+						var vendor_section = $("#order_item_"+order_id).parent();
+						
+						// remove order item from view
+						$("#order_item_"+order_id).remove();
+						if (vendor_section.children(".order_item").length == 0){
+							// remove parent
+							vendor_section.remove();
+						}
+						
+						// show no item
+						if (respArr["order_count"]==0){
+							$("#no_items").show();
+						}
+					}
+				}
+			});
+		});
 	
 	// quantity spinners
 	$(".quantity_food")
@@ -80,7 +116,30 @@
 				$(this).change();
 			}
 		}).change(function(e){
+			var order_id = $(this).attr("order_id");
+			var quantity = $(this).val();
 			
+			$.ajax({
+				type: 		"post",
+				url: 		"/customer/order/change/"+order_id+"/"+quantity,
+				data:		csrfData,
+				success:	function(data){
+					var respArr = $.parseJSON(data);
+					if ("success" in respArr){
+						
+						// update order count
+						$("#order_count").html(respArr["order_count"]);
+						
+						// update total cost
+						$("#total_amount").html("$"+parseFloat(respArr["total_cost"]).toFixed(2));
+						
+						// show no item
+						if (respArr["order_count"]==0){
+							$("#no_items").show();
+						}
+					}
+				}
+			});
 		});
 	
 	// prevent default hover and focus behaviours on the buttons

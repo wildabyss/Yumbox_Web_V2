@@ -18,7 +18,6 @@
 				<?php else:?>
 				<li class="menu_item_kitchen"><a href="/vendor/profile">My Kitchen</a></li>
 				<li class="menu_item_dashboard"><a>Chef's Dashboard</a></li>
-				<li class="menu_item_settings"><a>User Settings</a></li>
 				<li class="menu_item_log"><a class="banner_button" href="<?php echo $sign_out_link?>">Log Out</a></li>
 				<?php endif?>
 				<li class="menu_item_about"><a href="/#about">About</a></li>
@@ -38,7 +37,6 @@
 					<ul id="user_menu">
 						<li class="menu_item_kitchen"><a href="/vendor/profile">My Kitchen</a></li>
 						<li class="menu_item_dashboard"><a>Chef's Dashboard</a></li>
-						<li class="menu_item_settings"><a>User Settings</a></li>
 						<?php if (isset($sign_out_link)):?>
 						<li class="menu_item_logout"><a href="<?php echo $sign_out_link?>">Logout</a></li>
 						<?php endif?>

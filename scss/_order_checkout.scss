@@ -23,6 +23,7 @@
 		}
 		
 		.order_item{
+			position: relative;
 			margin-bottom: 30px;
 			display: flex;
 			flex-direction: row;
@@ -63,12 +64,19 @@
 				}
 			}
 			
-			.modify_order{
-				margin-top: 5px;
-			}
-			
-			.modify_order{
-				font-size: 1.3rem;
+			.btn_remove{
+				cursor: pointer;
+				position: absolute;
+				top: 0;
+				left: 0;
+				margin: 0;
+				width: 20px;
+				height: 20px;
+				
+				span{
+					padding: 0;
+					font-size: 1.3rem;
+				}
 			}
 		}
 	}
@@ -78,7 +86,7 @@
 		display:flex;
 		flex-direction: row;
 		
-		.total_amount{
+		#total_amount{
 			flex:1;
 			text-align: right;
 		}
@@ -87,5 +95,9 @@
 	.action_buttons_container{
 		margin-top: 30px;
 		float: right;
+	}
+	
+	#no_items{
+		text-align: center;
 	}
 }

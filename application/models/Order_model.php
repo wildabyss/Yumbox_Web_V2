@@ -22,30 +22,16 @@ class Order_model extends CI_Model {
 	
 	
 	/**
-	 * Add a single order to the $order_basket_id
+	 * Change the quantity field in order
 	 * @return true on success, error on failure
 	 */
-	public function addOrderToBasket($food_id, $order_basket_id){
-		if (!$query = $this->db->query('call add_order(?,?,?)', 
-			array($order_basket_id, $food_id, 1))){
-			
-			return $this->db->error();
-		}
-		
-		return true;
-	}
-	
-	
-	/**
-	 * Remove order from $order_basket_id
-	 * @return true on success, error on failure
-	 */
-	public function removeOrderFromBasket($order_id, $order_basket_id){
-		if (!$query = $this->db->query('
-			delete from order_item o 
+	public function changeOrderQuantity($order_id, $quantity){
+		if (!$this->db->query('
+			update order_item 
+			set
+				quantity = ?
 			where
-				o.order_basket_id = ?
-				and o.id = ?', array($order_basket_id, $order_id))){
+				id = ?', array($quantity, $order_id))){
 			
 			return $this->db->error();
 		}

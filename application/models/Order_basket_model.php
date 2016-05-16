@@ -156,6 +156,63 @@ class Order_basket_model extends CI_Model {
 		if (count($results)==0)
 			return false;
 		else
-			return $results[0]->total;
+			return $results[0]->total==""?0:$results[0]->total;
+	}
+	
+	
+	/**
+	 * Fetch the total cost in the order_basket
+	 */
+	public function getTotalCostInBasket($basket_id){
+		$query = $this->db->query('
+			select 
+				sum(f.price*o.quantity) total
+			from 
+				order_item o
+			left join food f
+			on f.id = o.food_id
+			where 
+				o.order_basket_id = ?
+			group by 
+				o.order_basket_id', array($basket_id));
+		$results = $query->result();
+		
+		if (count($results)==0)
+			return 0;
+		else
+			return $results[0]->total==""?0:$results[0]->total;
+	}
+	
+	
+	/**
+	 * Add a single order to the $order_basket_id
+	 * @return true on success, error on failure
+	 */
+	public function addOrderToBasket($food_id, $order_basket_id){
+		if (!$this->db->query('call add_order(?,?,?)', 
+			array($order_basket_id, $food_id, 1))){
+			
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Remove order from $order_basket_id
+	 * @return true on success, error on failure
+	 */
+	public function removeOrderFromBasket($order_id, $order_basket_id){
+		if (!$this->db->query('
+			delete from order_item
+			where
+				order_basket_id = ?
+				and id = ?', array($order_basket_id, $order_id))){
+
+			return $this->db->error();
+		}
+		
+		return true;
 	}
 }

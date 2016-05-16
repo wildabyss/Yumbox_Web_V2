@@ -1222,6 +1222,7 @@ div.about_text h1 {
 }
 
 #order_checkout .vendor_section .order_item {
+  position: relative;
   margin-bottom: 30px;
   display: flex;
   flex-direction: row;
@@ -1263,11 +1264,18 @@ div.about_text h1 {
   width: 20px;
 }
 
-#order_checkout .vendor_section .order_item .modify_order {
-  margin-top: 5px;
+#order_checkout .vendor_section .order_item .btn_remove {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  width: 20px;
+  height: 20px;
 }
 
-#order_checkout .vendor_section .order_item .modify_order {
+#order_checkout .vendor_section .order_item .btn_remove span {
+  padding: 0;
   font-size: 1.3rem;
 }
 
@@ -1277,7 +1285,7 @@ div.about_text h1 {
   flex-direction: row;
 }
 
-#order_checkout .total .total_amount {
+#order_checkout .total #total_amount {
   flex: 1;
   text-align: right;
 }
@@ -1285,4 +1293,8 @@ div.about_text h1 {
 #order_checkout .action_buttons_container {
   margin-top: 30px;
   float: right;
+}
+
+#order_checkout #no_items {
+  text-align: center;
 }

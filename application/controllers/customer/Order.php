@@ -2,6 +2,20 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Order extends Yumbox_Controller {
+	/**
+	 * Return the open basket for the current user
+	 * This method assumes that the login exists and is valid
+	 */
+	protected function getOpenBasket(){
+		// get logged in user
+		$user_id = $this->login_util->getUserId();
+		
+		// fetch open order basket
+		$open_basket = $this->order_basket_model->getOrCreateOpenBasket($user_id);
+		
+		return $open_basket;
+	}
+	
 	
 	/**
 	 * AJAX method
@@ -28,15 +42,12 @@ class Order extends Yumbox_Controller {
 			echo json_encode($json_arr);
 			return;
 		}
-		
-		// get logged in user
-		$user_id = $this->login_util->getUserId();
-		
+
 		// fetch open order basket
-		$open_basket = $this->order_basket_model->getOrCreateOpenBasket($user_id);
+		$open_basket = $this->getOpenBasket();
 		
 		// add order to this basket
-		$res = $this->order_model->addOrderToBasket($food_id, $open_basket->id);
+		$res = $this->order_basket_model->addOrderToBasket($food_id, $open_basket->id);
 		if ($res !== true){
 			$json_arr["error"] = $res;
 			echo json_encode($json_arr);
@@ -75,15 +86,11 @@ class Order extends Yumbox_Controller {
 			return;
 		}
 		
-		// get logged in user
-		$user_id = $this->login_util->getUserId();
-		
 		// fetch open order basket
-		$open_basket = $this->order_basket_model->getOrCreateOpenBasket($user_id);
+		$open_basket = $this->getOpenBasket();
 		
 		// delete order from open basket
-		$res = $this->order_model->removeOrderFromBasket($order_id, $open_basket->id);
-		
+		$res = $this->order_basket_model->removeOrderFromBasket($order_id, $open_basket->id);
 		if ($res !== true){
 			$json_arr["error"] = $res;
 			echo json_encode($json_arr);
@@ -98,8 +105,70 @@ class Order extends Yumbox_Controller {
 			return;
 		}
 		
+		// fetch total cost in basket
+		$total_cost = $this->order_basket_model->getTotalCostInBasket($open_basket->id);
+		if ($total_cost === false){
+			$json_arr["error"] = "unknown database error";
+			echo json_encode($json_arr);
+			return;
+		}
+		
 		$json_arr["success"] = "1";
 		$json_arr["order_count"] = $total_items;
+		$json_arr["total_cost"] = $total_cost;
+		echo json_encode($json_arr);
+	}
+	
+	
+	public function change($order_id = false, $quantity = false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// ensure we have valid quantity
+		if ($quantity <= 0){
+			$json_arr["error"] = "incorrect quantity";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// fetch open order basket
+		$open_basket = $this->getOpenBasket();
+		
+		// change order quantity
+		$res = $this->order_model->changeOrderQuantity($order_id, $quantity);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// fetch number of items in basket
+		$total_items = $this->order_basket_model->getTotalOrdersInBasket($open_basket->id);
+		if ($total_items === false){
+			$json_arr["error"] = "unknown database error";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// fetch total cost in basket
+		$total_cost = $this->order_basket_model->getTotalCostInBasket($open_basket->id);
+		if ($total_cost === false){
+			$json_arr["error"] = "unknown database error";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		$json_arr["success"] = "1";
+		$json_arr["order_count"] = $total_items;
+		$json_arr["total_cost"] = $total_cost;
 		echo json_encode($json_arr);
 	}
 
@@ -136,7 +205,8 @@ class Order extends Yumbox_Controller {
 				// is this the open basket?
 				$is_open_basket = $order_basket->payment_id =="";
 				
-				$total_cost = 0;
+				// total cost
+				$total_cost = $this->order_basket_model->getTotalCostInBasket($basket_id);
 				
 				// get vendor information
 				$vendors = $this->order_basket_model->getAllVendorsInBasket($basket_id);
@@ -145,9 +215,6 @@ class Order extends Yumbox_Controller {
 				$foods_orders = array();
 				foreach ($vendors as $vendor){
 					$foods_orders[$vendor->id] = $this->order_basket_model->getFoodsPerVendorInBasket($basket_id, $vendor->id);
-					foreach ($foods_orders[$vendor->id] as $food_order){
-						$total_cost += $food_order->quantity*$food_order->price;
-					}
 				}
 
 				// bind data
@@ -172,11 +239,8 @@ class Order extends Yumbox_Controller {
 			redirect("/login?redirect=".urlencode('/customer/order'), 'refresh');
 		}
 		
-		// get logged in user
-		$user_id = $this->login_util->getUserId();
-		
 		// fetch open order basket
-		$open_basket = $this->order_basket_model->getOrCreateOpenBasket($user_id);
+		$open_basket = $this->getOpenBasket();
 		
 		$this->basket($open_basket->id);
 	}
