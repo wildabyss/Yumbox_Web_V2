@@ -88,12 +88,18 @@
 		text-decoration: none;
 	}
 	
-	a.rush:hover{
+	a.rush{
 		border-color: $rush_selected;
 	}
+	a.rush:hover{
+		background-color: $rush_selected;
+	}
 	
-	a.explore:hover{
+	a.explore{
 		border-color: $explore_selected;
+	}
+	a.explore:hover{
+		background-color: $explore_selected;
 	}
 	
 	h2{

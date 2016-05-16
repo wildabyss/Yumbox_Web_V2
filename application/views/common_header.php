@@ -24,6 +24,11 @@
 		
 		<!-- global js loading -->
 		<script src="/js/global.js"></script>
+		<script>
+			// csrf token
+			var csrfData = {};
+			csrfData["<?php echo $this->security->get_csrf_token_name()?>"] = "<?php echo $this->security->get_csrf_hash()?>";
+		</script>
 	
 		<div id="haze"></div>
 		<div id="global">

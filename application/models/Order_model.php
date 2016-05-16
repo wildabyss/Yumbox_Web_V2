@@ -34,4 +34,22 @@ class Order_model extends CI_Model {
 		
 		return true;
 	}
+	
+	
+	/**
+	 * Remove order from $order_basket_id
+	 * @return true on success, error on failure
+	 */
+	public function removeOrderFromBasket($order_id, $order_basket_id){
+		if (!$query = $this->db->query('
+			delete from order_item o 
+			where
+				o.order_basket_id = ?
+				and o.id = ?', array($order_basket_id, $order_id))){
+			
+			return $this->db->error();
+		}
+		
+		return true;
+	}
 }

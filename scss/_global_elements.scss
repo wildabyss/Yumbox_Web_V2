@@ -186,7 +186,7 @@ nav{
 			line-height: 50px;
 			border-top: solid 1px $grey;
 			display: block;
-			
+			white-space:nowrap;
 		}
 		li.menu_item_about{
 			border-bottom: solid 1px $grey;
@@ -251,7 +251,7 @@ nav{
 
 // is open/closed
 .is_open{
-	display: inline-block;
+	display: block;
 	width: 200px;
 	height: 30px;
 	line-height: 30px;

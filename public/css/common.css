@@ -427,6 +427,7 @@ nav ul#mobile_user_menu li {
   line-height: 50px;
   border-top: solid 1px #e3e0d8;
   display: block;
+  white-space: nowrap;
 }
 
 nav ul#mobile_user_menu li.menu_item_about {
@@ -481,7 +482,7 @@ nav ul#mobile_user_menu a.logo {
 }
 
 .is_open {
-  display: inline-block;
+  display: block;
   width: 200px;
   height: 30px;
   line-height: 30px;
@@ -634,12 +635,20 @@ nav ul#mobile_user_menu a.logo {
   text-decoration: none;
 }
 
-#menu_mega_selection a.rush:hover {
+#menu_mega_selection a.rush {
   border-color: #F5BDA3;
 }
 
-#menu_mega_selection a.explore:hover {
+#menu_mega_selection a.rush:hover {
+  background-color: #F5BDA3;
+}
+
+#menu_mega_selection a.explore {
   border-color: #95d1d1;
+}
+
+#menu_mega_selection a.explore:hover {
+  background-color: #95d1d1;
 }
 
 #menu_mega_selection h2 {
@@ -1083,6 +1092,10 @@ div.about_text h1 {
   #food_detail .about_dish .about_dish_section {
     width: 100%;
   }
+  #food_detail .is_open {
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 #login_section {
@@ -1177,6 +1190,10 @@ div.about_text h1 {
   }
   #profile_intro .intro_wrapper h3 {
     text-align: center;
+  }
+  #profile_intro .is_open {
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 

@@ -17,10 +17,6 @@
 		<?php endif?>
 	</ul>
 	
-	<!-- add order form -->
-	<?php echo form_open($form_action)?>
-	<input type="hidden" name="redirect" value="<?php echo $_SERVER['REQUEST_URI']?>" />
-	
 	<div class="tight_cluster">
 		<div class="order_info">
 			<h3>Can Deliver</h3>
@@ -41,7 +37,6 @@
 		<h3 class="is_closed">KITCHEN CLOSED</h3>
 		<?php endif?>
 	</div>
-	<?php echo form_close()?>
 	
 	<h2 class="title center">ABOUT THE DISH</h2>
 	<div class="about_dish">
@@ -123,5 +118,23 @@
 </section>
 
 <script>
-	$("#add_to_order").button();
+	$("#add_to_order")
+		.button()
+		.click(function(e){
+			<?php if ($current_user === false):?>
+			window.location.href = "/login?redirect=<?php echo urlencode($_SERVER['REQUEST_URI'])?>";
+			<?php else:?>
+			$.ajax({
+				type: 		"post",
+				url: 		"/customer/order/add/<?php echo $food->food_id?>",
+				data:		csrfData,
+				success:	function(data){
+					var respArr = $.parseJSON(data);
+					if ("success" in respArr){
+						$("#order_count").html(respArr["order_count"]);
+					}
+				}
+			});
+			<?php endif?>
+		});
 </script>

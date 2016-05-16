@@ -150,6 +150,13 @@ class Menu extends Yumbox_Controller {
 	}
 
 	public function item($food_id=false){
+		// check if user has logged in
+		if ($this->login_util->isUserLoggedIn()){
+			$current_user = $this->login_util->getUserId();
+		} else{
+			$current_user = false;
+		}
+		
 		// get food data
 		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
 		if ($food === false){
@@ -183,7 +190,7 @@ class Menu extends Yumbox_Controller {
 		$data['categories'] = $categories;
 		$data['reviews'] = $reviews;
 		$data['user_pictures'] = $user_pictures;
-		$data['form_action'] = "/customer/order/add/{$food_id}";
+		$data['current_user'] = $current_user;
 		
 		// Load views
 		$this->header();

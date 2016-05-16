@@ -24,3 +24,11 @@ function limit_text($text, $limit) {
 	}
 	return $text;
 }
+
+
+/**
+ * Check whether the current request is POST
+ */
+function is_post_request(){
+	return ($_SERVER['REQUEST_METHOD'] == "post" || $_SERVER['REQUEST_METHOD'] == "POST");
+}

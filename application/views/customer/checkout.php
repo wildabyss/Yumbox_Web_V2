@@ -6,8 +6,6 @@
 		<button id="btn_past" <?php if (!$is_open_basket):?>class="ui-state-active"<?php endif?>>PAST</button>
 	</div>
 	
-	<?php echo form_open("", array("id"=>"checkout_form"))?>
-	
 	<?php foreach ($vendors as $vendor):?>
 	<div class="vendor_section">
 		<div class="title">
@@ -27,7 +25,7 @@
 				<h3><?php echo $food_order->alternate_name?></h3>
 				<?php endif?>
 				<div class="modify_order">
-					<a>Remove</a>
+					<a class="btn_remove">Remove</a>
 				</div>
 			</div>
 			<div class="price_descr">
@@ -46,11 +44,8 @@
 	</div>
 	
 	<div class="action_buttons_container">
-		<button id="btn_update">Update</button>
 		<button id="btn_checkout">Checkout</button>
 	</div>
-	
-	<?php echo form_close()?>
 </section>
 
 <script>
@@ -59,18 +54,34 @@
 		.click(function(e){
 			window.location = "/customer/order/current";
 		});
+		
 	$("#btn_past")
 		.button()
 		.click(function(e){
 			window.location = "/customer/order/basket";
 		});
-	$("#btn_update").button();
-	$("#btn_checkout").button();
+		
+	$("#btn_checkout")
+		.button()
+		.click(function(e){
+			
+			
+		});
+		
+	$(".btn_remove").click(function(e)){
+		
+	}
 	
 	// quantity spinners
-	$(".quantity_food").spinner({
-		min: 1
-	});
+	$(".quantity_food")
+		.spinner({
+			min: 1,
+			stop:function(e){
+				$(this).change();
+			}
+		}).change(function(e){
+			
+		});
 	
 	// prevent default hover and focus behaviours on the buttons
 	$("<?php if (!$is_open_basket):?>#btn_past<?php else:?>#btn_current<?php endif?>").hover(function(){
