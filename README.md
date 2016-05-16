@@ -43,6 +43,8 @@ $config['featured_rush_id']		= int;
 $config['featured_explore_id']	= int;
 ```
 
+6. If this is the production environment, create file _prd.txt in root
+
 ## Server Setup ##
 
 1. Make sure root password is secure
