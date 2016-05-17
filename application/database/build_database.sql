@@ -216,13 +216,14 @@ create table food_review
 drop table if exists credit_card;
 create table if not exists credit_card(
 	id bigint unsigned not null auto_increment,
-    exp_month tinyint unsigned not null,
-    exp_year smallint unsigned not null,
-    last4 smallint unsigned not null,
-    type varchar(10) not null,		# Visa, Master
     
     stripe_cust_id varchar(50),
     stripe_card_id varchar(50),
+    
+    exp_month tinyint unsigned,
+    exp_year smallint unsigned,
+    last4 smallint unsigned,
+    type varchar(10),		# Visa, Master
     
     primary key (id),
     index stripe_cust_id_index (stripe_cust_id),
@@ -295,6 +296,36 @@ create table order_item
         on delete cascade
 ) engine = InnoDB;
 
+drop table if exists refund;
+create table refund
+(
+	id bigint unsigned not null auto_increment,
+    user_id int unsigned not null,
+    payment_id bigint unsigned not null,
+    type tinyint unsigned not null,		# 0 = from customer, 1 = from chef
+    order_item_id bigint unsigned not null,
+    
+    explanation text,
+    
+    primary key (id),
+    index refund_user_id_index (user_id),
+    index refund_payment_id_index (payment_id),
+    index refund_order_item_index (order_item_id),
+    
+    constraint refund_user_id_constraint
+		foreign key (user_id)
+        references user (id)
+        on delete restrict,
+	constraint refund_payment_id_constraint
+		foreign key (payment_id)
+        references payment (id)
+        on delete restrict,
+	constraint refund_order_item_constraint
+		foreign key (order_item_id)
+        references order_item (id)
+        on delete restrict
+) engine = InnoDB;
+
 drop table if exists ci_sessions;
 CREATE TABLE IF NOT EXISTS `ci_sessions` (
         `id` varchar(40) NOT NULL,
@@ -310,25 +341,25 @@ delimiter //
 create procedure add_user(in user_type tinyint unsigned, in name varchar(255), in email varchar(255),
 	in fb_id varchar(25), in google_id varchar(25))
 begin
-	set @id = null;
+	declare id int unsigned;
 	
     if (fb_id is not null) then
-		select u.id into @id
+		select u.id into id
         from user u
         where
 			u.fb_id = fb_id;
             
-		if (@id is null) then
+		if (id is null) then
 			insert into user (user_type, status, date_joined, name, email, fb_id)
             values (user_type, 1, now(), name, email, fb_id);
 		end if;
     elseif (google_id is not null) then
-		select u.id into @id
+		select u.id into id
         from user u
         where
 			u.google_id = google_id;
             
-		if (@id is null) then
+		if (id is null) then
 			insert into user (user_type, status, date_joined, name, email, google_id)
             values (user_type, 1, now(), name, email, google_id);
 		end if;
@@ -342,15 +373,15 @@ drop procedure if exists add_user_follower;
 delimiter //
 create procedure add_user_follower(in user_id int unsigned, in vendor_id int unsigned)
 begin
-	set @exist = null;
+	declare exist bigint unsigned;
     
-    select a.id into @exist
+    select a.id into exist
     from user_follow_assoc a
     where
 		a.user_id = user_id
         and a.vendor_id = vendor_id;
         
-	if (@exist is null) then
+	if (exist is null) then
 		insert into user_follow_assoc (user_id, vendor_id)
         values (user_id, vendor_id);
     end if;
@@ -400,6 +431,33 @@ begin
 	end if;
     
     return total;
+end//
+delimiter ;
+
+
+drop procedure if exists add_payment;
+delimiter //
+create procedure add_payment(in amount decimal(8,2), in stripe_id varchar(50), out payment_id bigint unsigned)
+begin
+	declare p_id bigint unsigned;
+    
+    select p.id into p_id
+    from payment p
+    where
+		p.stripe_charge_id = stripe_id;
+        
+	if (p_id is null) then
+		insert into payment
+			(amount, stripe_charge_id, payment_date)
+		values
+			(amount, stripe_id, now());
+		
+        /* get payment id */
+		select last_insert_id() into payment_id;
+	else
+		signal sqlstate '45000'
+			set message_text = 'stripe payment exists';
+	end if;
 end//
 delimiter ;
 

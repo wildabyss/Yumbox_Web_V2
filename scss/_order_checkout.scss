@@ -1,7 +1,7 @@
 #basket_view{
 	max-width: 900px;
 	margin: 0 auto;
-	overflow: auto;
+	margin-bottom: 40px;
 	
 	button{
 		margin: 0 0 0 10px;
@@ -17,6 +17,20 @@
 	.vendor_section{
 		.title{
 			margin-bottom: 20px;
+		}
+		
+		.pickup{
+			display: flex;
+			flex-direction: row;
+			
+			.location{
+				margin-right: 10px;
+			}
+			
+			.time{
+				margin-left: 30px;
+				margin-right: 10px;
+			}
 		}
 		
 		h3{
@@ -99,22 +113,41 @@
 	
 	.action_buttons_container{
 		margin-top: 30px;
-		float: right;
+		overflow: auto;
+		
+		button{
+			float: right;
+		}
 	}
 	
 	#no_items{
 		text-align: center;
 	}
-}
-
-
-#order_checkout{
-	max-width: 900px;
-	margin: 0 auto;
 	
-	.action_buttons_container{
-		margin-top: 30px;
-		float: right;
+	#order_checkout{
+		display: none;
+		
+		.payment_info{		
+			label{
+				width: 150px;
+				display: inline-block;
+			}
+			
+			input{
+				width: 200px;
+			}
+			
+			#exp_year{
+				width: 30px;
+			}
+			#exp_month{
+				width: 30px
+			}
+			
+			#cvc{
+				width: 50px;
+			}
+		}
 	}
 }
 

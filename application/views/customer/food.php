@@ -130,7 +130,17 @@
 					var respArr = $.parseJSON(data);
 					if ("success" in respArr){
 						$("#order_count").html(respArr["order_count"]);
+						
+						// display message
+						successMessage("Dish added");
+					} else {
+						// error
+						errorMessage(respArr["error"]);
 					}
+				},
+				error:		function(){
+					// error
+					errorMessage("Unable to process");
 				}
 			});
 			<?php endif?>

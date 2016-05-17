@@ -25,13 +25,14 @@ class Order_model extends CI_Model {
 	 * Change the quantity field in order
 	 * @return true on success, error on failure
 	 */
-	public function changeOrderQuantity($order_id, $quantity){
+	public function changeOrderQuantity($order_id, $basket_id, $quantity){
 		if (!$this->db->query('
 			update order_item 
 			set
 				quantity = ?
 			where
-				id = ?', array($quantity, $order_id))){
+				id = ?
+				and order_basket_id = ?', array($quantity, $order_id, $basket_id))){
 			
 			return $this->db->error();
 		}

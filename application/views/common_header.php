@@ -31,4 +31,5 @@
 		</script>
 	
 		<div id="haze"></div>
+		<div id="top_status"></div>
 		<div id="global">

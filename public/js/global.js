@@ -35,6 +35,39 @@ var restoreScroll = function(){
 	});
 };
 
+var successMessage = function(msg){
+	$("#top_status")
+		.clearQueue()
+		.attr("class", "success")
+		.html(msg)
+		.fadeIn(300)
+		.delay(1500)
+		.fadeOut(300);
+};
+
+var errorMessage = function(msg){
+	$("#top_status")
+		.stop()
+		.attr("class", "warning")
+		.html(msg)
+		.fadeIn(300)
+		.delay(4000)
+		.fadeOut(300);
+};
+
+var statusMessageOn = function(msg){
+	$("#top_status")
+		.stop()
+		.attr("class", "")
+		.html(msg)
+		.fadeIn(300)
+}
+var statusMessageOff = function(){
+	$("#top_status")
+		.stop()
+		.fadeOut(300)
+}
+
 $(document).ready(function(){
 	// global click action
 	$('html').click(function() {

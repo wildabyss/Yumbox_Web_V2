@@ -25,6 +25,29 @@ div#global{
 	display: none;
 }
 
+// top status message
+#top_status{
+	width: 200px;
+	background-color: white;
+	z-index: 6000;
+	position: fixed;
+	top: 0;
+	margin: 10px auto;
+	left: 0;
+	right: 0;
+	text-align: center;
+	padding: 5px;
+	display: none;
+	font-size: 1.3rem;
+	font-weight: bold;
+}
+#top_status.warning{
+	color: $red;
+}
+#top_status.success{
+	color: $green;
+}
+
 // top navigation bar
 nav{
 	height:10vh;

@@ -6,7 +6,7 @@ The front-end and back-end of the server-side Yumbox application for home cookin
 
 - PHP 5.6 or higher
 - MySQL 5.6 or higher
-- Apache or IIS
+- Sass (install via rubygems)
 
 ## Application Setup ##
 

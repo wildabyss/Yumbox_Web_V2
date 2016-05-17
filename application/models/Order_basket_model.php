@@ -10,7 +10,7 @@ class Order_basket_model extends CI_Model {
 	public function getOrderBasketForUser($basket_id, $user_id){
 		$query = $this->db->query('
 			select
-				b.order_date, b.delivery_address, b.is_filled, b.payment_id
+				b.id, b.order_date, b.delivery_address, b.is_filled, b.payment_id
 			from
 				order_basket b
 			where
@@ -95,13 +95,16 @@ class Order_basket_model extends CI_Model {
 	public function getAllVendorsInBasket($basket_id){
 		$query = $this->db->query('
 			select
-				u.id, u.name, u.is_open
+				u.id, u.name, u.is_open,
+				a.address, a.city, a.province, a.postal_code, a.country
 			from
 				order_item o
 			left join food f
 			on f.id = o.food_id
 			left join user u
 			on u.id = f.user_id
+			left join address a
+			on a.user_id = u.id
 			where
 				o.order_basket_id = ?
 			group by

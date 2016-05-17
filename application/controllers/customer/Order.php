@@ -72,7 +72,7 @@ class Order extends Yumbox_Controller {
 	 * AJAX method
 	 * Remove order from the un-paid (open) order_basket
 	 * echo json string:
-	 *   {success, order_count, error}
+	 *   {success, order_count, total_cost, error}
 	 */
 	public function remove($order_id=false){
 		// ensure we have POST request
@@ -120,6 +120,12 @@ class Order extends Yumbox_Controller {
 	}
 	
 	
+	/**
+	 * AJAX method
+	 * Change order quantity
+	 * echo json string:
+	 *   {success, order_count, total_cost, error}
+	 */
 	public function change($order_id = false, $quantity = false){
 		// ensure we have POST request
 		if (!is_post_request())
@@ -143,7 +149,7 @@ class Order extends Yumbox_Controller {
 		$open_basket = $this->getOpenBasket();
 		
 		// change order quantity
-		$res = $this->order_model->changeOrderQuantity($order_id, $quantity);
+		$res = $this->order_model->changeOrderQuantity($order_id, $open_basket->id, $quantity);
 		if ($res !== true){
 			$json_arr["error"] = $res;
 			echo json_encode($json_arr);
@@ -171,6 +177,74 @@ class Order extends Yumbox_Controller {
 		$json_arr["total_cost"] = $total_cost;
 		echo json_encode($json_arr);
 	}
+	
+	
+	/**
+	 * AJAX method
+	 * Make credit card payment
+	 * echo json string:
+	 *   {success, basket_id, error}
+	 */
+	public function payment($basket_id=false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current open basket
+		$open_basket = $this->getOpenBasket();
+		if ($open_basket->id != $basket_id){
+			$json_arr["error"] = "open basket does not match";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get total amount
+		$amount = $this->order_basket_model->getTotalCostInBasket($open_basket->id);
+		$item_count = $this->order_basket_model->getTotalOrdersInBasket($open_basket->id);
+		if ($amount <= 0 && $item_count <= 0){
+			$json_arr["error"] = "basket empty";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get Stripe token
+		$stripe_token = $this->input->post("token");
+		$stripe_private_key = $this->config->item("stripe_secret_key");
+		Stripe\Stripe::setApiKey($stripe_private_key);
+		
+		// charge Stripe
+		try {
+			$charge = Stripe\Charge::create(array(
+				"amount"		=> $amount*100,	// amount in cents
+				"currency"		=> "cad",
+				"source"		=> $stripe_token,
+				"metadata"		=> array("basket_id" => $open_basket->id)
+			));
+		} catch (Stripe\Error\Card $e){
+			$json_arr["error"] = $e->getMessage();
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// save entry to database
+		$res = $this->payment_model->payOpenBasket($amount, $open_basket->id, $charge->id);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		$json_arr["success"] = "1";
+		$json_arr["basket_id"] = $open_basket->id;
+		echo json_encode($json_arr);
+	}
 
 	
 	public function basket($basket_id=false){
@@ -190,7 +264,7 @@ class Order extends Yumbox_Controller {
 			// Load views
 			$this->header();
 			$this->navigation();
-			$this->load->view("customer/checkout");
+			$this->load->view("customer/basket");
 			$this->footer();
 		} else {
 			// get a particular order basket
@@ -218,6 +292,7 @@ class Order extends Yumbox_Controller {
 				}
 
 				// bind data
+				$data["order_basket"] = $order_basket;
 				$data["is_open_basket"] = $is_open_basket;
 				$data["vendors"] = $vendors;
 				$data["foods_orders"] = $foods_orders;
@@ -226,7 +301,7 @@ class Order extends Yumbox_Controller {
 				// Load views
 				$this->header();
 				$this->navigation();
-				$this->load->view("customer/checkout", $data);
+				$this->load->view("customer/basket", $data);
 				$this->footer();
 			}
 		}

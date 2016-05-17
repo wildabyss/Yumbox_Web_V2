@@ -32,3 +32,10 @@ function limit_text($text, $limit) {
 function is_post_request(){
 	return ($_SERVER['REQUEST_METHOD'] == "post" || $_SERVER['REQUEST_METHOD'] == "POST");
 }
+
+
+function send_to_google_maps($address, $city, $province, $postal_code){
+	$str = $address." ".$city." ".$province." ".$postal_code;
+	$str = str_replace(" ", "+", $str);
+	return "https://www.google.ca/maps/place/$str";
+}

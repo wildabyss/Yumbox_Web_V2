@@ -283,6 +283,30 @@ div#global {
   display: none;
 }
 
+#top_status {
+  width: 200px;
+  background-color: white;
+  z-index: 6000;
+  position: fixed;
+  top: 0;
+  margin: 10px auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 5px;
+  display: none;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+#top_status.warning {
+  color: #ed7a5d;
+}
+
+#top_status.success {
+  color: #006622;
+}
+
 nav {
   height: 10vh;
   width: 100%;
@@ -1236,7 +1260,7 @@ div.about_text h1 {
 #basket_view {
   max-width: 900px;
   margin: 0 auto;
-  overflow: auto;
+  margin-bottom: 40px;
 }
 
 #basket_view button {
@@ -1252,6 +1276,20 @@ div.about_text h1 {
 
 #basket_view .vendor_section .title {
   margin-bottom: 20px;
+}
+
+#basket_view .vendor_section .pickup {
+  display: flex;
+  flex-direction: row;
+}
+
+#basket_view .vendor_section .pickup .location {
+  margin-right: 10px;
+}
+
+#basket_view .vendor_section .pickup .time {
+  margin-left: 30px;
+  margin-right: 10px;
 }
 
 #basket_view .vendor_section h3 {
@@ -1333,6 +1371,10 @@ div.about_text h1 {
 
 #basket_view .action_buttons_container {
   margin-top: 30px;
+  overflow: auto;
+}
+
+#basket_view .action_buttons_container button {
   float: right;
 }
 
@@ -1340,14 +1382,29 @@ div.about_text h1 {
   text-align: center;
 }
 
-#order_checkout {
-  max-width: 900px;
-  margin: 0 auto;
+#basket_view #order_checkout {
+  display: none;
 }
 
-#order_checkout .action_buttons_container {
-  margin-top: 30px;
-  float: right;
+#basket_view #order_checkout .payment_info label {
+  width: 150px;
+  display: inline-block;
+}
+
+#basket_view #order_checkout .payment_info input {
+  width: 200px;
+}
+
+#basket_view #order_checkout .payment_info #exp_year {
+  width: 30px;
+}
+
+#basket_view #order_checkout .payment_info #exp_month {
+  width: 30px;
+}
+
+#basket_view #order_checkout .payment_info #cvc {
+  width: 50px;
 }
 
 @media (max-width: 600px) {
