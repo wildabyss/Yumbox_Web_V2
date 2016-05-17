@@ -17,8 +17,22 @@
 		
 		.price{
 			flex: 1;
-			text-align: right;
+			text-align: left;
 			margin-right: 20px;
+		}
+		
+		.orders{
+			flex: 1;
+		}
+		
+		.rating{
+			flex: 1;
+			text-align: center;
+		}
+		
+		.time{
+			flex: 1;
+			text-align: right;
 		}
 		
 		#add_to_order{
@@ -93,6 +107,10 @@
 			background-image: url('/imgs/profile.svg');
 			border: solid 1px $almostBlack;
 		}
+		
+		.review_info{
+			flex: 1;
+		}
 	}
 }
 
@@ -112,6 +130,12 @@
 		.about_dish{
 			.about_dish_section{
 				width: 100%;
+			}
+		}
+		
+		.order_info{
+			.no_mobile{
+				display: none;
 			}
 		}
 		

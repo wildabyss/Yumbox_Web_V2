@@ -1,6 +1,7 @@
-#order_checkout{
+#basket_view{
 	max-width: 900px;
 	margin: 0 auto;
+	overflow: auto;
 	
 	button{
 		margin: 0 0 0 10px;
@@ -19,6 +20,10 @@
 		}
 		
 		h3{
+			margin: 0;
+		}
+		
+		p{
 			margin: 0;
 		}
 		
@@ -99,5 +104,24 @@
 	
 	#no_items{
 		text-align: center;
+	}
+}
+
+
+#order_checkout{
+	max-width: 900px;
+	margin: 0 auto;
+	
+	.action_buttons_container{
+		margin-top: 30px;
+		float: right;
+	}
+}
+
+@media (max-width: 600px){
+	#basket_view{
+		button{
+			width: 140px;
+		}
 	}
 }

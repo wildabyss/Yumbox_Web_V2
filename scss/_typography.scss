@@ -54,6 +54,20 @@ p.small{
 	line-height: 15px;
 }
 
+@media (max-width: 600px){
+	h1{
+		font-size: 3rem;
+	}
+	
+	h2{
+		font-size: 2rem;
+	}
+	
+	h3{
+		font-size: 1.5rem;
+	}
+}
+
 // disable default link look
 a:link{
 	color: $almostBlack;

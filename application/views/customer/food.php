@@ -19,17 +19,15 @@
 	
 	<div class="tight_cluster">
 		<div class="order_info">
-			<h3>Can Deliver</h3>
 			<h3 class="price">$<?php echo $food->price?></h3>
 			<button id="add_to_order">ADD ORDER &#x2795;</button>
 		</div>
 		
-		<p>
-			<span class="orders"><?php echo $food->total_orders?> orders</span>
-			<span class="rating">&hearts; <?php echo $food->rating?>%</span>
-		</p>
-		
-		<p>Preparation time: <?php echo $food->prep_time?></p>
+		<div class="order_info">
+			<p class="orders"><?php echo $food->total_orders?> orders</p>
+			<p class="rating"><span class="no_mobile">Average rating: </span>&hearts; <?php echo $food->rating?>%</p>
+			<p class="time"><span class="no_mobile">Preparation time: </span><?php echo $food->prep_time?></p>
+		</div>
 		
 		<?php if ($food->is_open):?>
 		<h3 class="is_open">KITCHEN OPEN</h3>
@@ -104,7 +102,7 @@
 					<a class="profile_pic"></a>
 					<?php endif?>
 					
-					<div>
+					<div class="review_info">
 						<span><?php echo $review->user_name?></span>
 						<p>&hearts; <?php echo $review->rating?>%</p>
 						<?php if ($review->review != ""):?>

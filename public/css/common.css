@@ -219,6 +219,18 @@ p.small {
   line-height: 15px;
 }
 
+@media (max-width: 600px) {
+  h1 {
+    font-size: 3rem;
+  }
+  h2 {
+    font-size: 2rem;
+  }
+  h3 {
+    font-size: 1.5rem;
+  }
+}
+
 a:link {
   color: #251F1E;
   text-decoration: none;
@@ -500,7 +512,7 @@ nav ul#mobile_user_menu a.logo {
 }
 
 .ui-button-text {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 .ui-state-default {
@@ -699,6 +711,9 @@ div.about_text h1 {
 @media (max-width: 960px) {
   #featured_dishes {
     position: relative;
+  }
+  #featured_dishes a.button {
+    height: auto;
   }
   #featured_dishes #rush_dish {
     width: 100%;
@@ -1007,8 +1022,22 @@ div.about_text h1 {
 
 #food_detail .order_info .price {
   flex: 1;
-  text-align: right;
+  text-align: left;
   margin-right: 20px;
+}
+
+#food_detail .order_info .orders {
+  flex: 1;
+}
+
+#food_detail .order_info .rating {
+  flex: 1;
+  text-align: center;
+}
+
+#food_detail .order_info .time {
+  flex: 1;
+  text-align: right;
 }
 
 #food_detail .order_info #add_to_order {
@@ -1081,6 +1110,10 @@ div.about_text h1 {
   border: solid 1px #251F1E;
 }
 
+#food_detail .reviews .review_info {
+  flex: 1;
+}
+
 @media (max-width: 900px) {
   #food_detail ul#food_detail_gallery li {
     height: 0;
@@ -1091,6 +1124,9 @@ div.about_text h1 {
 @media (max-width: 500px) {
   #food_detail .about_dish .about_dish_section {
     width: 100%;
+  }
+  #food_detail .order_info .no_mobile {
+    display: none;
   }
   #food_detail .is_open {
     margin-left: auto;
@@ -1197,31 +1233,36 @@ div.about_text h1 {
   }
 }
 
-#order_checkout {
+#basket_view {
   max-width: 900px;
   margin: 0 auto;
+  overflow: auto;
 }
 
-#order_checkout button {
+#basket_view button {
   margin: 0 0 0 10px;
   width: 170px;
 }
 
-#order_checkout .button_container {
+#basket_view .button_container {
   text-align: center;
   margin-top: 20px;
   margin-bottom: 40px;
 }
 
-#order_checkout .vendor_section .title {
+#basket_view .vendor_section .title {
   margin-bottom: 20px;
 }
 
-#order_checkout .vendor_section h3 {
+#basket_view .vendor_section h3 {
   margin: 0;
 }
 
-#order_checkout .vendor_section .order_item {
+#basket_view .vendor_section p {
+  margin: 0;
+}
+
+#basket_view .vendor_section .order_item {
   position: relative;
   margin-bottom: 30px;
   display: flex;
@@ -1229,7 +1270,7 @@ div.about_text h1 {
   flex-wrap: wrap;
 }
 
-#order_checkout .vendor_section .order_item .small_pic {
+#basket_view .vendor_section .order_item .small_pic {
   display: block;
   height: 70px;
   width: 250px;
@@ -1241,30 +1282,30 @@ div.about_text h1 {
   background-image: url("/imgs/image-not-available.gif");
 }
 
-#order_checkout .vendor_section .order_item .price_descr {
+#basket_view .vendor_section .order_item .price_descr {
   flex: 1;
   text-align: right;
 }
 
-#order_checkout .vendor_section .order_item .price_descr .child {
+#basket_view .vendor_section .order_item .price_descr .child {
   margin-left: 20px;
   display: inline-block;
 }
 
-#order_checkout .vendor_section .order_item .price_descr h3.child {
+#basket_view .vendor_section .order_item .price_descr h3.child {
   width: 50px;
 }
 
-#order_checkout .vendor_section .order_item .price_descr .ui-spinner {
+#basket_view .vendor_section .order_item .price_descr .ui-spinner {
   margin-left: 20px;
 }
 
-#order_checkout .vendor_section .order_item .price_descr input {
+#basket_view .vendor_section .order_item .price_descr input {
   font-size: 1.5rem;
   width: 20px;
 }
 
-#order_checkout .vendor_section .order_item .btn_remove {
+#basket_view .vendor_section .order_item .btn_remove {
   cursor: pointer;
   position: absolute;
   top: 0;
@@ -1274,20 +1315,34 @@ div.about_text h1 {
   height: 20px;
 }
 
-#order_checkout .vendor_section .order_item .btn_remove span {
+#basket_view .vendor_section .order_item .btn_remove span {
   padding: 0;
   font-size: 1.3rem;
 }
 
-#order_checkout .total {
+#basket_view .total {
   border-top: solid 1px #b5b3ac;
   display: flex;
   flex-direction: row;
 }
 
-#order_checkout .total #total_amount {
+#basket_view .total #total_amount {
   flex: 1;
   text-align: right;
+}
+
+#basket_view .action_buttons_container {
+  margin-top: 30px;
+  float: right;
+}
+
+#basket_view #no_items {
+  text-align: center;
+}
+
+#order_checkout {
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 #order_checkout .action_buttons_container {
@@ -1295,6 +1350,8 @@ div.about_text h1 {
   float: right;
 }
 
-#order_checkout #no_items {
-  text-align: center;
+@media (max-width: 600px) {
+  #basket_view button {
+    width: 140px;
+  }
 }

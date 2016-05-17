@@ -16,8 +16,6 @@
 		<div class="search_container">
 			<input id="search" name="search" placeholder="e.g. burrito" 
 				type="text" value="<?php echo $search_query ?>" />
-			<input id="can_deliver" name="can_deliver" type="checkbox" 
-				<?php if ($can_deliver):?>checked<?php endif?>/><label for="can_deliver">Can Deliver</label>
 		</div>
 		
 		<div class="menu_filter_container">
