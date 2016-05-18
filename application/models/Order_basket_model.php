@@ -10,7 +10,7 @@ class Order_basket_model extends CI_Model {
 	public function getOrderBasketForUser($basket_id, $user_id){
 		$query = $this->db->query('
 			select
-				b.id, b.order_date, b.delivery_address, b.is_filled, b.payment_id
+				b.id, b.order_date, b.payment_id
 			from
 				order_basket b
 			where
@@ -23,6 +23,31 @@ class Order_basket_model extends CI_Model {
 			return false;
 		else
 			return $results[0];
+	}
+	
+	
+	/**
+	 * Fetch all order_baskets that have been paid for user_id
+	 */
+	public function getPaidOrderBasketsForUser($user_id){
+		$query = $this->db->query('
+			select
+				b.id, b.order_date, b.payment_id,
+				sum(f.price*o.quantity) total_cost,
+				min(o.is_filled) is_filled
+			from
+				order_basket b
+			left join
+				order_item o
+			on o.order_basket_id = b.id
+			left join
+				food f
+			on f.id = o.food_id
+			where
+				b.user_id = ?
+				and b.payment_id is not null
+			group by b.id', array($user_id));
+		return $query->result();
 	}
 	
 	
@@ -121,7 +146,7 @@ class Order_basket_model extends CI_Model {
 		$query = $this->db->query('
 			select
 				f.id food_id, f.name, f.alternate_name, f.price, f.prep_time_hours,
-				o.id order_id, o.quantity,
+				o.id order_id, o.quantity, o.is_filled,
 				p.path
 			from
 				order_item o

@@ -245,12 +245,51 @@ class Order extends Yumbox_Controller {
 		$json_arr["basket_id"] = $open_basket->id;
 		echo json_encode($json_arr);
 	}
+	
+	
+	public function cancel($order_id=false){
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			redirect("/login?redirect=".urlencode("/customer/order/cancel/$order_id"), 'refresh');
+		}
+		
+		// get logged in user
+		$user_id = $this->login_util->getUserId();
+		
+		// get food order information
+		$food_order = $this->order_model->getFoodOrder($order_id);
+		if ($food_order === false || $food_order->payment_id == ""){
+			show_404();
+		}
+		
+		// is this a vendor or buyer cancellation?
+		$is_buyer = $food_order->buyer_id==$user_id;
+		$is_vendor = $food_order->vendor_id==$user_id;
+		if (!$is_buyer && !$is_vendor){
+			show_404();
+		}
+		
+		// get vendor information
+		$vendor = $this->user_model->getUserForUserId($food_order->vendor_id);
+		
+		// bind data
+		$data["is_buyer"] = $is_buyer;
+		$data["is_vendor"] = $is_vendor;
+		$data["food_order"] = $food_order;
+		$data["vendor"] = $vendor;
+		
+		// Load views
+		$this->header();
+		$this->navigation();
+		$this->load->view("customer/order_cancel", $data);
+		$this->footer();
+	}
 
 	
 	public function basket($basket_id=false){
 		// check if user has logged in
 		if (!$this->login_util->isUserLoggedIn()){
-			redirect("/login?redirect=".urlencode('/customer/order'), 'refresh');
+			redirect("/login?redirect=".urlencode("/customer/order/basket/$basket_id"), 'refresh');
 		}
 		
 		// get logged in user
@@ -259,12 +298,21 @@ class Order extends Yumbox_Controller {
 		if ($basket_id === false){
 			// show the order history
 			
+			// get paid order baskets
+			$order_baskets = $this->order_basket_model->getPaidOrderBasketsForUser($user_id);
+			// format date
+			foreach ($order_baskets as $basket){
+				$date = strtotime($basket->order_date);
+				$basket->order_date = date('l F j, Y');
+			}
 			
+			// bind data
+			$data["order_baskets"] = $order_baskets;
 			
 			// Load views
 			$this->header();
 			$this->navigation();
-			$this->load->view("customer/basket");
+			$this->load->view("customer/basket_history", $data);
 			$this->footer();
 		} else {
 			// get a particular order basket
@@ -272,10 +320,14 @@ class Order extends Yumbox_Controller {
 			// Fetch the basket with $basket_id for our current user
 			// This is a security precaution
 			$order_basket = $this->order_basket_model->getOrderBasketForUser($basket_id, $user_id);
-			
+
 			if ($order_basket === false){
 				show_404();
 			} else {
+				// change time
+				$date = strtotime($order_basket->order_date);
+				$order_basket->order_date = date('l F j, Y');
+				
 				// is this the open basket?
 				$is_open_basket = $order_basket->payment_id =="";
 				
@@ -311,7 +363,7 @@ class Order extends Yumbox_Controller {
 	public function current(){
 		// check if user has logged in
 		if (!$this->login_util->isUserLoggedIn()){
-			redirect("/login?redirect=".urlencode('/customer/order'), 'refresh');
+			redirect("/login?redirect=".urlencode('/customer/order/current'), 'refresh');
 		}
 		
 		// fetch open order basket

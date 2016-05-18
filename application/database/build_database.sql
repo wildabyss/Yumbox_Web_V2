@@ -250,7 +250,6 @@ create table order_basket
 	id bigint unsigned not null auto_increment,
     order_date datetime not null,
     user_id int unsigned not null,
-    is_filled tinyint(1) unsigned not null default 0,
     
     delivery_address int unsigned,
     payment_id bigint unsigned,
@@ -281,6 +280,7 @@ create table order_item
     food_id bigint unsigned not null,
     quantity smallint unsigned not null,
     order_basket_id bigint unsigned not null,
+    is_filled tinyint(2) not null default 0,	# -1 = canceled, 0 = unfilled, 1 = delivered
     
     primary key (id),
     index food_id_order_index (food_id),

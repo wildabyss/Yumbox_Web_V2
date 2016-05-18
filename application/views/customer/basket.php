@@ -5,71 +5,88 @@
 		<button id="btn_current" <?php if ($is_open_basket):?>class="ui-state-active"<?php endif?>>CURRENT</button>
 		<button id="btn_past" <?php if (!$is_open_basket):?>class="ui-state-active"<?php endif?>>PAST</button>
 	</div>
-	
-	<h2>ORDER SUMMARY</h2>
-	
-	<?php foreach ($vendors as $vendor):?>
-	<div class="vendor_section">
-		<div class="title">
-			<h3><a href="/vendor/profile/id/<?php echo $vendor->id?>"><?php echo strtoupper($vendor->name)?></a></h3>
-			
-			<div class="pickup">
-				<p class="location">Pick-up:</p>
-				<p><a target="_blank" href="<?php echo send_to_google_maps($vendor->address, $vendor->city, $vendor->province, $vendor->postal_code)?>">
-					<?php echo $vendor->address?><br/>
-					<?php echo $vendor->city?>, <?php echo $vendor->province?><br/>
-					<?php echo $vendor->postal_code?>
-				</a></p>
-				
-				<p class="time">Pick-up time:</p>
-			</div>
-		</div>
+
+	<div>
+		<?php if (!$is_open_basket):?>
+		<h2 class="child"><?php echo strtoupper($order_basket->order_date)?></h2>
+		<?php else:?>
+		<h2>ORDER SUMMARY</h2>
+		<?php endif?>
 		
-		<?php foreach ($foods_orders[$vendor->id] as $food_order):?>
-		<div class="order_item" id="order_item_<?php echo $food_order->order_id?>">
-			<?php if ($is_open_basket):?>
-			<button class="btn_remove" order_id="<?php echo $food_order->order_id?>">X</button>
-			<?php endif?>
-			<div class="order_descr">
-				<a class="small_pic" 
-					<?php if ($food_order->path !=""):?>
-					style="background-image:url('<?php echo $food_order->path?>')"
-					<?php endif?>
-				></a>
-				<h3><a href="/menu/item/<?php echo $food_order->food_id?>"><?php echo $food_order->name?></a></h3>
-				<?php if ($food_order->alternate_name != ""):?>
-				<h3><a href="/menu/item/<?php echo $food_order->food_id?>"><?php echo $food_order->alternate_name?></a></h3>
-				</a>
-				<?php endif?>
+		<?php foreach ($vendors as $vendor):?>
+		<div class="vendor_section">
+			<div class="title">
+				<h3><a href="/vendor/profile/id/<?php echo $vendor->id?>"><?php echo strtoupper($vendor->name)?></a></h3>
+				
+				<div class="pickup">
+					<p class="location">Pick-up:</p>
+					<p><a target="_blank" href="<?php echo send_to_google_maps($vendor->address, $vendor->city, $vendor->province, $vendor->postal_code)?>">
+						<?php echo $vendor->address?><br/>
+						<?php echo $vendor->city?>, <?php echo $vendor->province?><br/>
+						<?php echo $vendor->postal_code?>
+					</a></p>
+					
+					<p class="time">Pick-up time:</p>
+				</div>
 			</div>
-			<div class="price_descr">
+			
+			<?php foreach ($foods_orders[$vendor->id] as $food_order):?>
+			<div class="order_item" id="order_item_<?php echo $food_order->order_id?>">
 				<?php if ($is_open_basket):?>
-				<input class="quantity_food" order_id="<?php echo $food_order->order_id?>" value="<?php echo $food_order->quantity?>" />
-				<?php else:?>
-				<h3 class="child"><?php echo $food_order->quantity?></h3>
+				<button class="btn_remove" order_id="<?php echo $food_order->order_id?>">X</button>
 				<?php endif?>
-				<a class="child">X</a>
-				<h3 class="child">$<?php echo $food_order->price?></h3>
+				<div class="order_descr">
+					<a class="small_pic" 
+						<?php if ($food_order->path!=""):?>
+						style="background-image:url('<?php echo $food_order->path?>')"
+						<?php endif?>
+					></a>
+					<div class="food_name">
+						<h3><a href="/menu/item/<?php echo $food_order->food_id?>"><?php echo $food_order->name?></a></h3>
+						<?php if ($food_order->alternate_name != ""):?>
+						<h3><a href="/menu/item/<?php echo $food_order->food_id?>"><?php echo $food_order->alternate_name?></a></h3>
+						</a>
+						<?php endif?>
+					</div>
+				</div>
+				<h3 class="received right-align">
+				<?php if ($food_order->is_filled == Order_model::$IS_FILLED_DELIVERED):?>
+				<span>Delivered &#x2713;</span>
+				<?php elseif ($food_order->is_filled == Order_model::$IS_FILLED_CANCELED):?>
+				<span class="canceled">Canceled &#x274c;</span>
+				<?php elseif (!$is_open_basket):?>
+				<button class="btn_cancel_order" order_id="<?php echo $food_order->order_id?>">Cancel &#x274c;</button>
+				<?php endif?>
+				</h3>
+				<div class="price_descr right-align">
+					<?php if ($is_open_basket):?>
+					<input class="quantity_food" order_id="<?php echo $food_order->order_id?>" value="<?php echo $food_order->quantity?>" />
+					<?php else:?>
+					<h3 class="child"><?php echo $food_order->quantity?></h3>
+					<?php endif?>
+					<a class="child">X</a>
+					<h3 class="child price">$<?php echo $food_order->price?></h3>
+				</div>
 			</div>
+			<?php endforeach?>
 		</div>
 		<?php endforeach?>
+		
+		<div id="no_items" <?php if (count($foods_orders)>0):?>style="display:none"<?php endif?>>
+			<p>No item in the cart.</p>
+		</div>
+		
+		<div class="total">
+			<h3>TOTAL</h3>
+			<h3 id="total_amount">$<?php echo number_format($total_cost, 2)?></h3>
+		</div>
+		
+		<?php if ($is_open_basket):?>
+		<div class="action_buttons_container">
+			<button id="btn_checkout">Checkout</button>
+		</div>
+		<?php endif?>
 	</div>
-	<?php endforeach?>
-	
-	<div id="no_items" <?php if (count($foods_orders)>0):?>style="display:none"<?php endif?>>
-		<p>No item in the cart.</p>
-	</div>
-	
-	<div class="total">
-		<h3>TOTAL</h3>
-		<h3 id="total_amount">$<?php echo number_format($total_cost, 2)?></h3>
-	</div>
-	
-	<?php if ($is_open_basket):?>
-	<div class="action_buttons_container">
-		<button id="btn_checkout">Checkout</button>
-	</div>
-	<?php endif?>
 	
 	<div id="order_checkout">
 		<h2>BILLING INFORMATION</h2>
@@ -128,6 +145,7 @@
 		
 	$("#btn_checkout")
 		.button()
+		<?php if (count($foods_orders)==0):?>.button("disable")<?php endif?>
 		.click(function(e){
 			$(this).parent().hide();
 			$("#order_checkout").slideDown(100);
@@ -222,6 +240,12 @@
 					});
 				}
 			});
+		});
+	
+	$(".btn_cancel_order")
+		.button()
+		.click(function(e){
+			window.location.href = "/customer/order/cancel/"+$(this).attr("order_id");
 		});
 	
 	// quantity spinners

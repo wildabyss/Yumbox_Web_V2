@@ -249,6 +249,10 @@ input {
   text-align: center;
 }
 
+.right-align {
+  text-align: right;
+}
+
 .title {
   padding-bottom: 5px;
   border-bottom: solid 1px #b5b3ac;
@@ -1264,7 +1268,7 @@ div.about_text h1 {
 }
 
 #basket_view button {
-  margin: 0 0 0 10px;
+  margin: 0 5px 0 5px;
   width: 170px;
 }
 
@@ -1320,9 +1324,13 @@ div.about_text h1 {
   background-image: url("/imgs/image-not-available.gif");
 }
 
+#basket_view .vendor_section .order_item .received {
+  flex: 1;
+  color: #006622;
+}
+
 #basket_view .vendor_section .order_item .price_descr {
   flex: 1;
-  text-align: right;
 }
 
 #basket_view .vendor_section .order_item .price_descr .child {
@@ -1330,7 +1338,7 @@ div.about_text h1 {
   display: inline-block;
 }
 
-#basket_view .vendor_section .order_item .price_descr h3.child {
+#basket_view .vendor_section .order_item .price_descr .price {
   width: 50px;
 }
 
@@ -1356,6 +1364,16 @@ div.about_text h1 {
 #basket_view .vendor_section .order_item .btn_remove span {
   padding: 0;
   font-size: 1.3rem;
+}
+
+#basket_view .vendor_section .order_item .btn_cancel_order {
+  width: 90px;
+  color: #ed7a5d;
+  margin: 0;
+}
+
+#basket_view .vendor_section .order_item .canceled {
+  color: #ed7a5d;
 }
 
 #basket_view .total {
@@ -1407,8 +1425,34 @@ div.about_text h1 {
   width: 50px;
 }
 
+#basket_view .past_order_section {
+  display: flex;
+  flex-direction: row;
+  padding-left: 10px;
+  padding-right: 10px;
+  border: solid 1px #e3e0d8;
+  margin-bottom: 10px;
+}
+
+#basket_view .past_order_section .child {
+  flex: 1;
+}
+
+#basket_view .past_order_section .received {
+  color: #006622;
+}
+
 @media (max-width: 600px) {
   #basket_view button {
     width: 140px;
+  }
+  #basket_view .vendor_section .order_item .small_pic {
+    width: 100vw;
+  }
+  #basket_view .vendor_section .order_item .food_name {
+    margin-bottom: 10px;
+  }
+  #basket_view .vendor_section .order_item .received {
+    text-align: left;
   }
 }

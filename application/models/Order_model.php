@@ -2,6 +2,46 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Order_model extends CI_Model {
+	public static $IS_FILLED_CANCELED = -1;
+	public static $IS_FILLED_UNFILLED = 0;
+	public static $IS_FILLED_DELIVERED = 1;
+	
+	
+	/**
+	 * Fetch order_item for order_id
+	 * @return false if no order item found
+	 */
+	public function getFoodOrder($order_id){
+		$query = $this->db->query('
+			select
+				f.id food_id, f.name, f.alternate_name, f.price, f.prep_time_hours,
+				f.user_id vendor_id, b.user_id buyer_id, b.payment_id,
+				o.id order_id, o.quantity, o.is_filled,
+				p.path
+			from
+				order_item o
+			left join
+				food f
+			on f.id = o.food_id
+			left join
+				food_picture p
+			on p.food_id = f.id
+			left join
+				order_basket b
+			on b.id = o.order_basket_id
+			where
+				o.id = ?
+			group by f.id', array($order_id));
+		
+		$results = $query->result();
+		
+		if (count($results)==0)
+			return false;
+		else
+			return $results[0];
+	}
+	
+	
 	/**
 	 * Fetch the total number of orders placed on $food_id
 	 */

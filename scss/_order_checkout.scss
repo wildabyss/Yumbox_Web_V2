@@ -4,7 +4,7 @@
 	margin-bottom: 40px;
 	
 	button{
-		margin: 0 0 0 10px;
+		margin: 0 5px 0 5px;
 		width: 170px;
 	}
 	
@@ -13,7 +13,7 @@
 		margin-top: 20px;
 		margin-bottom: 40px;
 	}
-	
+
 	.vendor_section{
 		.title{
 			margin-bottom: 20px;
@@ -47,7 +47,7 @@
 			display: flex;
 			flex-direction: row;
 			flex-wrap: wrap;
-			
+
 			.small_pic{
 				display: block;
 				height: 70px;
@@ -61,15 +61,19 @@
 				background-image: url('/imgs/image-not-available.gif');
 			}
 			
+			.received{
+				flex: 1;
+				color: $green;
+			}
+			
 			.price_descr{
 				flex: 1;
-				text-align: right;
 				
 				.child{
 					margin-left: 20px;
 					display: inline-block;
 				}
-				h3.child{
+				.price{
 					width: 50px;
 				}
 				
@@ -96,6 +100,16 @@
 					padding: 0;
 					font-size: 1.3rem;
 				}
+			}
+			
+			.btn_cancel_order{
+				width: 90px;
+				color: $red;
+				margin: 0;
+			}
+			
+			.canceled{
+				color: $red;
 			}
 		}
 	}
@@ -149,12 +163,45 @@
 			}
 		}
 	}
+	
+	.past_order_section{
+		display: flex;
+		flex-direction: row;
+		padding-left: 10px;
+		padding-right: 10px;
+		border: solid 1px $grey;
+		margin-bottom: 10px;
+		
+		.child{
+			flex: 1;
+		}
+		
+		.received{
+			color: $green;
+		}
+	}
 }
 
 @media (max-width: 600px){
 	#basket_view{
 		button{
 			width: 140px;
+		}
+		
+		.vendor_section{
+			.order_item{
+				.small_pic{
+					width: 100vw;
+				}
+				
+				.food_name{
+					margin-bottom: 10px;
+				}
+				
+				.received{
+					text-align: left;
+				}
+			}
 		}
 	}
 }
