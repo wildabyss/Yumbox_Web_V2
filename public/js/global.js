@@ -74,5 +74,8 @@ $(document).ready(function(){
 		hideUserMenu();
 		hideMobileMenu();
 	});
+	
+	// textarea autosize
+	autosize($('textarea'));
 });
 
