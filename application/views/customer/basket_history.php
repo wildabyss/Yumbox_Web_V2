@@ -9,7 +9,7 @@
 	<h2>PAST ORDERS</h2>
 	
 	<?php if (count($order_baskets)==0):?>
-	<p>No past orders.</p>
+	<p class="center">No past orders.</p>
 	<?php else:?>
 		<?php foreach ($order_baskets as $basket):?>
 		<a class="past_order_section" href="/customer/order/basket/<?php echo $basket->id?>">

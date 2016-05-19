@@ -77,6 +77,9 @@
 	$("#btn_process")
 		.button()
 		.click(function(e){
+			$(this).button("disable");
+			statusMessageOn("Processing, please wait...");
+			
 			// clone dictionary
 			var inputs = $.extend({}, csrfData);
 			inputs["explanation"] = $("#explanation").val();
