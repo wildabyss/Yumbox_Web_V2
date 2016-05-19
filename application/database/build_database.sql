@@ -230,34 +230,18 @@ create table if not exists credit_card(
     index stripe_card_id_index (stripe_card_id)
 ) engine = InnoDB;
 
-drop table if exists payment;
-create table if not exists payment (
-	id bigint unsigned not null auto_increment,
-    amount decimal(8,2) not null,
-    payment_date datetime not null,
-    
-    stripe_charge_id varchar(50),
-    
-    primary key (id),
-    index amount_payment_index (amount),
-    index payment_date_index (payment_date),
-    index stripe_charge_id_index (stripe_charge_id)
-) engine = InnoDB;
-
 drop table if exists order_basket;
 create table order_basket
 (
 	id bigint unsigned not null auto_increment,
     order_date datetime not null,
     user_id int unsigned not null,
+    is_paid tinyint(1) unsigned not null default 0,
     
     delivery_address int unsigned,
-    payment_id bigint unsigned,
     
     primary key (id),
-    index order_date_index (order_date),
     index user_id_order_index (user_id),
-    index payment_id_order_index (payment_id),
     
     constraint user_id_order_constraint
 		foreign key (user_id)
@@ -266,10 +250,6 @@ create table order_basket
 	constraint address_order_constraint
 		foreign key (delivery_address)
         references address (id)
-        on delete set null,
-	constraint payment_id_order_constraint
-		foreign key (payment_id)
-        references payment (id)
         on delete set null
 ) engine = InnoDB;
 
@@ -280,7 +260,7 @@ create table order_item
     food_id bigint unsigned not null,
     quantity smallint unsigned not null,
     order_basket_id bigint unsigned not null,
-    is_filled tinyint(2) not null default 0,	# -1 = canceled, 0 = unfilled, 1 = delivered
+    is_filled tinyint(1) not null default 0,	# 0 = unfilled, 1 = delivered
     
     primary key (id),
     index food_id_order_index (food_id),
@@ -296,30 +276,41 @@ create table order_item
         on delete cascade
 ) engine = InnoDB;
 
+drop table if exists payment;
+create table if not exists payment (
+	id bigint unsigned not null auto_increment,
+    amount decimal(8,2) not null,
+    payment_date datetime not null,
+    order_item_id bigint unsigned not null,
+    
+    stripe_charge_id varchar(50),
+    
+    primary key (id),
+    index stripe_charge_id_index (stripe_charge_id),
+    index order_item_payment_index (order_item_id),
+    
+    constraint payment_order_constraint
+		foreign key (order_item_id)
+        references order_item (id)
+        on delete restrict
+) engine = InnoDB;
+
 drop table if exists refund;
 create table refund
 (
 	id bigint unsigned not null auto_increment,
-    user_id int unsigned not null,
-    payment_id bigint unsigned not null,
     type tinyint unsigned not null,		# 0 = from customer, 1 = from chef
+    amount decimal(8,2) not null,
+    payment_date datetime not null,
     order_item_id bigint unsigned not null,
     
+    stripe_refund_id varchar(50),
     explanation text,
     
     primary key (id),
-    index refund_user_id_index (user_id),
-    index refund_payment_id_index (payment_id),
     index refund_order_item_index (order_item_id),
-    
-    constraint refund_user_id_constraint
-		foreign key (user_id)
-        references user (id)
-        on delete restrict,
-	constraint refund_payment_id_constraint
-		foreign key (payment_id)
-        references payment (id)
-        on delete restrict,
+    index stripe_refund_id_index (stripe_refund_id),
+
 	constraint refund_order_item_constraint
 		foreign key (order_item_id)
         references order_item (id)
@@ -435,33 +426,6 @@ end//
 delimiter ;
 
 
-drop procedure if exists add_payment;
-delimiter //
-create procedure add_payment(in amount decimal(8,2), in stripe_id varchar(50), out payment_id bigint unsigned)
-begin
-	declare p_id bigint unsigned;
-    
-    select p.id into p_id
-    from payment p
-    where
-		p.stripe_charge_id = stripe_id;
-        
-	if (p_id is null) then
-		insert into payment
-			(amount, stripe_charge_id, payment_date)
-		values
-			(amount, stripe_id, now());
-		
-        /* get payment id */
-		select last_insert_id() into payment_id;
-	else
-		signal sqlstate '45000'
-			set message_text = 'stripe payment exists';
-	end if;
-end//
-delimiter ;
-
-
 drop procedure if exists add_order;
 delimiter //
 create procedure add_order(in order_basket_id bigint unsigned, in food_id bigint unsigned, in quantity smallint unsigned)
@@ -486,6 +450,55 @@ begin
 		where
 			o.order_basket_id = order_basket_id
             and o.food_id = food_id;
+	end if;
+end//
+delimiter ;
+
+
+drop procedure if exists add_payment;
+delimiter //
+create procedure add_payment(in amount decimal(8,2), in stripe_id varchar(50), in order_item_id bigint unsigned)
+begin
+	declare p_id bigint unsigned;
+    
+    select p.id into p_id
+    from payment p
+    where
+		p.stripe_charge_id = stripe_id;
+        
+	if (p_id is null) then
+		insert into payment
+			(amount, stripe_charge_id, payment_date, order_item_id)
+		values
+			(amount, stripe_id, now(), order_item_id);
+	else
+		signal sqlstate '45000'
+			set message_text = 'stripe payment exists';
+	end if;
+end//
+delimiter ;
+
+
+drop procedure if exists add_refund;
+delimiter //
+create procedure add_refund(in amount decimal(8,2), in stripe_id varchar(50), in order_item_id bigint unsigned, 
+	in type tinyint unsigned, in explanation text)
+begin
+	declare r_id bigint unsigned;
+    
+    select r.id into r_id
+    from refund r
+    where
+		r.stripe_refund_id = stripe_id;
+        
+	if (r_id is null) then
+		insert into refund
+			(amount, stripe_refund_id, payment_date, order_item_id, type, explanation)
+		values
+			(amount, stripe_id, now(), order_item_id, type, explanation);
+	else
+		signal sqlstate '45000'
+			set message_text = 'stripe refund exists';
 	end if;
 end//
 delimiter ;

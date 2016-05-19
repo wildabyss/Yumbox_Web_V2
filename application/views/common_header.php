@@ -21,6 +21,7 @@
 		<script src="/js/jquery.min.js"></script>
 		<script src="/js/jquery-ui.min.js"></script>
 		<script src="/js/jquery.ui.touch-punch.min.js"></script>
+		<script src="/js/autosize.min.js"></script>
 		
 		<!-- global js loading -->
 		<script src="/js/global.js"></script>

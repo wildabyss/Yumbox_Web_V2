@@ -15,11 +15,9 @@
 		<?php elseif (!$is_my_profile):?>
 		<h3 class="is_open">KITCHEN OPEN</h3>
 		<?php endif?>
+		<?php if ($user->descr != ""):?>
 		<h3>ABOUT ME</h3>
-		<?php if ($user->descr == ""):?>
-			<p>Nothing too interesting to note.</p>
-		<?php else:?>
-			<p><?php echo $user->descr?></p>
+		<p><?php echo $user->descr?></p>
 		<?php endif?>
 	</div>
 </section>

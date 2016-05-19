@@ -49,7 +49,16 @@
 	</div>
 	
 	<div id="cancel_section">
+		<h2>CANCELLATION</h2>
 		
+		<div class="cancel_info">
+			<p><label for="explanation">Reason for cancellation:</label></p>
+			<textarea id="explanation"></textarea>
+		</div>
+		
+		<div class="action_buttons_container">
+			<button id="btn_process">Process</button>
+		</div>
 	</div>
 </section>
 
@@ -59,5 +68,42 @@
 	Stripe.setPublishableKey('<?php echo $this->config->item("stripe_public_key")?>');
 
 	$("#btn_cancel_begin")
-		.button();
+		.button()
+		.click(function(e){
+			$(this).parent().hide();
+			$("#cancel_section").slideDown(100);
+		});
+		
+	$("#btn_process")
+		.button()
+		.click(function(e){
+			// clone dictionary
+			var inputs = $.extend({}, csrfData);
+			inputs["explanation"] = $("#explanation").val();
+			
+			$.ajax({
+				type: 		"post",
+				url: 		"/customer/order/refund/<?php echo $food_order->order_id?>",
+				data:		inputs,
+				success:	function(data){
+					var respArr = $.parseJSON(data);
+					if ("success" in respArr){
+						
+						// redirect to past orders
+						
+						var basket_id = respArr["basket_id"];
+						window.location.href = "/customer/order/basket/"+basket_id;
+						
+					} else {
+						// error
+						errorMessage(respArr["error"]);
+						$("#btn_process").button("enable");
+					}
+				},
+				error: 		function(){
+					errorMessage("Unable to process");
+					$("#btn_process").button("enable");
+				}
+			});
+		});
 </script>

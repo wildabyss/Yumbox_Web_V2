@@ -2,7 +2,6 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Order_model extends CI_Model {
-	public static $IS_FILLED_CANCELED = -1;
 	public static $IS_FILLED_UNFILLED = 0;
 	public static $IS_FILLED_DELIVERED = 1;
 	
@@ -15,20 +14,26 @@ class Order_model extends CI_Model {
 		$query = $this->db->query('
 			select
 				f.id food_id, f.name, f.alternate_name, f.price, f.prep_time_hours,
-				f.user_id vendor_id, b.user_id buyer_id, b.payment_id,
-				o.id order_id, o.quantity, o.is_filled,
-				p.path
+				f.user_id vendor_id, b.user_id buyer_id, p.id payment_id, b.order_date, b.id order_basket_id,
+				o.id order_id, o.quantity, o.is_filled, r.id refund_id,
+				fp.path
 			from
 				order_item o
 			left join
 				food f
 			on f.id = o.food_id
 			left join
-				food_picture p
-			on p.food_id = f.id
+				food_picture fp
+			on fp.food_id = f.id
 			left join
 				order_basket b
 			on b.id = o.order_basket_id
+			left join
+				payment p
+			on p.order_item_id = o.id
+			left join
+				refund r
+			on r.order_item_id = o.id
 			where
 				o.id = ?
 			group by f.id', array($order_id));

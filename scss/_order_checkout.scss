@@ -4,7 +4,6 @@
 	margin-bottom: 40px;
 	
 	button{
-		margin: 0 5px 0 5px;
 		width: 170px;
 	}
 	
@@ -12,6 +11,10 @@
 		text-align: center;
 		margin-top: 20px;
 		margin-bottom: 40px;
+		
+		button{
+			margin: 0 5px 0 5px;
+		}
 	}
 
 	.vendor_section{
@@ -178,6 +181,21 @@
 		
 		.received{
 			color: $green;
+		}
+	}
+	
+	#cancel_section{
+		display: none;
+		
+		.cancel_info{
+			textarea{
+				width:100%;
+				font-size: 1.5rem;
+			}
+		}
+		
+		#btn_process{
+			color: $red;
 		}
 	}
 }

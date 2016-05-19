@@ -1,5 +1,5 @@
 <section id="basket_view">
-	<h1 class="center title">MY YUMBOX</h1>
+	<h1 class="center title">MY PURCHASE</h1>
 	
 	<div class="button_container">
 		<button id="btn_current">CURRENT</button>
@@ -8,13 +8,17 @@
 	
 	<h2>PAST ORDERS</h2>
 	
-	<?php foreach ($order_baskets as $basket):?>
-	<a class="past_order_section" href="/customer/order/basket/<?php echo $basket->id?>">
-		<h3 class="child"><?php echo $basket->order_date?></h3>
-		<h3 class="child center">$<?php echo $basket->total_cost?></h3>
-		<h3 class="received child right-align"><?php if ($basket->is_filled==1):?>Delivered &#x2713;<?php endif?></h3>
-	</a>
-	<?php endforeach?>
+	<?php if (count($order_baskets)==0):?>
+	<p>No past orders.</p>
+	<?php else:?>
+		<?php foreach ($order_baskets as $basket):?>
+		<a class="past_order_section" href="/customer/order/basket/<?php echo $basket->id?>">
+			<h3 class="child"><?php echo $basket->order_date?></h3>
+			<h3 class="child center">$<?php echo $basket->total_cost?></h3>
+			<h3 class="received child right-align"><?php if ($basket->is_filled==1):?>Delivered &#x2713;<?php endif?></h3>
+		</a>
+		<?php endforeach?>
+	<?php endif?>
 </section>
 
 <script>

@@ -1,5 +1,5 @@
 <section id="basket_view">
-	<h1 class="center title">MY YUMBOX</h1>
+	<h1 class="center title">MY PURCHASE</h1>
 	
 	<div class="button_container">
 		<button id="btn_current" <?php if ($is_open_basket):?>class="ui-state-active"<?php endif?>>CURRENT</button>
@@ -52,7 +52,7 @@
 				<h3 class="received right-align">
 				<?php if ($food_order->is_filled == Order_model::$IS_FILLED_DELIVERED):?>
 				<span>Delivered &#x2713;</span>
-				<?php elseif ($food_order->is_filled == Order_model::$IS_FILLED_CANCELED):?>
+				<?php elseif ($food_order->refund_id != ""):?>
 				<span class="canceled">Canceled &#x274c;</span>
 				<?php elseif (!$is_open_basket):?>
 				<button class="btn_cancel_order" order_id="<?php echo $food_order->order_id?>">Cancel &#x274c;</button>
@@ -186,7 +186,7 @@
 						}
 					} else {
 						// error
-						errorMessage("Unable to process");
+						errorMessage(respArr["error"]);
 					}
 				},
 				error: 		function(){
@@ -229,7 +229,7 @@
 								
 							} else {
 								// error
-								errorMessage("Unable to process");
+								errorMessage(respArr["error"]);
 								$("#btn_process").button("enable");
 							}
 						},
@@ -279,7 +279,7 @@
 						}
 					} else {
 						// error
-						errorMessage("Unable to process");
+						errorMessage(respArr["error"]);
 					}
 				},
 				error:		function(){

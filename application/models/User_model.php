@@ -18,7 +18,7 @@ class User_model extends CI_Model {
 	public function getUserForUserId($user_id){
 		$query = $this->db->query('
 			select 
-				u.id, u.user_type, u.status, u.name, u.email,
+				u.id, u.user_type, u.status, u.name, u.email, u.descr,
 				u.max_unfilled_orders, u.is_open, u.fb_id, u.google_id,
 				a.address, a.city, a.province, a.postal_code, a.country
 			from user u

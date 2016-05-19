@@ -145,5 +145,6 @@ $autoload['model'] = array(
 	'user_follow_model',
 	'order_model',
 	'order_basket_model',
-	'payment_model'
+	'payment_model',
+	'refund_model'
 );

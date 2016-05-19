@@ -10,7 +10,7 @@ class Order_basket_model extends CI_Model {
 	public function getOrderBasketForUser($basket_id, $user_id){
 		$query = $this->db->query('
 			select
-				b.id, b.order_date, b.payment_id
+				b.id, b.order_date, b.is_paid
 			from
 				order_basket b
 			where
@@ -32,7 +32,7 @@ class Order_basket_model extends CI_Model {
 	public function getPaidOrderBasketsForUser($user_id){
 		$query = $this->db->query('
 			select
-				b.id, b.order_date, b.payment_id,
+				b.id, b.order_date, b.is_paid,
 				sum(f.price*o.quantity) total_cost,
 				min(o.is_filled) is_filled
 			from
@@ -45,7 +45,7 @@ class Order_basket_model extends CI_Model {
 			on f.id = o.food_id
 			where
 				b.user_id = ?
-				and b.payment_id is not null
+				and b.is_paid = 1
 			group by b.id', array($user_id));
 		return $query->result();
 	}
@@ -53,7 +53,6 @@ class Order_basket_model extends CI_Model {
 	
 	/**
 	 * Fetch the order_basket for a given $user_id that hasn't finished checkout
-	 * i.e. payment is null
 	 * @return false if not exist
 	 */
 	public function getOpenBasketForUser($user_id){
@@ -63,7 +62,7 @@ class Order_basket_model extends CI_Model {
 			from
 				order_basket b
 			where
-				b.payment_id is null
+				b.is_paid = 0
 				and b.user_id = ?', array($user_id));
 				
 		// return results
@@ -115,6 +114,32 @@ class Order_basket_model extends CI_Model {
 	
 	
 	/**
+	 * Fetch all order_items in basket
+	 */
+	public function getAllOrderItemsInBasket($basket_id){
+		$query = $this->db->query('
+			select
+				o.id order_id, o.quantity,
+				f.id food_id, f.price,
+				p.id payment_id, r.id refund_id
+			from
+				order_item o
+			left join
+				food f
+			on f.id = o.food_id
+			left join
+				payment p
+			on p.order_item_id = o.id
+			left join
+				refund r
+			on r.order_item_id = o.id
+			where
+				order_basket_id = ?', array($basket_id));
+		return $query->result();
+	}
+	
+	
+	/**
 	 * Fetch all vendors in the order basket
 	 */
 	public function getAllVendorsInBasket($basket_id){
@@ -146,16 +171,22 @@ class Order_basket_model extends CI_Model {
 		$query = $this->db->query('
 			select
 				f.id food_id, f.name, f.alternate_name, f.price, f.prep_time_hours,
-				o.id order_id, o.quantity, o.is_filled,
-				p.path
+				o.id order_id, o.quantity, o.is_filled, r.id refund_id, p.id payment_id,
+				fp.path
 			from
 				order_item o
 			left join
 				food f
 			on f.id = o.food_id
 			left join
-				food_picture p
-			on p.food_id = f.id
+				food_picture fp
+			on fp.food_id = f.id
+			left join
+				payment p
+			on p.order_item_id = o.id
+			left join
+				refund r
+			on r.order_item_id = o.id
 			where
 				o.order_basket_id = ?
 				and f.user_id = ?
@@ -199,8 +230,11 @@ class Order_basket_model extends CI_Model {
 				order_item o
 			left join food f
 			on f.id = o.food_id
+			left join refund r
+			on r.order_item_id = o.id
 			where 
 				o.order_basket_id = ?
+				and r.id is null
 			group by 
 				o.order_basket_id', array($basket_id));
 		$results = $query->result();
@@ -237,6 +271,26 @@ class Order_basket_model extends CI_Model {
 			where
 				order_basket_id = ?
 				and id = ?', array($order_basket_id, $order_id))){
+
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Set is_paid bit to true for the order_basket
+	 * @return true for success, error on failure
+	 */
+	public function setBasketAsPaid($order_basket_id){
+		if (!$this->db->query('
+			update order_basket
+			set 
+				is_paid = 1,
+				order_date = now()
+			where
+				id = ?', array($order_basket_id))){
 
 			return $this->db->error();
 		}

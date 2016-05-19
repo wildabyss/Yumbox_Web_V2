@@ -205,11 +205,10 @@ class Order extends Yumbox_Controller {
 			return;
 		}
 		
-		// get total amount
-		$amount = $this->order_basket_model->getTotalCostInBasket($open_basket->id);
-		$item_count = $this->order_basket_model->getTotalOrdersInBasket($open_basket->id);
-		if ($amount <= 0 && $item_count <= 0){
-			$json_arr["error"] = "basket empty";
+		// fetch all order items in basket
+		$order_items = $this->order_basket_model->getAllOrderItemsInBasket($basket_id);
+		if (count($order_items)==0){
+			$json_arr["error"] = "basket is empty";
 			echo json_encode($json_arr);
 			return;
 		}
@@ -219,13 +218,10 @@ class Order extends Yumbox_Controller {
 		$stripe_private_key = $this->config->item("stripe_secret_key");
 		Stripe\Stripe::setApiKey($stripe_private_key);
 		
-		// charge Stripe
+		// set up customer
 		try {
-			$charge = Stripe\Charge::create(array(
-				"amount"		=> $amount*100,	// amount in cents
-				"currency"		=> "cad",
-				"source"		=> $stripe_token,
-				"metadata"		=> array("basket_id" => $open_basket->id)
+			$stripe_customer= Stripe\Customer::create(array(
+				"source" => $stripe_token
 			));
 		} catch (Stripe\Error\Card $e){
 			$json_arr["error"] = $e->getMessage();
@@ -233,8 +229,38 @@ class Order extends Yumbox_Controller {
 			return;
 		}
 		
-		// save entry to database
-		$res = $this->payment_model->payOpenBasket($amount, $open_basket->id, $charge->id);
+		foreach ($order_items as $order_item){
+			if ($order_item->payment_id != "")
+				continue;
+			
+			// get amount to be charged in dollars
+			$amount = $order_item->quantity*$order_item->price;
+			
+			// charge Stripe
+			try {
+				$charge = Stripe\Charge::create(array(
+					"amount"		=> $amount*100,	// amount in cents
+					"currency"		=> "cad",
+					"customer"		=> $stripe_customer->id,
+					"metadata"		=> array("order_item " => $order_item->order_id)
+				));
+			} catch (Stripe\Error\Card $e){
+				$json_arr["error"] = $e->getMessage();
+				echo json_encode($json_arr);
+				return;
+			}
+			
+			// save entry to database
+			$res = $this->payment_model->payOrderItem($amount, $order_item->order_id, $charge->id);
+			if ($res !== true){
+				$json_arr["error"] = $res;
+				echo json_encode($json_arr);
+				return;
+			}
+		}
+		
+		// change basket status
+		$res = $this->order_basket_model->setBasketAsPaid($basket_id);
 		if ($res !== true){
 			$json_arr["error"] = $res;
 			echo json_encode($json_arr);
@@ -242,7 +268,89 @@ class Order extends Yumbox_Controller {
 		}
 		
 		$json_arr["success"] = "1";
-		$json_arr["basket_id"] = $open_basket->id;
+		$json_arr["basket_id"] = $basket_id;
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
+	 * AJAX method
+	 * Issue refund on order
+	 * echo json string:
+	 *   {success, basket_id, error}
+	 */
+	public function refund($order_id=false){
+		// ensure we have POST request
+		/*if (!is_post_request())
+			show_404();*/
+		
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		$user_id = $this->login_util->getUserId();
+		
+		// get order_item
+		$order = $this->order_model->getFoodOrder($order_id);
+		if ($order === false){
+			$json_arr["error"] = "non-existent order";
+			echo json_encode($json_arr);
+			return;
+		} elseif ($order->refund_id != ""){
+			$json_arr["error"] = "already refunded";
+			echo json_encode($json_arr);
+			return;
+		} elseif ($order->payment_id == ""){
+			$json_arr["error"] = "order hasn't been paid";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// check buyer or seller
+		if ($order->buyer_id==$user_id)
+			$refund_type = Refund_model::$TYPE_BUYER;
+		elseif ($order->vendor_id==$user_id)
+			$refund_type = Refund_model::$TYPE_VENDOR;
+		else
+			$refund_type = false;
+		if ($refund_type === false){
+			$json_arr["error"] = "order does not match";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get payment information
+		$payment = $this->payment_model->getPayment($order->payment_id);
+		$amount = $payment->amount;
+		
+		// refund Stripe
+		$stripe_private_key = $this->config->item("stripe_secret_key");
+		Stripe\Stripe::setApiKey($stripe_private_key);
+		try {
+			$refund = Stripe\Refund::create(array(
+				"charge"		=> $payment->stripe_charge_id
+			));
+		} catch (Stripe\Error\InvalidRequest $e){
+			$json_arr["error"] = $e->getMessage();
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// retrieve explanation
+		$explanation = $this->input->post("explanation", true);
+		
+		// save entry to database
+		$res = $this->refund_model->refundOrderItem($amount, $order_id, $refund->id, $refund_type, $explanation);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		$json_arr["success"] = "1";
+		$json_arr["basket_id"] = $order->order_basket_id;
 		echo json_encode($json_arr);
 	}
 	
@@ -258,7 +366,7 @@ class Order extends Yumbox_Controller {
 		
 		// get food order information
 		$food_order = $this->order_model->getFoodOrder($order_id);
-		if ($food_order === false || $food_order->payment_id == ""){
+		if ($food_order === false || $food_order->payment_id == "" || $food_order->refund_id != ""){
 			show_404();
 		}
 		
@@ -273,8 +381,6 @@ class Order extends Yumbox_Controller {
 		$vendor = $this->user_model->getUserForUserId($food_order->vendor_id);
 		
 		// bind data
-		$data["is_buyer"] = $is_buyer;
-		$data["is_vendor"] = $is_vendor;
 		$data["food_order"] = $food_order;
 		$data["vendor"] = $vendor;
 		
@@ -300,10 +406,13 @@ class Order extends Yumbox_Controller {
 			
 			// get paid order baskets
 			$order_baskets = $this->order_basket_model->getPaidOrderBasketsForUser($user_id);
-			// format date
 			foreach ($order_baskets as $basket){
+				// format date
 				$date = strtotime($basket->order_date);
 				$basket->order_date = date('l F j, Y');
+				
+				// modify total cost to accomodate refunds
+				$basket->total_cost = $this->order_basket_model->getTotalCostInBasket($basket->id);
 			}
 			
 			// bind data
@@ -329,7 +438,7 @@ class Order extends Yumbox_Controller {
 				$order_basket->order_date = date('l F j, Y');
 				
 				// is this the open basket?
-				$is_open_basket = $order_basket->payment_id =="";
+				$is_open_basket = $order_basket->is_paid==0;
 				
 				// total cost
 				$total_cost = $this->order_basket_model->getTotalCostInBasket($basket_id);

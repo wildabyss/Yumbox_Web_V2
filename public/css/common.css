@@ -386,7 +386,6 @@ nav ul#pc_nav_buttons_right li {
 nav ul#pc_nav_buttons_right .cart {
   position: relative;
   display: block;
-  overflow: auto;
 }
 
 nav ul#pc_nav_buttons_right .cart .order_cart {
@@ -402,6 +401,7 @@ nav ul#pc_nav_buttons_right .cart .order_cart {
 
 nav ul#pc_nav_buttons_right .cart #order_count {
   position: absolute;
+  line-height: 20px;
   line-height: initial;
   width: 20px;
   height: 20px;
@@ -1268,7 +1268,6 @@ div.about_text h1 {
 }
 
 #basket_view button {
-  margin: 0 5px 0 5px;
   width: 170px;
 }
 
@@ -1276,6 +1275,10 @@ div.about_text h1 {
   text-align: center;
   margin-top: 20px;
   margin-bottom: 40px;
+}
+
+#basket_view .button_container button {
+  margin: 0 5px 0 5px;
 }
 
 #basket_view .vendor_section .title {
@@ -1440,6 +1443,19 @@ div.about_text h1 {
 
 #basket_view .past_order_section .received {
   color: #006622;
+}
+
+#basket_view #cancel_section {
+  display: none;
+}
+
+#basket_view #cancel_section .cancel_info textarea {
+  width: 100%;
+  font-size: 1.5rem;
+}
+
+#basket_view #cancel_section #btn_process {
+  color: #ed7a5d;
 }
 
 @media (max-width: 600px) {
