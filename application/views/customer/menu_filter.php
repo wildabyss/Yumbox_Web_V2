@@ -14,8 +14,9 @@
 <section id="menu_filter" class="<?php if ($is_rush):?>rush<?php else:?>explore<?php endif?>">
 	<?php echo form_open($form_action, array('method'=>'get', 'id'=>'filter_form'))?>
 		<div class="search_container">
-			<input id="search" name="search" placeholder="e.g. burrito" 
+			<input id="search" class="ui-state-default" name="search" placeholder="e.g. burrito" 
 				type="text" value="<?php echo $search_query ?>" />
+			<button id="btn_filter" class="hidden" type="button"></button>
 		</div>
 		
 		<div class="menu_filter_container">
@@ -182,9 +183,9 @@
 			// modify url action
 			var url = $('#filter_form').attr('action');
 			if (is_list)
-				url += '/list';
+				url = url.replace("/map", "/list");
 			else
-				url += '/map';
+				url = url.replace("/list", "/map");
 			$('#filter_form').attr('action', url).submit();
 		}
 		$( "#btn_map" ).button().click(function(e){
@@ -192,6 +193,20 @@
 		});
 		$( "#btn_list" ).button().click(function(e){
 			filter_button_click(e, true);
+		});
+		
+		// filter button
+		$("#btn_filter").button().click(function(e){
+			if ($(this).hasClass("hidden")){
+				// show filter
+				$(".menu_filter_container").slideDown(100, function(){
+					$(this).css("display", "flex");
+				});
+			} else {
+				// hide filter
+				$(".menu_filter_container").slideUp(100);
+			}
+			$(this).toggleClass("hidden");
 		});
 		
 		// prevent default hover and focus behaviours on the buttons

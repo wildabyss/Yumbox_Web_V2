@@ -28,6 +28,10 @@ class Menu extends Yumbox_Controller {
 		$data['is_rush'] = $is_rush;
 		$data['is_list'] = $is_list;
 		$data['form_action'] = $is_rush?'/menu/rush':'/menu/explore';
+		if ($is_list) 
+			$data['form_action'] .= "/list";
+		else
+			$data['form_action'] .= "/map";
 		$data['chosen_categories'] = $chosen_categories;
 		$data['can_deliver'] = $can_deliver;
 		$data['search_query'] = $search_query;
