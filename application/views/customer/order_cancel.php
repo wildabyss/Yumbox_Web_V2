@@ -42,6 +42,21 @@
 				</div>
 			</div>
 		</div>
+		
+		<div class="total">
+			<div class="line">
+				<h3>COMMISSION</h3>
+				<h3 class="amount" id="commission">$<?php echo number_format($commission, 2)?></h3>
+			</div>
+			<div class="line">
+				<h3>TAXES</h3>
+				<h3 class="amount" id="taxes">$<?php echo number_format($taxes, 2)?></h3>
+			</div>
+			<div class="line">
+				<h3>TOTAL</h3>
+				<h3 class="amount" id="total_amount">$<?php echo number_format($total_cost, 2)?></h3>
+			</div>
+		</div>
 	
 		<div class="action_buttons_container">
 			<button id="btn_cancel_begin">Proceed</button>

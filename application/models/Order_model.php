@@ -14,7 +14,8 @@ class Order_model extends CI_Model {
 		$query = $this->db->query('
 			select
 				f.id food_id, f.name, f.alternate_name, f.price, f.prep_time_hours,
-				f.user_id vendor_id, b.user_id buyer_id, p.id payment_id, b.order_date, b.id order_basket_id,
+				f.user_id vendor_id, b.user_id buyer_id, b.order_date, b.id order_basket_id,
+				p.id payment_id, p.tax_rate, p.take_rate,
 				o.id order_id, o.quantity, o.is_filled, r.id refund_id,
 				fp.path
 			from

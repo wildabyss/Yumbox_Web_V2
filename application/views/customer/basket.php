@@ -77,8 +77,18 @@
 		</div>
 		
 		<div class="total">
-			<h3>TOTAL</h3>
-			<h3 id="total_amount">$<?php echo number_format($total_cost, 2)?></h3>
+			<div class="line">
+				<h3>COMMISSION</h3>
+				<h3 class="amount" id="commission">$<?php echo number_format($commission, 2)?></h3>
+			</div>
+			<div class="line">
+				<h3>TAXES</h3>
+				<h3 class="amount" id="taxes">$<?php echo number_format($taxes, 2)?></h3>
+			</div>
+			<div class="line">
+				<h3>TOTAL</h3>
+				<h3 class="amount" id="total_amount">$<?php echo number_format($total_cost, 2)?></h3>
+			</div>
 		</div>
 		
 		<?php if ($is_open_basket):?>
@@ -90,6 +100,7 @@
 	
 	<div id="order_checkout">
 		<h2>BILLING INFORMATION</h2>
+		
 		<form method="post" id="payment_form">
 			<div class="payment_info">
 				<p>

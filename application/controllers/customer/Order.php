@@ -106,15 +106,21 @@ class Order extends Yumbox_Controller {
 		}
 		
 		// fetch total cost in basket
-		$total_cost = $this->order_basket_model->getTotalCostInBasket($open_basket->id);
-		if ($total_cost === false){
+		$base_cost = $this->order_basket_model->getBaseCostInBasket($open_basket->id);
+		if ($base_cost === false){
 			$json_arr["error"] = "unknown database error";
 			echo json_encode($json_arr);
 			return;
 		}
+		$commission = $base_cost*$this->config->item('take_rate');
+		$taxes = ($base_cost+$commission)*$this->config->item('tax_rate');
+		$total_cost = $base_cost + $commission + $taxes;
 		
 		$json_arr["success"] = "1";
 		$json_arr["order_count"] = $total_items;
+		$json_arr["base_cost"] = $base_cost;
+		$json_arr["commission"] = $commission;
+		$json_arr["taxes"] = $taxes;
 		$json_arr["total_cost"] = $total_cost;
 		echo json_encode($json_arr);
 	}
@@ -165,15 +171,21 @@ class Order extends Yumbox_Controller {
 		}
 		
 		// fetch total cost in basket
-		$total_cost = $this->order_basket_model->getTotalCostInBasket($open_basket->id);
-		if ($total_cost === false){
+		$base_cost = $this->order_basket_model->getBaseCostInBasket($open_basket->id);
+		if ($base_cost === false){
 			$json_arr["error"] = "unknown database error";
 			echo json_encode($json_arr);
 			return;
 		}
+		$commission = $base_cost*$this->config->item('take_rate');
+		$taxes = ($base_cost+$commission)*$this->config->item('tax_rate');
+		$total_cost = $base_cost + $commission + $taxes;
 		
 		$json_arr["success"] = "1";
 		$json_arr["order_count"] = $total_items;
+		$json_arr["base_cost"] = $base_cost;
+		$json_arr["commission"] = $commission;
+		$json_arr["taxes"] = $taxes;
 		$json_arr["total_cost"] = $total_cost;
 		echo json_encode($json_arr);
 	}
@@ -234,7 +246,10 @@ class Order extends Yumbox_Controller {
 				continue;
 			
 			// get amount to be charged in dollars
-			$amount = $order_item->quantity*$order_item->price;
+			$base_amount = $order_item->quantity*$order_item->price;
+			$commission = $base_amount*$this->config->item('take_rate');
+			$taxes = ($base_amount+$commission)*$this->config->item('tax_rate');
+			$amount = round($base_amount + $commission + $taxes, 2);
 			
 			// charge Stripe
 			try {
@@ -251,7 +266,8 @@ class Order extends Yumbox_Controller {
 			}
 			
 			// save entry to database
-			$res = $this->payment_model->payOrderItem($amount, $order_item->order_id, $charge->id);
+			$res = $this->payment_model->payOrderItem($amount, $this->config->item('take_rate'), $this->config->item('tax_rate'),
+				$order_item->order_id, $charge->id);
 			if ($res !== true){
 				$json_arr["error"] = $res;
 				echo json_encode($json_arr);
@@ -380,9 +396,19 @@ class Order extends Yumbox_Controller {
 		// get vendor information
 		$vendor = $this->user_model->getUserForUserId($food_order->vendor_id);
 		
+		// get payment costs
+		$base_cost = $food_order->quantity*$food_order->price;
+		$commission = $food_order->take_rate*$base_cost;
+		$taxes = $food_order->tax_rate*($base_cost+$commission);
+		$total_cost = $base_cost + $commission + $taxes;
+		
 		// bind data
 		$data["food_order"] = $food_order;
 		$data["vendor"] = $vendor;
+		$data["base_cost"] = $base_cost;
+		$data["commission"] = $commission;
+		$data["taxes"] = $taxes;
+		$data["total_cost"] = $total_cost;
 		
 		// Load views
 		$this->header();
@@ -412,7 +438,7 @@ class Order extends Yumbox_Controller {
 				$basket->order_date = date('l F j, Y');
 				
 				// modify total cost to accomodate refunds
-				$basket->total_cost = $this->order_basket_model->getTotalCostInBasket($basket->id);
+				$basket->total_cost = $this->order_basket_model->getTotalCostInPaidBasket($basket->id);
 			}
 			
 			// bind data
@@ -441,7 +467,15 @@ class Order extends Yumbox_Controller {
 				$is_open_basket = $order_basket->is_paid==0;
 				
 				// total cost
-				$total_cost = $this->order_basket_model->getTotalCostInBasket($basket_id);
+				if ($is_open_basket){
+					$base_cost = $this->order_basket_model->getBaseCostInBasket($basket_id);
+					$commission = $base_cost*$this->config->item('take_rate');
+					$taxes = ($base_cost+$commission)*$this->config->item('tax_rate');
+				} else {
+					$base_cost = 0;
+					$taxes = 0;
+					$commission = 0;
+				}
 				
 				// get vendor information
 				$vendors = $this->order_basket_model->getAllVendorsInBasket($basket_id);
@@ -450,13 +484,34 @@ class Order extends Yumbox_Controller {
 				$foods_orders = array();
 				foreach ($vendors as $vendor){
 					$foods_orders[$vendor->id] = $this->order_basket_model->getFoodsPerVendorInBasket($basket_id, $vendor->id);
+					if (!$is_open_basket){
+						// calculate paid costs
+						foreach ($foods_orders[$vendor->id] as $food_order){
+							if ($food_order->refund_id == ""){
+								$food_cost = $food_order->quantity*$food_order->price;
+								$food_commission = $food_order->take_rate*$food_cost;
+								$food_tax = ($food_cost+$food_commission)*$food_order->tax_rate;
+								
+								// sum into total
+								$base_cost += $food_cost;
+								$commission += $food_commission;
+								$taxes += $food_tax;
+							}
+						}
+					}
 				}
+				
+				// total cost
+				$total_cost = $base_cost + $commission + $taxes;
 
 				// bind data
 				$data["order_basket"] = $order_basket;
 				$data["is_open_basket"] = $is_open_basket;
 				$data["vendors"] = $vendors;
 				$data["foods_orders"] = $foods_orders;
+				$data["base_cost"] = $base_cost;
+				$data["commission"] = $commission;
+				$data["taxes"] = $taxes;
 				$data["total_cost"] = $total_cost;
 				
 				// Load views

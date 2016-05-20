@@ -9,7 +9,7 @@ class Payment_model extends CI_Model {
 	public function getPayment($payment_id){
 		$query = $this->db->query('
 			select
-				id, amount, payment_date, order_item_id, stripe_charge_id
+				id, amount, tax_rate, take_rate, payment_date, order_item_id, stripe_charge_id
 			from
 				payment
 			where
@@ -29,9 +29,16 @@ class Payment_model extends CI_Model {
 	 * This assumes that the provided order_basket is originally open
 	 * @return True on success, error on failure
 	 */
-	public function payOrderItem($amount, $order_item_id, $stripe_id){	
+	public function payOrderItem($amount, $take_rate, $tax_rate, $order_item_id, $stripe_id){	
 		// add payment to database
-		if (!$this->db->query('call add_payment(?, ?, ?)', array($amount, $stripe_id, $order_item_id))){
+		if (!$this->db->query('call add_payment(?, ?, ?, ?, ?)', 
+			array(
+				$amount, 
+				$take_rate,
+				$tax_rate,
+				$stripe_id, 
+				$order_item_id)
+			)){
 			return $this->db->error;
 		}
 		

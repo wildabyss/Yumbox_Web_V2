@@ -119,12 +119,19 @@
 	
 	.total{
 		border-top: solid 1px $darkGrey;
-		display:flex;
-		flex-direction: row;
-		
-		#total_amount{
-			flex:1;
-			text-align: right;
+		.line{
+			display:flex;
+			flex-direction: row;
+			
+			.amount{
+				flex:1;
+				text-align: right;
+			}
+			
+			h3{
+				margin-top: 10px;
+				margin-bottom: 10px;
+			}
 		}
 	}
 	

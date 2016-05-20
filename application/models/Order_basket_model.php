@@ -171,7 +171,8 @@ class Order_basket_model extends CI_Model {
 		$query = $this->db->query('
 			select
 				f.id food_id, f.name, f.alternate_name, f.price, f.prep_time_hours,
-				o.id order_id, o.quantity, o.is_filled, r.id refund_id, p.id payment_id,
+				o.id order_id, o.quantity, o.is_filled, r.id refund_id, 
+				p.id payment_id, p.tax_rate, p.take_rate,
 				fp.path
 			from
 				order_item o
@@ -220,9 +221,9 @@ class Order_basket_model extends CI_Model {
 	
 	
 	/**
-	 * Fetch the total cost in the order_basket
+	 * Fetch the total base cost in the order_basket
 	 */
-	public function getTotalCostInBasket($basket_id){
+	public function getBaseCostInBasket($basket_id){
 		$query = $this->db->query('
 			select 
 				sum(f.price*o.quantity) total
@@ -232,6 +233,36 @@ class Order_basket_model extends CI_Model {
 			on f.id = o.food_id
 			left join refund r
 			on r.order_item_id = o.id
+			where 
+				o.order_basket_id = ?
+				and r.id is null
+			group by 
+				o.order_basket_id', array($basket_id));
+		$results = $query->result();
+		
+		if (count($results)==0)
+			return 0;
+		else
+			return $results[0]->total==""?0:$results[0]->total;
+	}
+	
+	
+	/**
+	 * Fetch the total cost paid in the basket
+	 * Note: basket must have been paid already (i.e. not open)
+	 */
+	public function getTotalCostInPaidBasket($basket_id){
+		$query = $this->db->query('
+			select 
+				sum(p.amount) total
+			from 
+				order_item o
+			left join food f
+			on f.id = o.food_id
+			left join refund r
+			on r.order_item_id = o.id
+			left join payment p
+			on p.order_item_id = o.id
 			where 
 				o.order_basket_id = ?
 				and r.id is null

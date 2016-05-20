@@ -18,6 +18,16 @@ create table user
     is_open tinyint(1) not null default 0,
     can_deliver tinyint(1) not null default 0,
     
+    /* food pickup times */
+    # set to 00:00:00 for not available
+    pickup_mon time not null default '20:00:00',
+    pickup_tue time not null default '20:00:00',
+    pickup_wed time not null default '20:00:00',
+    pickup_thu time not null default '20:00:00',
+    pickup_fri time not null default '20:00:00',
+    pickup_sat time not null default '20:00:00',
+    pickup_sun time not null default '20:00:00',
+    
 	fb_id varchar(25),
     google_id varchar(25),
 
@@ -114,6 +124,9 @@ create table food
     user_id int unsigned not null,
     name varchar(255) not null,
     price decimal(5,2) unsigned not null,
+    
+    /* food preparation */
+    limit_pickup tinyint(2) not null default 0,		# 0=any time the food is ready after prep_time_hours, # 1=limit pickup to times as specified in user table
     prep_time_hours float not null default 2.0,
     
 	alternate_name varchar(255),
@@ -282,6 +295,8 @@ create table if not exists payment (
     amount decimal(8,2) not null,
     payment_date datetime not null,
     order_item_id bigint unsigned not null,
+    tax_rate float not null default 0.13,
+    take_rate float not null default 0.05,
     
     stripe_charge_id varchar(50),
     
@@ -457,7 +472,7 @@ delimiter ;
 
 drop procedure if exists add_payment;
 delimiter //
-create procedure add_payment(in amount decimal(8,2), in stripe_id varchar(50), in order_item_id bigint unsigned)
+create procedure add_payment(in amount decimal(8,2), in take_rate float, in tax_rate float, in stripe_id varchar(50), in order_item_id bigint unsigned)
 begin
 	declare p_id bigint unsigned;
     
@@ -468,9 +483,9 @@ begin
         
 	if (p_id is null) then
 		insert into payment
-			(amount, stripe_charge_id, payment_date, order_item_id)
+			(amount, take_rate, tax_rate, stripe_charge_id, payment_date, order_item_id)
 		values
-			(amount, stripe_id, now(), order_item_id);
+			(amount, take_rate, tax_rate, stripe_id, now(), order_item_id);
 	else
 		signal sqlstate '45000'
 			set message_text = 'stripe payment exists';
