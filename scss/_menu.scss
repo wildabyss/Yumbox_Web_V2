@@ -89,6 +89,19 @@
 			background-position: right center;
 		}
 		
+		
+		
+		button#btn_location{
+			margin-left: 5px;
+			width: 30px;
+			height: 30px;
+			
+			background-image: url('/imgs/map_pin.svg');
+			background-size: 25px 25px;
+			background-repeat: no-repeat;
+			background-position: center;
+		}
+		
 		button#btn_filter{
 			margin-left: 5px;
 			width: 30px;
@@ -113,6 +126,30 @@
 			width: 100px;
 		}
 	}
+}
+
+
+
+#location_dialog{
+	display: none;
+	
+	#input_location{
+		height: 30px;
+		width: 100%;
+		font-size: 1.5rem;
+		padding-right: 28px;
+		
+		background-image: url('/imgs/map_pin.svg');
+		background-size: 25px 25px;
+		background-repeat: no-repeat;
+		background-position: right center;
+	}
+}
+.ui-dialog{
+	.ui-button-dialog {
+		height: 24px;
+		width: 30px;
+	} 
 }
 
 

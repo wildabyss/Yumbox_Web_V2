@@ -868,6 +868,16 @@ div.about_text h1 {
   background-position: right center;
 }
 
+#menu_filter .search_container button#btn_location {
+  margin-left: 5px;
+  width: 30px;
+  height: 30px;
+  background-image: url("/imgs/map_pin.svg");
+  background-size: 25px 25px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 #menu_filter .search_container button#btn_filter {
   margin-left: 5px;
   width: 30px;
@@ -887,6 +897,26 @@ div.about_text h1 {
 #menu_filter #menu_filter_categories label {
   margin: 0 0 10px 10px;
   width: 100px;
+}
+
+#location_dialog {
+  display: none;
+}
+
+#location_dialog #input_location {
+  height: 30px;
+  width: 100%;
+  font-size: 1.5rem;
+  padding-right: 28px;
+  background-image: url("/imgs/map_pin.svg");
+  background-size: 25px 25px;
+  background-repeat: no-repeat;
+  background-position: right center;
+}
+
+.ui-dialog .ui-button-dialog {
+  height: 24px;
+  width: 30px;
 }
 
 #menu_listing {

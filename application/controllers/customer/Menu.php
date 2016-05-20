@@ -18,6 +18,13 @@ class Menu extends Yumbox_Controller {
 		
 		// get main food categories
 		$main_categories = $this->food_category_model->getAllMainCategories();
+		
+		// get user location
+		$location = $this->user_model->getUserAddressString($this->login_util->getUserId());
+		if ($location === false || $location==""){
+			// use default
+			$location = Search::$TORONTO_SEARCH;
+		}
 
 		// bind model data
 		$data["quick_menu_text"] = $this->lang->line("quick_menu_text");
@@ -32,6 +39,8 @@ class Menu extends Yumbox_Controller {
 			$data['form_action'] .= "/list";
 		else
 			$data['form_action'] .= "/map";
+		
+		$data["location"] = $location;
 		$data['chosen_categories'] = $chosen_categories;
 		$data['can_deliver'] = $can_deliver;
 		$data['search_query'] = $search_query;

@@ -10,12 +10,12 @@ insert into user (user_type, status, date_joined, name, email, is_open, descr)
 	values (1, 2, now(), 'Cocoral', 'ch@food.com', true,
     'Architect by education, chef by experience.');
     
-insert into address (is_primary, user_id, address, city, province, postal_code, country)
-	values (1, 1, '80 Western Battery Rd', 'Toronto', 'Ontario', 'M6K3S1', 'Canada');
-insert into address (is_primary, user_id, address, city, province, postal_code, country)
-	values (1, 2, '80 Western Battery Rd', 'Toronto', 'Ontario', 'M6K3S1', 'Canada');
-insert into address (is_primary, user_id, address, city, province, postal_code, country)
-	values (1, 3, '25 Mutual St', 'Toronto', 'Ontario', 'M5B2K1', 'Canada');
+insert into address (is_primary, user_id, address, city, province, postal_code, country, latitude, longitude)
+	values (1, 1, '80 Western Battery Rd', 'Toronto', 'Ontario', 'M6K3S1', 'Canada', 43.6396, -79.4146);
+insert into address (is_primary, user_id, address, city, province, postal_code, country, latitude, longitude)
+	values (1, 2, '80 Western Battery Rd', 'Toronto', 'Ontario', 'M6K3S1', 'Canada', 43.6396, -79.4146);
+insert into address (is_primary, user_id, address, city, province, postal_code, country, latitude, longitude)
+	values (1, 3, '25 Mutual St', 'Toronto', 'Ontario', 'M5B2K1', 'Canada', 43.6543, -79.3743);
     
 insert into food (status, user_id, name, price, descr, ingredients, health_benefits)
 	values (1, 1, 'Adrienne Burger', 12.99, 'Juicy burger with everything dressed', '', '');

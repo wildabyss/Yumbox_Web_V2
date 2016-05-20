@@ -131,4 +131,31 @@ class User_model extends CI_Model {
 		else
 			return $results[0]->path;
 	}
+	
+	
+	/**
+	 * Fetch the address information of the user and concatenate to string
+	 * @return false if user not exist
+	 */
+	public function getUserAddressString($user_id){
+		$query = $this->db->query('
+			select 
+				trim(concat_ws(\' \', a.address, a.city, a.province, a.postal_code, a.country)) address
+			from user u
+			left join
+				address a
+			on
+				a.user_id = u.id
+			where
+				u.id = ?',
+			array(
+				$user_id
+			));
+		$results = $query->result();
+		
+		if (count($results) == 0)
+			return false;
+		else
+			return $results[0]->address;
+	}
 }

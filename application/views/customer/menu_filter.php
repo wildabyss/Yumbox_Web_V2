@@ -16,8 +16,14 @@
 		<div class="search_container">
 			<input id="search" class="ui-state-default" name="search" placeholder="e.g. burrito" 
 				type="text" value="<?php echo $search_query ?>" />
+			<button id="btn_location" type="button"></button>
+			<div id="location_dialog" class="<?php if ($is_rush):?>rush<?php else:?>explore<?php endif?>" title="My location">
+				<input type="text" value="<?php echo $location?>" class="ui-state-default" id="input_location" />
+			</div>
 			<button id="btn_filter" class="hidden" type="button"></button>
 		</div>
+		
+		
 		
 		<div class="menu_filter_container">
 			<div class="menu_filter_zone">
@@ -170,9 +176,6 @@
 		updateRatingSliderOutput();
 		updateTimeSliderOutput();
 		
-		// can deliver checkbox
-		$("#can_deliver").button();
-		
 		// category filter checkboxes
 		$("#menu_filter_categories").buttonset();
 		
@@ -207,6 +210,41 @@
 				$(".menu_filter_container").slideUp(100);
 			}
 			$(this).toggleClass("hidden");
+		});
+		
+		// location dialog
+		$("#location_dialog").dialog({
+			autoOpen: false,
+			modal: true,
+			resizable: false,
+			dialogClass: '<?php if ($is_rush):?>rush<?php else:?>explore<?php endif?>',
+			buttons:[
+				{
+					icons: {
+						primary: "ui-icon-check"
+					},
+					'class': 'ui-button-dialog',
+					click: function(){
+						$("#input_location").attr("name", "location");
+						$("#input_location").appendTo($("#filter_form"));
+						$('#filter_form').submit();
+					}
+				},
+				{
+					icons: {
+						primary: "ui-icon-closethick"
+					},
+					'class': 'ui-button-dialog',
+					click: function(){
+						$(this).dialog("close");
+					}
+				}
+			]
+		})
+		
+		// location button
+		$("#btn_location").button().click(function(e){
+			$("#location_dialog").dialog("open");
 		});
 		
 		// prevent default hover and focus behaviours on the buttons
