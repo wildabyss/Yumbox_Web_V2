@@ -23,7 +23,7 @@ class User_model extends CI_Model {
 				u.pickup_mon, u.pickup_tue, u.pickup_wed, u.pickup_thu, u.pickup_fri,
 				u.pickup_sat, u.pickup_sun,
 				u.fb_id, u.google_id,
-				a.address, a.city, a.province, a.postal_code, a.country
+				a.address, a.city, a.province, a.postal_code, a.country, a.latitude, a.longitude
 			from user u
 			left join
 				address a
