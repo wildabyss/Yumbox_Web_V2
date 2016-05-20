@@ -211,6 +211,18 @@
 			overflow: auto;
 			margin-top: 10px;
 		}
+		
+		.editable_li{
+			cursor: pointer;
+		}
+		
+		#btn_add_new{
+			border: solid 1px $grey;
+			h3{
+				display: block;
+				margin: 10px;
+			}
+		}
 	}
 }
 

@@ -13,6 +13,7 @@
 		<title>Yumbox</title>
 		<link rel="shortcut icon" href="/imgs/logo.ico" type="image/x-icon"/>
 		<link rel="stylesheet" href="/css/common.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="/css/jqueryui-editable.css" type="text/css" media="screen" />
 		<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic|Montserrat" rel="stylesheet" type="text/css"/>
 	</head>
 	
@@ -21,7 +22,12 @@
 		<script src="/js/jquery.min.js"></script>
 		<script src="/js/jquery-ui.min.js"></script>
 		<script src="/js/jquery.ui.touch-punch.min.js"></script>
+		
+		<!-- textarea autosizing -->
 		<script src="/js/autosize.min.js"></script>
+		
+		<!-- x-editable -->
+		<script src="/js/jqueryui-editable.min.js"></script>
 		
 		<!-- global js loading -->
 		<script src="/js/global.js"></script>

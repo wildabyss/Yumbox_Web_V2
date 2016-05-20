@@ -5,15 +5,6 @@ class Profile extends Yumbox_Controller {
 	public static $MAX_RESULTS = 5;
 
 	public function id($user_id=NULL){
-		// language
-		$this->lang->load("menu");
-		
-		// csrf hash
-		$csrf = array(
-			'name' => $this->security->get_csrf_token_name(),
-			'hash' => $this->security->get_csrf_hash()
-		);
-		
 		// fetch user
 		$user = $this->user_model->getUserForUserId($user_id);
 		if ($user===false){
@@ -52,7 +43,6 @@ class Profile extends Yumbox_Controller {
 		// bind data
 		$data['is_my_profile'] = $myprofile;
 		$data['user'] = $user;
-		$data['empty_string'] = $this->lang->line("empty_kitchen");
 		$data['foods'] = $foods;
 		$data['categories'] = $categories;
 		$data['my_id'] = $my_id;
@@ -62,7 +52,6 @@ class Profile extends Yumbox_Controller {
 		$this->header();
 		$this->navigation();
 		$this->load->view("vendor/profile", $data);
-		$this->load->view("vendor/menu", $data);
 		$this->footer();
 	}
 

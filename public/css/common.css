@@ -531,7 +531,7 @@ nav ul#mobile_user_menu a.logo {
 }
 
 .is_closed {
-  display: inline-block;
+  display: block;
   width: 200px;
   height: 30px;
   line-height: 30px;
@@ -830,7 +830,7 @@ div.about_text h1 {
 }
 
 #menu_filter .menu_filter_container {
-  display: flex;
+  display: none;
   flex-direction: row;
   flex-wrap: wrap;
 }
@@ -847,30 +847,35 @@ div.about_text h1 {
 }
 
 #menu_filter .menu_button_container button {
-  margin: 0 0 10px 10px;
+  margin: 0 5px 10px 5px;
   width: 170px;
 }
 
 #menu_filter .search_container {
-  width: 100%;
-}
-
-#menu_filter .search_container label {
-  vertical-align: top;
-  height: 30px;
-  min-width: 110px;
-  margin-left: 10px;
+  padding: 0 5px 0 5px;
+  display: flex;
+  flex-direction: row;
 }
 
 #menu_filter .search_container input#search {
   margin: 0;
-  width: 80%;
+  flex: 1;
   height: 30px;
   padding-right: 28px;
   background-image: url("/imgs/search.svg");
   background-size: 25px 25px;
   background-repeat: no-repeat;
   background-position: right center;
+}
+
+#menu_filter .search_container button#btn_filter {
+  margin-left: 5px;
+  width: 30px;
+  height: 30px;
+  background-image: url("/imgs/filter.png");
+  background-size: 25px 25px;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 #menu_filter .filter_slider {
@@ -979,16 +984,20 @@ div.about_text h1 {
   margin-top: 10px;
 }
 
+#menu_listing ul.food_list .editable_li {
+  cursor: pointer;
+}
+
+#menu_listing ul.food_list #btn_add_new {
+  border: solid 1px #e3e0d8;
+}
+
+#menu_listing ul.food_list #btn_add_new h3 {
+  display: block;
+  margin: 10px;
+}
+
 @media (max-width: 600px) {
-  #menu_filter .search_container {
-    text-align: center;
-    display: flex;
-    flex-direction: row;
-  }
-  #menu_filter .search_container input#search {
-    flex: 1;
-    width: auto;
-  }
   #menu_filter .menu_filter_container .menu_filter_zone {
     padding: 0;
     width: 100vw;
@@ -996,11 +1005,6 @@ div.about_text h1 {
   }
   #menu_filter .menu_button_container button {
     width: 140px;
-  }
-  #menu_filter input#search {
-    margin: 0 auto;
-    width: 95vw;
-    min-width: initial;
   }
   #menu_filter .filter_slider {
     margin: 0 auto;
@@ -1200,6 +1204,10 @@ div.about_text h1 {
   flex-direction: row;
 }
 
+#profile_intro input {
+  line-height: 20px;
+}
+
 #profile_intro .pic_wrapper {
   width: 200px;
   overflow-y: auto;
@@ -1256,6 +1264,10 @@ div.about_text h1 {
     text-align: center;
   }
   #profile_intro .is_open {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #profile_intro .is_closed {
     margin-left: auto;
     margin-right: auto;
   }
@@ -1381,13 +1393,21 @@ div.about_text h1 {
 
 #basket_view .total {
   border-top: solid 1px #b5b3ac;
+}
+
+#basket_view .total .line {
   display: flex;
   flex-direction: row;
 }
 
-#basket_view .total #total_amount {
+#basket_view .total .line .amount {
   flex: 1;
   text-align: right;
+}
+
+#basket_view .total .line h3 {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 #basket_view .action_buttons_container {

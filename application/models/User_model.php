@@ -19,7 +19,10 @@ class User_model extends CI_Model {
 		$query = $this->db->query('
 			select 
 				u.id, u.user_type, u.status, u.name, u.email, u.descr,
-				u.max_unfilled_orders, u.is_open, u.fb_id, u.google_id,
+				u.max_unfilled_orders, u.is_open, 
+				u.pickup_mon, u.pickup_tue, u.pickup_wed, u.pickup_thu, u.pickup_fri,
+				u.pickup_sat, u.pickup_sun,
+				u.fb_id, u.google_id,
 				a.address, a.city, a.province, a.postal_code, a.country
 			from user u
 			left join
