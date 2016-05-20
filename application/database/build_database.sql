@@ -85,7 +85,7 @@ create table user_follow_assoc
 drop table if exists address;
 create table address
 (
-	id int unsigned not null auto_increment,
+    id int unsigned not null auto_increment,
     is_primary tinyint(1) unsigned not null,
     user_id int unsigned not null,
     
@@ -94,6 +94,10 @@ create table address
     province varchar(10),
     postal_code varchar(10),
     country varchar(10),
+    
+    # geocoded location from above address
+    latitude float,
+    longitude float,
     
     primary key (id),
     index user_id_address_index (user_id),
