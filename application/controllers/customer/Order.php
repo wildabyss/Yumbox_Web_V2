@@ -106,14 +106,16 @@ class Order extends Yumbox_Controller {
 		}
 		
 		// fetch total cost in basket
-		$base_cost = $this->order_basket_model->getBaseCostInBasket($open_basket->id);
-		if ($base_cost === false){
+		try{
+			$costs = $this->accounting->calcOpenBasketCosts($open_basket->id, $this->config);
+		} catch (Exception $e){
 			$json_arr["error"] = "unknown database error";
 			echo json_encode($json_arr);
 			return;
 		}
-		$commission = $base_cost*$this->config->item('take_rate');
-		$taxes = ($base_cost+$commission)*$this->config->item('tax_rate');
+		$base_cost = $costs["base_cost"];
+		$commission = $costs["commission"];
+		$taxes = $costs["taxes"];
 		$total_cost = $base_cost + $commission + $taxes;
 		
 		$json_arr["success"] = "1";
@@ -171,14 +173,16 @@ class Order extends Yumbox_Controller {
 		}
 		
 		// fetch total cost in basket
-		$base_cost = $this->order_basket_model->getBaseCostInBasket($open_basket->id);
-		if ($base_cost === false){
+		try{
+			$costs = $this->accounting->calcOpenBasketCosts($open_basket->id, $this->config);
+		} catch (Exception $e){
 			$json_arr["error"] = "unknown database error";
 			echo json_encode($json_arr);
 			return;
 		}
-		$commission = $base_cost*$this->config->item('take_rate');
-		$taxes = ($base_cost+$commission)*$this->config->item('tax_rate');
+		$base_cost = $costs["base_cost"];
+		$commission = $costs["commission"];
+		$taxes = $costs["taxes"];
 		$total_cost = $base_cost + $commission + $taxes;
 		
 		$json_arr["success"] = "1";
@@ -246,10 +250,8 @@ class Order extends Yumbox_Controller {
 				continue;
 			
 			// get amount to be charged in dollars
-			$base_amount = $order_item->quantity*$order_item->price;
-			$commission = $base_amount*$this->config->item('take_rate');
-			$taxes = ($base_amount+$commission)*$this->config->item('tax_rate');
-			$amount = round($base_amount + $commission + $taxes, 2);
+			$costs = $this->accounting->calcOpenOrderItemCosts($order_item, $this->config);
+			$amount = round($costs["base_cost"] + $costs["commission"] + $costs["taxes"], 2);
 			
 			// charge Stripe
 			try {
@@ -266,7 +268,8 @@ class Order extends Yumbox_Controller {
 			}
 			
 			// save entry to database
-			$res = $this->payment_model->payOrderItem($amount, $this->config->item('take_rate'), $this->config->item('tax_rate'),
+			$rates = $this->accounting->getCurrentRates($this->config);
+			$res = $this->payment_model->payOrderItem($amount, $rates['take_rate'], $rates['tax_rate'],
 				$order_item->order_id, $charge->id);
 			if ($res !== true){
 				$json_arr["error"] = $res;
@@ -397,9 +400,10 @@ class Order extends Yumbox_Controller {
 		$vendor = $this->user_model->getUserForUserId($food_order->vendor_id);
 		
 		// get payment costs
-		$base_cost = $food_order->quantity*$food_order->price;
-		$commission = $food_order->take_rate*$base_cost;
-		$taxes = $food_order->tax_rate*($base_cost+$commission);
+		$costs = $this->accounting->calcPaidOrderItemCosts($food_order);
+		$base_cost = $costs["base_cost"];
+		$commission = $costs["commission"];
+		$taxes = $costs["taxes"];
 		$total_cost = $base_cost + $commission + $taxes;
 		
 		// bind data
@@ -468,9 +472,10 @@ class Order extends Yumbox_Controller {
 				
 				// total cost
 				if ($is_open_basket){
-					$base_cost = $this->order_basket_model->getBaseCostInBasket($basket_id);
-					$commission = $base_cost*$this->config->item('take_rate');
-					$taxes = ($base_cost+$commission)*$this->config->item('tax_rate');
+					$costs = $this->accounting->calcOpenBasketCosts($basket_id, $this->config);
+					$base_cost = $costs["base_cost"];
+					$commission = $costs["commission"];
+					$taxes = $costs["taxes"];
 				} else {
 					$base_cost = 0;
 					$taxes = 0;
@@ -488,14 +493,12 @@ class Order extends Yumbox_Controller {
 						// calculate paid costs
 						foreach ($foods_orders[$vendor->id] as $food_order){
 							if ($food_order->refund_id == ""){
-								$food_cost = $food_order->quantity*$food_order->price;
-								$food_commission = $food_order->take_rate*$food_cost;
-								$food_tax = ($food_cost+$food_commission)*$food_order->tax_rate;
+								$costs = $this->accounting->calcPaidOrderItemCosts($food_order);
 								
 								// sum into total
-								$base_cost += $food_cost;
-								$commission += $food_commission;
-								$taxes += $food_tax;
+								$base_cost += $costs["base_cost"];
+								$commission += $costs["commission"];
+								$taxes += $costs["taxes"];
 							}
 						}
 					}
