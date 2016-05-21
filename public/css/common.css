@@ -1027,6 +1027,22 @@ div.about_text h1 {
   margin: 10px;
 }
 
+#menu_map .map_wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 75%;
+}
+
+#menu_map .map_wrapper .map_container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border: solid 1px #e3e0d8;
+  max-height: 600px;
+}
+
 @media (max-width: 600px) {
   #menu_filter .menu_filter_container .menu_filter_zone {
     padding: 0;
