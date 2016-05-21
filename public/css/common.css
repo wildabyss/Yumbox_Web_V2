@@ -437,6 +437,7 @@ nav ul#user_menu li {
   float: none;
   margin: 0;
   height: 50px;
+  min-width: 100px;
   display: block;
   border-top: solid 1px #e3e0d8;
   padding: 0;

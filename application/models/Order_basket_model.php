@@ -55,7 +55,7 @@ class Order_basket_model extends CI_Model {
 	 * Fetch the order_basket for a given $user_id that hasn't finished checkout
 	 * @return false if not exist
 	 */
-	public function getOpenBasketForUser($user_id){
+	protected function getOpenBasketForUser($user_id){
 		$query = $this->db->query('
 			select
 				b.id, b.order_date, b.delivery_address
@@ -78,7 +78,7 @@ class Order_basket_model extends CI_Model {
 	 * Create an open order_basket for $user_id
 	 * @return true on success, error on failure
 	 */
-	public function createOpenBasketForUser($user_id){
+	protected function createOpenBasketForUser($user_id){
 		if (!$query = $this->db->query('
 			insert into order_basket
 				(order_date, user_id)

@@ -11,7 +11,7 @@ class Menu extends Yumbox_Controller {
 	 * Get the data required for the menu filter component for the view
 	 * @return an array of data to be passed to view
 	 */
-	protected function dataForMenuFilter($is_rush, $is_list, $search_query, 
+	protected function dataForMenuFilter($is_rush, $is_list, $search_query, $location,
 		array $chosen_categories, $can_deliver, array $price_filter, $rating_filter, $time_filter){
 		// load language
 		$this->lang->load("landing");
@@ -20,10 +20,12 @@ class Menu extends Yumbox_Controller {
 		$main_categories = $this->food_category_model->getAllMainCategories();
 		
 		// get user location
-		$location = $this->user_model->getUserAddressString($this->login_util->getUserId());
-		if ($location === false || $location==""){
-			// use default
-			$location = Search::$TORONTO_SEARCH;
+		if ($location == ""){
+			$location = $this->user_model->getUserAddressString($this->login_util->getUserId());
+			if ($location === false || $location==""){
+				// use default
+				$location = Search::$TORONTO_SEARCH;
+			}
 		}
 
 		// bind model data
@@ -56,7 +58,7 @@ class Menu extends Yumbox_Controller {
 	 * Get the data required for food listing in the view
 	 * @return: an array with "foods" => array of foods and "categories" => array of categories
 	 */
-	protected function dataForFoodListing($is_rush, $search_query, 
+	protected function dataForFoodListing($is_rush, $search_query, $location,
 		array $chosen_categories, $can_deliver, array $price_filter, $rating_filter, $time_filter){
 		// filters
 		$filters = array();
@@ -66,6 +68,7 @@ class Menu extends Yumbox_Controller {
 		$filters["min_price"] = $price_filter["min"];
 		$filters["max_price"] = $price_filter["max"];
 		$filters["max_time"] = $time_filter;
+		$filters["location"] = $location;
 		
 		// search for foods with the chosen categories
 		$foods = array();
@@ -100,6 +103,7 @@ class Menu extends Yumbox_Controller {
 		
 		// get user inputs
 		$search_query = $this->input->get('search', true);
+		$location = $this->input->get('location', true);
 		$chosen_categories = $this->input->get('category', true);
 		if ($chosen_categories==NULL)
 			$chosen_categories = array();
@@ -119,7 +123,7 @@ class Menu extends Yumbox_Controller {
 		} else {*/
 			// list view
 			
-			$foods_and_cats = $this->dataForFoodListing($is_rush, $search_query, $chosen_categories, 
+			$foods_and_cats = $this->dataForFoodListing($is_rush, $search_query, $location, $chosen_categories, 
 				$can_deliver, $price_filter, $rating_filter, $time_filter);
 			$foods = $foods_and_cats["foods"];
 			$categories = $foods_and_cats["categories"];
@@ -136,7 +140,7 @@ class Menu extends Yumbox_Controller {
 		}
 		
 		// bind to data
-		$filter_data = $this->dataForMenuFilter($is_rush, $view!=self::$MAP_VIEW, $search_query, 
+		$filter_data = $this->dataForMenuFilter($is_rush, $view!=self::$MAP_VIEW, $search_query, $location,
 			$chosen_categories, $can_deliver, $price_filter, $rating_filter, $time_filter);
 		$data['foods'] = $foods;
 		$data['categories'] = $categories;
