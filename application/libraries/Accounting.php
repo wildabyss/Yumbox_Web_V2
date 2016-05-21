@@ -29,9 +29,6 @@ class Accounting {
 	 * @return ["base_cost", "commission", "taxes"]
 	 */
 	public function calcOpenOrderItemCosts($order_item, $config){
-		$CI =& get_instance();
-		$CI->load->model('order_basket_model');
-		
 		$base_cost = $order_item->quantity*$order_item->price;
 		$commission = $base_cost*$config->item('take_rate');
 		$taxes = ($base_cost+$commission)*$config->item('tax_rate');

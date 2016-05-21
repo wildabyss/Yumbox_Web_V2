@@ -15,6 +15,12 @@
 		<?php else:?>
 		<h3 class="is_open">KITCHEN OPEN</h3>
 		<?php endif?>
+		
+		<?php if ($is_my_profile):?>
+		<h3>ADDRESS</h3>
+		<p></p>
+		<?php endif?>
+		
 		<?php if (!$is_my_profile && $user->descr != "" || $is_my_profile):?>
 		<h3>ABOUT ME</h3>
 		<p><a id="edit_user_descr" data-type="textarea" data-onblur="ignore"><?php echo $user->descr?></a></p>

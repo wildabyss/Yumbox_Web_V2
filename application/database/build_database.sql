@@ -86,7 +86,7 @@ drop table if exists address;
 create table address
 (
     id int unsigned not null auto_increment,
-    is_primary tinyint(1) unsigned not null,
+    is_primary tinyint(1) unsigned not null default 1,
     user_id int unsigned not null,
     
     address varchar(255),
