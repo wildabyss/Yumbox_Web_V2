@@ -1,6 +1,6 @@
 <section id="menu_map">
 	<div class="map_wrapper">
-		<div class="map_container"></div>
+		<div class="map_container" id="map"></div>
 	</div>
 </section>
 
@@ -93,13 +93,14 @@
 	};
 	
 	var initMap = function(){
-		centerCurrentLocation();
 		//this is using a default location at Toronto downtown to show a map
 		map = new google.maps.Map(document.getElementById('map'), {
 			center: {lat: 43.6532, lng: -79.3832},
 			//zoom controls the range of the map. 0 is global. the bigger the number is, the closer it will be
 			zoom: 12
 		});
+		centerCurrentLocation();
+		
 		printMarkers();
     }
 </script>
