@@ -4,3 +4,5 @@
 */.DS_Store
 !*/cache/.htaccess
 /vendor/*
+_prd.txt
+_test.txt
