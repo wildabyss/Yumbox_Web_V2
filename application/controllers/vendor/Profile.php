@@ -51,6 +51,7 @@ class Profile extends Yumbox_Controller {
 		// bind data
 		$data['is_my_profile'] = $myprofile;
 		$data['user'] = $user;
+		$data['foods'] = $foods;
 		$data['food_list_display'] = $food_list_display;
 		$data['my_id'] = $my_id;
 		$data['num_followers'] = $num_followers;

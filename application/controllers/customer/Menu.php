@@ -140,7 +140,7 @@ class Menu extends Yumbox_Controller {
 					$food->total_orders=0;
 				
 				// show predicted pickup time
-				$pickup_time = $this->time_prediction->calcPickupTime();
+				//$pickup_time = $this->time_prediction->calcPickupTime();
 				$food->prep_time = prep_time_for_display($food->prep_time);
 				
 				$food_data["food"] = $food;
@@ -153,6 +153,7 @@ class Menu extends Yumbox_Controller {
 		// bind to data
 		$filter_data = $this->dataForMenuFilter($is_rush, $view!=self::$MAP_VIEW, $search_query, $location,
 			$chosen_categories, $can_deliver, $price_filter, $rating_filter, $time_filter);
+		$data["foods"] = $foods;
 		$data['food_list_display'] = $food_list_display;
 		$data['empty_string'] = $this->lang->line("no_result");
 
