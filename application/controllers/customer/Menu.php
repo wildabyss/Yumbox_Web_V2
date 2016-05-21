@@ -74,10 +74,10 @@ class Menu extends Yumbox_Controller {
 		$foods = array();
 		if (count($chosen_categories)==0){
 			// show all categories
-			$categories = $this->food_category_model->getAllActiveCategories($filters);
+			$categories = $this->food_category_model->getAllActiveCategories(self::$MAX_RESULTS, $filters);
 		} else {
 			// show selected categories
-			$categories = $this->food_category_model->getAllActiveRelatedCategories($chosen_categories, $filters);
+			$categories = $this->food_category_model->getAllActiveRelatedCategories($chosen_categories, self::$MAX_RESULTS, $filters);
 		}
 		
 		// get all foods for each category
@@ -129,21 +129,31 @@ class Menu extends Yumbox_Controller {
 			$categories = $foods_and_cats["categories"];
 		//}
 		
-		// massage food data for display
-		foreach ($foods as $cat_id=>$foods_for_cat){
-			foreach ($foods_for_cat as $food){
+		// parse food data for display
+		$food_list_display = "";
+		foreach ($categories as $category){
+			$list_data["category"] = $category;
+			$food_list_display .= $this->load->view("food_list/food_list_start", $list_data, true);
+			
+			foreach ($foods[$category->id] as $food){
 				if ($food->total_orders=="")
 					$food->total_orders=0;
 				
+				// show predicted pickup time
+				$pickup_time = $this->time_prediction->calcPickupTime();
 				$food->prep_time = prep_time_for_display($food->prep_time);
+				
+				$food_data["food"] = $food;
+				$food_list_display .= $this->load->view("food_list/food_list_item", $food_data, true);
 			}
+			
+			$food_list_display .= $this->load->view("food_list/food_list_end", $list_data, true);
 		}
 		
 		// bind to data
 		$filter_data = $this->dataForMenuFilter($is_rush, $view!=self::$MAP_VIEW, $search_query, $location,
 			$chosen_categories, $can_deliver, $price_filter, $rating_filter, $time_filter);
-		$data['foods'] = $foods;
-		$data['categories'] = $categories;
+		$data['food_list_display'] = $food_list_display;
 		$data['empty_string'] = $this->lang->line("no_result");
 
 		// Load views

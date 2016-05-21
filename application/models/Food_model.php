@@ -6,29 +6,13 @@ class Food_model extends CI_Model {
 	public static $INACTIVE_FOOD = 0;
     public static $ACTIVE_FOOD = 1;
 	
+	// pickup method
+	public static $PICKUP_ANYTIME = 0;
+	public static $PICKUP_DESIGNATED = 1;
+	
 	public function __construct()
 	{
 		parent::__construct();
-	}
-	
-	/*
-	 * From a given filter input, translate it to hours
-	 */
-	public static function getMaxHoursForMaxTimeFilter($max_time_filter){
-		switch ($max_time_filter){
-			case 0:
-				return 0.5;
-			case 1:
-				return 1;
-			case 2:
-				return 2;
-			case 3:
-				return 4;
-			case 4:
-				return 8;
-			default:
-				return 100;		// a very large hours
-		}
 	}
 	
 	/**
@@ -43,7 +27,6 @@ class Food_model extends CI_Model {
 	 *    min_rating	=> int
 	 *    min_price     => float
 	 *    max_price     => float
-	 *    max_time      => float
 	 */
 	public function getActiveFoodsAndVendorAndOrdersAndRatingAndPictures($limit, array $filters){
 		
@@ -55,13 +38,12 @@ class Food_model extends CI_Model {
 		$min_rating = isset($filters["min_rating"])?$filters["min_rating"]:false;
 		$min_price = isset($filters["min_price"])?$filters["min_price"]:false;
 		$max_price = isset($filters["max_price"])?$filters["max_price"]:false;
-		$max_time = isset($filters["max_time"])?$filters["max_time"]:false;
 		
 		// base query
 		$query_str = '
 			select 
 				f.id food_id, f.name food_name, f.alternate_name food_alt_name, 
-				f.price food_price, f.prep_time_hours prep_time,
+				f.price food_price, f.pickup_method, f.prep_time_hours prep_time,
 				average_rating(f.id)/?*100 rating,
 				u.is_open,
 				p.path pic_path,
@@ -76,19 +58,16 @@ class Food_model extends CI_Model {
 			on p.food_id = f.id
 			where
 				f.status = ?
-				and u.status = ?';
-				
-		// filter out non-rush items		
+				and u.status = ?
+				and u.is_open = 1';
+		
+		// filter out non-rush items
 		if ($is_rush){
-			$query_str .= ' and u.is_open = 1';
+			$query_str .= ' and f.pickup_method = ? and f.prep_time_hours <= ?';
 		} 
 		// filter selected category
 		if ($categoryId !== false){
 			$query_str .= ' and a.food_category_id = ?';
-		}
-		// filter max prep time
-		if ($max_time !== false){
-			$query_str .= ' and f.prep_time_hours <= ?';
 		}
 		// filter minimum rating
 		if ($min_rating !== false){
@@ -110,11 +89,12 @@ class Food_model extends CI_Model {
 			Food_model::$ACTIVE_FOOD, 
 			User_model::$CERTIFIED_VENDOR
 		);
+		if ($is_rush){
+			$bindings[] = Food_model::$PICKUP_ANYTIME;
+			$bindings[] = Time_prediction::$RUSH_HOUR_CUTOFF;
+		}
 		if ($categoryId !== false){
 			$bindings[] = $categoryId;
-		}
-		if ($max_time !== false){
-			$bindings[] = Food_model::getMaxHoursForMaxTimeFilter($max_time);
 		}
 		if ($min_rating !== false){
 			$bindings[] = $min_rating;
@@ -145,7 +125,8 @@ class Food_model extends CI_Model {
 		$query = $this->db->query('
 			select 
 				f.id food_id, f.name as food_name, f.alternate_name, f.price, f.descr, f.ingredients, 
-				f.health_benefits, f.eating_instructions, f.prep_time_hours prep_time,
+				f.health_benefits, f.eating_instructions, 
+				f.pickup_method, f.prep_time_hours prep_time,
 				average_rating(f.id)/?*100 rating,
 				total_orders(f.id) total_orders,
 				u.id as user_id, u.name as user_name, u.email, u.phone, u.return_date,
@@ -159,6 +140,37 @@ class Food_model extends CI_Model {
 				and u.status = ?',
 			array(
 				Food_review_model::$HIGHEST_RATING,
+				$food_id,
+				self::$ACTIVE_FOOD,
+				User_model::$CERTIFIED_VENDOR
+			));
+		$results = $query->result();
+		
+		if (count($results) == 0)
+			return false;
+		else
+			return $results[0];
+	}
+	
+	
+	/**
+	 * Fetch pickup time information for the given food
+	 * @return object with pickup method, pickup times, prep_time, return false if not found
+	 */
+	public function getFoodPickupTimesForFoodId($food_id){
+		$query = $this->db->query('
+			select 
+				f.pickup_method, f.prep_time_hours,
+				u.pickup_mon, u.pickup_tue, u.pickup_wed, u.pickup_thu, u.pickup_fri, 
+				u.pickup_sat, u.pickup_sun
+			from food f
+			left join user u
+			on u.id = f.user_id
+			where
+				f.id = ?
+				and f.status = ?
+				and u.status = ?',
+			array(
 				$food_id,
 				self::$ACTIVE_FOOD,
 				User_model::$CERTIFIED_VENDOR

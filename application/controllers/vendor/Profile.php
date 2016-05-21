@@ -23,7 +23,8 @@ class Profile extends Yumbox_Controller {
 			$myprofile = false;
 		}
 		
-		// get food data
+		// get food data for display
+		$food_list_display = "";
 		$foods = $this->food_model->
 			getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_RESULTS, $filters);
 		$categories = array();
@@ -34,7 +35,14 @@ class Profile extends Yumbox_Controller {
 			if ($food->total_orders=="")
 				$food->total_orders=0;
 			
+			// massage time for display
 			$food->prep_time = prep_time_for_display($food->prep_time);
+			
+			// parse data for display
+			$food_data['categories'] = $categories;
+			$food_data["food"] = $food;
+			$food_data["is_my_profile"] = $myprofile;
+			$food_list_display .= $this->load->view("food_list/food_list_item", $food_data, true);
 		}
 		
 		// get followers
@@ -43,8 +51,7 @@ class Profile extends Yumbox_Controller {
 		// bind data
 		$data['is_my_profile'] = $myprofile;
 		$data['user'] = $user;
-		$data['foods'] = $foods;
-		$data['categories'] = $categories;
+		$data['food_list_display'] = $food_list_display;
 		$data['my_id'] = $my_id;
 		$data['num_followers'] = $num_followers;
 		

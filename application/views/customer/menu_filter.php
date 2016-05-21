@@ -41,12 +41,6 @@
 					<input type="hidden" name="rating_min" id="rating_filter_min"
 						value="<?php echo $rating_filter?>"/>
 				</div>
-				<div>
-					<p>Max prep time: <span id="time_slider_output"></span></p>
-					<div class="filter_slider" id="time_slider"></div>
-					<input type="hidden" name="time_max" id="time_filter_max"
-						value="<?php echo $time_filter?>"/>
-				</div>
 			</div>
 			
 			<div class="menu_filter_zone">
@@ -102,40 +96,6 @@
 			
 			$('#rating_slider_output').html(output);
 		}
-		
-		// update turnaround time slider's equivalent output
-		var updateTimeSliderOutput = function(ui){
-			if (ui==null){
-				var high = $('#time_slider').slider('value');
-			} else {
-				var high = ui.value;
-			}
-			var max = $('#time_slider').slider('option', 'max');
-			
-			var output = '';
-			switch (high){
-				case 0:
-					output = '30min';
-					break;
-				case 1:
-					output = '1hr';
-					break;
-				case 2:
-					output = '2hr';
-					break;
-				case 3:
-					output = '4hr';
-					break;
-				case 4:
-					output = '8hr';
-					break;
-				case 5:
-					output = '>8hr';
-					break;
-			}
-			
-			$('#time_slider_output').html(output);
-		}
 	
 		// range sliders
 		$( "#price_slider" ).slider({
@@ -160,21 +120,10 @@
 				updateRatingSliderOutput(ui);
 			}
 		});
-		$( "#time_slider" ).slider({
-			min: 0,
-			max: 5,
-			step: 1,
-			value: $('#time_filter_max').val(),
-			slide: function(ev, ui){
-				$('#time_filter_max').val(ui.value);
-				updateTimeSliderOutput(ui);
-			}
-		});
 		
 		// initially update the ranged outputs
 		updatePriceSliderOutput();
 		updateRatingSliderOutput();
-		updateTimeSliderOutput();
 		
 		// category filter checkboxes
 		$("#menu_filter_categories").buttonset();

@@ -130,7 +130,7 @@ create table food
     price decimal(5,2) unsigned not null,
     
     /* food preparation */
-    limit_pickup tinyint(2) not null default 0,		# 0=any time the food is ready after prep_time_hours, # 1=limit pickup to times as specified in user table
+    pickup_method tinyint(2) not null default 0,		# 0=any time the food is ready after prep_time_hours, # 1=limit pickup to times as specified in user table
     prep_time_hours float not null default 2.0,
     
 	alternate_name varchar(255),
