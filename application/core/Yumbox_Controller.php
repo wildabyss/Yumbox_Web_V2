@@ -55,10 +55,7 @@ class Yumbox_Controller extends CI_Controller {
 	/**
 	 * Display the footer common to Yumbox web application
 	 */
-	protected function footer(){
-		// load language
-		$this->lang->load("footer");
-		
+	protected function footer(){	
 		// Load views
 		$this->load->view("common_footer");
 	}
