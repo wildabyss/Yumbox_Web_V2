@@ -140,8 +140,8 @@ class Menu extends Yumbox_Controller {
 					$food->total_orders=0;
 				
 				// show predicted pickup time
-				//$pickup_time = $this->time_prediction->calcPickupTime();
-				$food->prep_time = prep_time_for_display($food->prep_time);
+				$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
+				$food->prep_time = prep_time_for_display($pickup_time);
 				
 				$food_data["food"] = $food;
 				$food_list_display .= $this->load->view("food_list/food_list_item", $food_data, true);
@@ -192,7 +192,8 @@ class Menu extends Yumbox_Controller {
 		}
 		
 		// massage food data
-		$food->prep_time = prep_time_for_display($food->prep_time);
+		$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
+		$food->prep_time = prep_time_for_display($pickup_time);
 		
 		// get food pictures
 		$food_pictures = $this->food_model->getFoodPicturesForFoodId($food_id);
