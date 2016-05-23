@@ -50,12 +50,17 @@ class Time_prediction {
 			$pickup_time = 0;
 			for ($i=0; $i<7; $i++){
 				if ($slots[$i] != "00:00:00"){
-					$next_time = strtotime("next $weekdays[$i] $slots[$i]", $order_time);
-					$timeObj = new DateTime();
-					$timeObj->setTimestamp($next_time);
-					$diff = $timeObj->diff($order_time, true)->h;
+					$str = "{$weekdays[$i]} {$slots[$i]}";
+					$next_time = strtotime($str, $order_time);
+
+					$startObj = new DateTime();
+					$startObj->setTimestamp($next_time);
+					$endObj = new DateTime();
+					$endObj->setTimestamp($order_time);
+					$diffObj = $startObj->diff($endObj);
+					$diff = $diffObj->d*24 + $diffObj->h + $diffObj->m/60;
 					
-					if ($diff < $time_diff){
+					if ($diff < $time_diff && $diff >= $prep_time_hours){
 						$time_diff = $diff;
 						$pickup_time = $next_time;
 					}

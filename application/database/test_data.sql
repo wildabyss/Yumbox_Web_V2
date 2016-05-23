@@ -17,8 +17,8 @@ insert into address (is_primary, user_id, address, city, province, postal_code, 
 insert into address (is_primary, user_id, address, city, province, postal_code, country, latitude, longitude)
 	values (1, 3, '25 Mutual St', 'Toronto', 'Ontario', 'M5B2K1', 'Canada', 43.6543, -79.3743);
     
-insert into food (status, user_id, name, price, descr, ingredients, health_benefits)
-	values (1, 1, 'Adrienne Burger', 12.99, 'Juicy burger with everything dressed', '', '');
+insert into food (status, user_id, name, price, descr, ingredients, health_benefits, pickup_method)
+	values (1, 1, 'Adrienne Burger', 12.99, 'Juicy burger with everything dressed', '', '', 1);
 insert into food (status, user_id, name, price, descr, ingredients, health_benefits, eating_instructions)
 	values (1, 1, 'Kung Pao Chicken', 15.99, 'Spicy chicken with spicy nuts', 'Nuts, chicken', 'Good for your soul. Good for the environment. It''s even good for the chicken!',
 	'Dump water into the food container. Heat for 50 min, add ample sugar and salt. Mix with terrazine, and you''re good to go!');
