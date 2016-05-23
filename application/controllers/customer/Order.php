@@ -9,10 +9,10 @@ class Order extends Yumbox_Controller {
 	protected function getOpenBasket(){
 		// get logged in user
 		$user_id = $this->login_util->getUserId();
-		
+
 		// fetch open order basket
 		$open_basket = $this->order_basket_model->getOrCreateOpenBasket($user_id);
-		
+
 		return $open_basket;
 	}
 	
@@ -277,13 +277,50 @@ class Order extends Yumbox_Controller {
 				return;
 			}
 		}
-		
+		/*
 		// change basket status
 		$res = $this->order_basket_model->setBasketAsPaid($basket_id);
 		if ($res !== true){
 			$json_arr["error"] = $res;
 			echo json_encode($json_arr);
 			return;
+		}
+*/
+		// Sending email to the customer
+		$mustache = new Mustache_Engine();
+
+		// Gathering information
+		$user_id = $this->login_util->getUserId();
+		$user = $this->user_model->getUserForUserId($user_id);
+		$basket = $this->getSpecifiedBasket($basket_id);
+
+		// Loading the email template for the customer
+		//TODO: Do we really want to load email templates according to current language?
+		$this->lang->load('email');
+		$subject = $mustache->render($this->lang->line('customer_invoice_subject'), array(
+			'customer' => $user,
+			'basket' => $basket,
+		));
+		$body = $mustache->render($this->lang->line('customer_invoice_body'), array(
+			'customer' => $user,
+			'basket' => $basket,
+		));
+
+		// Sending email to customer
+		$this->load->library('mail_server');
+		$this->mail_server->sendFromWebsite($user->email, $user->name, $subject, $body);
+
+		// Sending email to vendor(s)
+		foreach ($basket['vendors'] as $v) {
+			$subject = $mustache->render($this->lang->line('vendor_invoice_subject'), array(
+				'vendor' => $v,
+				'order' => $basket['foods_orders'][$v->id],
+			));
+			$body = $mustache->render($this->lang->line('vendor_invoice_body'), array(
+				'vendor' => $v,
+				'order' => $basket['foods_orders'][$v->id],
+			));
+			$this->mail_server->sendFromWebsite($v->email, $v->name, $subject, $body);
 		}
 		
 		$json_arr["success"] = "1";
@@ -469,54 +506,21 @@ class Order extends Yumbox_Controller {
 				
 				// is this the open basket?
 				$is_open_basket = $order_basket->is_paid==0;
-				
-				// total cost
-				if ($is_open_basket){
-					$costs = $this->accounting->calcOpenBasketCosts($basket_id, $this->config);
-					$base_cost = $costs["base_cost"];
-					$commission = $costs["commission"];
-					$taxes = $costs["taxes"];
-				} else {
-					$base_cost = 0;
-					$taxes = 0;
-					$commission = 0;
-				}
-				
-				// get vendor information
-				$vendors = $this->order_basket_model->getAllVendorsInBasket($basket_id);
-				
-				// get foods per vendor
-				$foods_orders = array();
-				foreach ($vendors as $vendor){
-					$foods_orders[$vendor->id] = $this->order_basket_model->getFoodsPerVendorInBasket($basket_id, $vendor->id);
-					if (!$is_open_basket){
-						// calculate paid costs
-						foreach ($foods_orders[$vendor->id] as $food_order){
-							if ($food_order->refund_id == ""){
-								$costs = $this->accounting->calcPaidOrderItemCosts($food_order);
-								
-								// sum into total
-								$base_cost += $costs["base_cost"];
-								$commission += $costs["commission"];
-								$taxes += $costs["taxes"];
-							}
-						}
-					}
-				}
-				
-				// total cost
-				$total_cost = $base_cost + $commission + $taxes;
 
-				// bind data
+				// Basket data
+				$data = $this->getSpecifiedBasket($basket_id, !$is_open_basket);
 				$data["order_basket"] = $order_basket;
 				$data["is_open_basket"] = $is_open_basket;
-				$data["vendors"] = $vendors;
-				$data["foods_orders"] = $foods_orders;
-				$data["base_cost"] = $base_cost;
-				$data["commission"] = $commission;
-				$data["taxes"] = $taxes;
-				$data["total_cost"] = $total_cost;
-				
+
+				// total cost
+				if ($is_open_basket) {
+					$costs = $this->accounting->calcOpenBasketCosts($basket_id, $this->config);
+					$data["base_cost"] = $costs["base_cost"];
+					$data["commission"] = $costs["commission"];
+					$data["taxes"] = $costs["taxes"];
+					$data["total_cost"] =  $costs["base_cost"] + $costs["commission"] + $costs["taxes"];
+				}
+
 				// Load views
 				$this->header();
 				$this->navigation();
@@ -524,6 +528,46 @@ class Order extends Yumbox_Controller {
 				$this->footer();
 			}
 		}
+	}
+
+	public function getSpecifiedBasket($basket_id, $calculate_costs = true) {
+		// get vendor information
+		$vendors = $this->order_basket_model->getAllVendorsInBasket($basket_id);
+
+		// get foods per vendor
+		$foods_orders = array();
+		$base_cost = 0;
+		$taxes = 0;
+		$commission = 0;
+		foreach ($vendors as $vendor){
+			$foods_orders[$vendor->id] = $this->order_basket_model->getFoodsPerVendorInBasket($basket_id, $vendor->id);
+			if ($calculate_costs){
+				// calculate paid costs
+				foreach ($foods_orders[$vendor->id] as $food_order){
+					if ($food_order->refund_id == ""){
+						$costs = $this->accounting->calcPaidOrderItemCosts($food_order);
+						
+						// sum into total
+						$base_cost += $costs["base_cost"];
+						$commission += $costs["commission"];
+						$taxes += $costs["taxes"];
+					}
+				}
+			}
+		}
+
+		// total cost
+		$total_cost = $base_cost + $commission + $taxes;
+
+		// bind data
+		$data["vendors"] = $vendors;
+		$data["foods_orders"] = $foods_orders;
+		$data["base_cost"] = $base_cost;
+		$data["commission"] = $commission;
+		$data["taxes"] = $taxes;
+		$data["total_cost"] = $total_cost;
+
+		return $data;
 	}
 	
 	
