@@ -313,10 +313,12 @@ class Order extends Yumbox_Controller {
 		// Sending email to vendor(s)
 		foreach ($basket['vendors'] as $v) {
 			$subject = $mustache->render($this->lang->line('vendor_invoice_subject'), array(
+                'customer' => $user,
 				'vendor' => $v,
 				'order' => $basket['foods_orders'][$v->id],
 			));
 			$body = $mustache->render($this->lang->line('vendor_invoice_body'), array(
+                'customer' => $user,
 				'vendor' => $v,
 				'order' => $basket['foods_orders'][$v->id],
 			));
