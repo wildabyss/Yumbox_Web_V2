@@ -495,22 +495,24 @@ class Order extends Yumbox_Controller {
 				$foods_orders = array();
 				foreach ($vendors as $vendor){
 					$foods_orders[$vendor->id] = $this->order_basket_model->getFoodsPerVendorInBasket($basket_id, $vendor->id);
-					if (!$is_open_basket){
+					
+					foreach ($foods_orders[$vendor->id] as $food_order){
 						// calculate paid costs
-						foreach ($foods_orders[$vendor->id] as $food_order){
-							if ($food_order->refund_id == ""){
-								$costs = $this->accounting->calcPaidOrderItemCosts($food_order);
-								
-								// sum into total
-								$base_cost += $costs["base_cost"];
-								$commission += $costs["commission"];
-								$taxes += $costs["taxes"];
-								
-								// get pickup time
-								$food_order->prep_time = date("l F n, g A", $this->time_prediction->calcPickupTime($food_order->food_id, 
-									strtotime($food_order->order_date), false));
-							}
+						if (!$is_open_basket && $food_order->refund_id == ""){
+							$costs = $this->accounting->calcPaidOrderItemCosts($food_order);
+							
+							// sum into total
+							$base_cost += $costs["base_cost"];
+							$commission += $costs["commission"];
+							$taxes += $costs["taxes"];
 						}
+								
+						// get pickup time
+						if ($is_open_basket)
+							$order_time = time();
+						else
+							$order_time = strtotime($food_order->order_date);
+						$food_order->prep_time = date("l F j, g:i A", $this->time_prediction->calcPickupTime($food_order->food_id, $order_time, false));
 					}
 				}
 				
