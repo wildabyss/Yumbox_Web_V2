@@ -277,7 +277,7 @@ class Order extends Yumbox_Controller {
 				return;
 			}
 		}
-		/*
+
 		// change basket status
 		$res = $this->order_basket_model->setBasketAsPaid($basket_id);
 		if ($res !== true){
@@ -285,7 +285,7 @@ class Order extends Yumbox_Controller {
 			echo json_encode($json_arr);
 			return;
 		}
-*/
+
 		// Sending email to the customer
 		$mustache = new Mustache_Engine();
 
