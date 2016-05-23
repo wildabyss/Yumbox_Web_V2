@@ -374,6 +374,9 @@ class Order extends Yumbox_Controller {
 	}
 	
 	
+	/**
+	 * GET method for displaying the order cancel page
+	 */
 	public function cancel($order_id=false){
 		// check if user has logged in
 		if (!$this->login_util->isUserLoggedIn()){
@@ -422,6 +425,9 @@ class Order extends Yumbox_Controller {
 	}
 
 	
+	/**
+	 * GET method for displaying a particular basket (open or closed) OR displaying the list of historical baskets
+	 */
 	public function basket($basket_id=false){
 		// check if user has logged in
 		if (!$this->login_util->isUserLoggedIn()){
@@ -499,6 +505,10 @@ class Order extends Yumbox_Controller {
 								$base_cost += $costs["base_cost"];
 								$commission += $costs["commission"];
 								$taxes += $costs["taxes"];
+								
+								// get pickup time
+								$food_order->prep_time = date("l F n, g A", $this->time_prediction->calcPickupTime($food_order->food_id, 
+									strtotime($food_order->order_date), false));
 							}
 						}
 					}
@@ -527,6 +537,10 @@ class Order extends Yumbox_Controller {
 	}
 	
 	
+	/**
+	 * GET method for displaying the current open order basket
+	 * Relies on basket() function
+	 */
 	public function current(){
 		// check if user has logged in
 		if (!$this->login_util->isUserLoggedIn()){
@@ -540,6 +554,9 @@ class Order extends Yumbox_Controller {
 	}
 	
 	
+	/**
+	 * Default to displaying the current open order basket
+	 */
 	public function index()
 	{
 		$this->current();

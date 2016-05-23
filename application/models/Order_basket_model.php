@@ -170,7 +170,8 @@ class Order_basket_model extends CI_Model {
 	public function getFoodsPerVendorInBasket($basket_id, $vendor_id){
 		$query = $this->db->query('
 			select
-				f.id food_id, f.name, f.alternate_name, f.price, f.prep_time_hours,
+				f.id food_id, f.name, f.alternate_name, f.price, f.prep_time_hours prep_time,
+				b.order_date,
 				o.id order_id, o.quantity, o.is_filled, r.id refund_id, 
 				p.id payment_id, p.tax_rate, p.take_rate,
 				fp.path
@@ -188,6 +189,9 @@ class Order_basket_model extends CI_Model {
 			left join
 				refund r
 			on r.order_item_id = o.id
+			left join
+				order_basket b
+			on b.id = o.order_basket_id
 			where
 				o.order_basket_id = ?
 				and f.user_id = ?

@@ -20,13 +20,13 @@
 				
 				<div class="pickup">
 					<p class="location">Pick-up:</p>
-					<p><a target="_blank" href="<?php echo send_to_google_maps($vendor->address, $vendor->city, $vendor->province, $vendor->postal_code)?>">
-						<?php echo $vendor->address?><br/>
-						<?php echo $vendor->city?>, <?php echo $vendor->province?><br/>
-						<?php echo $vendor->postal_code?>
-					</a></p>
-					
-					<p class="time">Pick-up time:</p>
+					<p>
+						<a target="_blank" href="<?php echo send_to_google_maps($vendor->address, $vendor->city, $vendor->province, $vendor->postal_code)?>">
+							<?php echo $vendor->address?><br/>
+							<?php echo $vendor->city?>, <?php echo $vendor->province?><br/>
+							<?php echo $vendor->postal_code?>
+						</a>
+					</p>
 				</div>
 			</div>
 			
@@ -47,6 +47,9 @@
 						<h3><a href="/menu/item/<?php echo $food_order->food_id?>"><?php echo $food_order->alternate_name?></a></h3>
 						</a>
 						<?php endif?>
+					</div>
+					<div class="pickup_time">
+						<p class="time">Pick-up time: <?php echo $food_order->prep_time ?></p>
 					</div>
 				</div>
 				<h3 class="received right-align">

@@ -5,7 +5,9 @@ class Menu extends Yumbox_Controller {
 	public static $LIST_VIEW = "list";
 	public static $MAP_VIEW = "map";
 	
-	public static $MAX_RESULTS = 5;
+	// maximum results to show per fetch
+	public static $MAX_RESULTS_FOODS = 5;
+	public static $MAX_RESULTS_CATEGORIES = 4;
 	
 	/**
 	 * Get the data required for the menu filter component for the view
@@ -74,10 +76,10 @@ class Menu extends Yumbox_Controller {
 		$foods = array();
 		if (count($chosen_categories)==0){
 			// show all categories
-			$categories = $this->food_category_model->getAllActiveCategories(self::$MAX_RESULTS, $filters);
+			$categories = $this->food_category_model->getAllActiveCategories(self::$MAX_RESULTS_CATEGORIES, $filters);
 		} else {
 			// show selected categories
-			$categories = $this->food_category_model->getAllActiveRelatedCategories($chosen_categories, self::$MAX_RESULTS, $filters);
+			$categories = $this->food_category_model->getAllActiveRelatedCategories($chosen_categories, self::$MAX_RESULTS_CATEGORIES, $filters);
 		}
 		
 		// get all foods for each category
@@ -86,7 +88,7 @@ class Menu extends Yumbox_Controller {
 			$filters_food["category_id"] = $category->id;
 			
 			$foods[$category->id] = $this->food_model->
-				getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_RESULTS, $filters_food);
+				getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_RESULTS_FOODS, $filters_food);
 		}
 		
 		// array to be returned
@@ -97,6 +99,12 @@ class Menu extends Yumbox_Controller {
 		return $ret;
 	}
 	
+	
+	/**
+	 * Method for displaying the menu page content
+	 * Loads the views directly
+	 * @param $view either $LIST_VIEW or $MAP_VIEW
+	 */
 	protected function displayMenu($is_rush, $view){
 		// load language
 		$this->lang->load("menu");
@@ -169,14 +177,27 @@ class Menu extends Yumbox_Controller {
 	}
 	
 	
+	/**
+	 * GET method for displaying the yum explore page
+	 * @param $view = $LIST_VIEW or $MAP_VIEW
+	 */
 	public function explore($view="list"){
 		$this->displayMenu(false, $view);
 	}
 	
+	
+	/**
+	 * GET method for displaying the yum rush page
+	 * @param $view = $LIST_VIEW or $MAP_VIEW
+	 */
 	public function rush($view="map"){
 		$this->displayMenu(true, $view);
 	}
 
+	
+	/**
+	 * GET method for displaying a particular food item
+	 */
 	public function item($food_id=false){
 		// check if user has logged in
 		if ($this->login_util->isUserLoggedIn()){
@@ -228,6 +249,9 @@ class Menu extends Yumbox_Controller {
 		$this->footer();
 	}
 
+	/**
+	 * Default to displaying the yum explore page
+	 */
 	public function index()
 	{
 		$this->explore();
