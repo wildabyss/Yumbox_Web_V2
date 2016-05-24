@@ -2,8 +2,11 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Profile extends Yumbox_Controller {
-	public static $MAX_RESULTS = 5;
+	public static $MAX_RESULTS = 50;
 
+	/**
+	 * GET method for displaying a user's profile
+	 */
 	public function id($user_id=NULL){
 		// fetch user
 		$user = $this->user_model->getUserForUserId($user_id);
@@ -24,7 +27,7 @@ class Profile extends Yumbox_Controller {
 		}
 		
 		// get food data for display
-		$food_list_display = "";
+		$food_list_display = $this->load->view("food_list/food_list_start", [], true);
 		$foods = $this->food_model->
 			getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_RESULTS, $filters);
 		$categories = array();
@@ -44,6 +47,7 @@ class Profile extends Yumbox_Controller {
 			$food_data["is_my_profile"] = $myprofile;
 			$food_list_display .= $this->load->view("food_list/food_list_item", $food_data, true);
 		}
+		$food_list_display .= $this->load->view("food_list/food_list_end", ["is_my_profile"=>$myprofile], true);
 		
 		// get followers
 		$num_followers = $this->user_follow_model->getNumberOfActiveFollowersForUser($user_id);
@@ -63,6 +67,10 @@ class Profile extends Yumbox_Controller {
 		$this->footer();
 	}
 
+	
+	/**
+	 * GET method that displays the logged in user's profile page by default
+	 */
 	public function index()
 	{		
 		// check if the user has logged in

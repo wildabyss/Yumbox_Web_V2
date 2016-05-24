@@ -25,13 +25,15 @@ class Accounting {
 	 * Calculate the costs of an open OrderItem
 	 *
 	 * @param $order_item, order_item object, must contain quantity, price fields
-	 * @param $config, $this->config
 	 * @return ["base_cost", "commission", "taxes"]
 	 */
-	public function calcOpenOrderItemCosts($order_item, $config){
+	public function calcOpenOrderItemCosts($order_item){
+		$CI =& get_instance();
+		$CI->config->load('secret_config', TRUE);
+		
 		$base_cost = $order_item->quantity*$order_item->price;
-		$commission = $base_cost*$config->item('take_rate');
-		$taxes = ($base_cost+$commission)*$config->item('tax_rate');
+		$commission = $base_cost*$CI->config->item('take_rate');
+		$taxes = ($base_cost+$commission)*$CI->config->item('tax_rate');
 		
 		return array(
 			"base_cost" 	=> $base_cost,
@@ -45,19 +47,19 @@ class Accounting {
 	 * Calculate the costs of an open order_basket
 	 *
 	 * @param $open_basket order_basket object
-	 * @param $config, $this->config
 	 * @return ["base_cost", "commission", "taxes"]
 	 */
-	public function calcOpenBasketCosts($open_basket_id, $config){
+	public function calcOpenBasketCosts($open_basket_id){
 		$CI =& get_instance();
 		$CI->load->model('order_basket_model');
+		$CI->config->load('secret_config', TRUE);
 		
 		$base_cost = $CI->order_basket_model->getBaseCostInBasket($open_basket_id);
 		if ($base_cost === false){
 			throw new Exception("database error");
 		}
-		$commission = $base_cost*$config->item('take_rate');
-		$taxes = ($base_cost+$commission)*$config->item('tax_rate');
+		$commission = $base_cost*$CI->config->item('take_rate');
+		$taxes = ($base_cost+$commission)*$CI->config->item('tax_rate');
 		
 		return array(
 			"base_cost" 	=> $base_cost,
@@ -70,13 +72,15 @@ class Accounting {
 	/**
 	 * Get current take_rate and tax_rate
 	 *
-	 * @param $config, $this->config
 	 * @return ["take_rate", "tax_rate"]
 	 */
-	public function getCurrentRates($config){
+	public function getCurrentRates(){
+		$CI =& get_instance();
+		$CI->config->load('secret_config', TRUE);
+		
 		return array(
-			"take_rate"		=> $config->item("take_rate"),
-			"tax_rate"		=> $config->item("tax_rate")
+			"take_rate"		=> $CI->config->item("take_rate"),
+			"tax_rate"		=> $CI->config->item("tax_rate")
 		);
 	}
 }

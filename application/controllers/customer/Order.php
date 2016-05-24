@@ -157,7 +157,7 @@ class Order extends Yumbox_Controller {
 		
 		// fetch total cost in basket
 		try{
-			$costs = $this->accounting->calcOpenBasketCosts($open_basket->id, $this->config);
+			$costs = $this->accounting->calcOpenBasketCosts($open_basket->id);
 		} catch (Exception $e){
 			$json_arr["error"] = "unknown database error";
 			echo json_encode($json_arr);
@@ -224,7 +224,7 @@ class Order extends Yumbox_Controller {
 		
 		// fetch total cost in basket
 		try{
-			$costs = $this->accounting->calcOpenBasketCosts($open_basket->id, $this->config);
+			$costs = $this->accounting->calcOpenBasketCosts($open_basket->id);
 		} catch (Exception $e){
 			$json_arr["error"] = "unknown database error";
 			echo json_encode($json_arr);
@@ -300,7 +300,7 @@ class Order extends Yumbox_Controller {
 				continue;
 			
 			// get amount to be charged in dollars
-			$costs = $this->accounting->calcOpenOrderItemCosts($order_item, $this->config);
+			$costs = $this->accounting->calcOpenOrderItemCosts($order_item);
 			$amount = round($costs["base_cost"] + $costs["commission"] + $costs["taxes"], 2);
 			
 			// charge Stripe
@@ -318,7 +318,7 @@ class Order extends Yumbox_Controller {
 			}
 			
 			// save entry to database
-			$rates = $this->accounting->getCurrentRates($this->config);
+			$rates = $this->accounting->getCurrentRates();
 			$res = $this->payment_model->payOrderItem($amount, $rates['take_rate'], $rates['tax_rate'],
 				$order_item->order_id, $charge->id);
 			if ($res !== true){
@@ -335,7 +335,13 @@ class Order extends Yumbox_Controller {
 			echo json_encode($json_arr);
 			return;
 		}
+		
+		// at this point, the orders have been successfully placed
+		$json_arr["success"] = "1";
+		$json_arr["basket_id"] = $basket_id;
+		echo json_encode($json_arr);
 
+		
 		// Sending email to the customer
 		$mustache = new Mustache_Engine();
 
@@ -374,10 +380,6 @@ class Order extends Yumbox_Controller {
 			));
 			$this->mail_server->sendFromWebsite($v->email, $v->name, $subject, $body);
 		}
-		
-		$json_arr["success"] = "1";
-		$json_arr["basket_id"] = $basket_id;
-		echo json_encode($json_arr);
 	}
 	
 	
@@ -572,7 +574,7 @@ class Order extends Yumbox_Controller {
 
 				// total cost
 				if ($is_open_basket) {
-					$costs = $this->accounting->calcOpenBasketCosts($basket_id, $this->config);
+					$costs = $this->accounting->calcOpenBasketCosts($basket_id);
 					$data["base_cost"] = $costs["base_cost"];
 					$data["commission"] = $costs["commission"];
 					$data["taxes"] = $costs["taxes"];
