@@ -121,7 +121,8 @@ class Order_basket_model extends CI_Model {
 			select
 				o.id order_id, o.quantity,
 				f.id food_id, f.price,
-				p.id payment_id, r.id refund_id
+				p.id payment_id, r.id refund_id,
+				f.user_id vendor_id
 			from
 				order_item o
 			left join
@@ -145,8 +146,8 @@ class Order_basket_model extends CI_Model {
 	public function getAllVendorsInBasket($basket_id){
 		$query = $this->db->query('
 			select
-				u.id, u.name, u.is_open,
-				a.address, a.city, a.province, a.postal_code, a.country
+				u.id, u.name, u.is_open, u.email, u.descr,
+				a.address, a.city, a.province, a.postal_code, a.country, a.latitude, a.longitude
 			from
 				order_item o
 			left join food f

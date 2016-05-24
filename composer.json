@@ -6,6 +6,7 @@
 		"facebook/php-sdk-v4" 	: "~5.0",
 		"google/apiclient" 		: "1.0.*@beta",
 		"stripe/stripe-php"		: "3.*",
-		"phpmailer/phpmailer"	: "~5.2"
+		"phpmailer/phpmailer"	: "~5.2",
+		"mustache/mustache": "^2.10"
 	}
 }
