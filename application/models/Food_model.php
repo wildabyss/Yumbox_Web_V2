@@ -58,7 +58,7 @@ class Food_model extends CI_Model {
 			on p.food_id = f.id
 			where
 				f.status = ?
-				and u.status = ?
+				and u.status <> ?
 				and u.is_open = 1';
 		
 		// filter out non-rush items
@@ -87,7 +87,7 @@ class Food_model extends CI_Model {
 		$bindings = array(
 			Food_review_model::$HIGHEST_RATING,
 			Food_model::$ACTIVE_FOOD, 
-			User_model::$CERTIFIED_VENDOR
+			User_model::$INACTIVE_USER
 		);
 		if ($is_rush){
 			$bindings[] = Food_model::$PICKUP_ANYTIME;
@@ -137,12 +137,12 @@ class Food_model extends CI_Model {
 			where
 				f.id = ?
 				and f.status = ?
-				and u.status = ?',
+				and u.status <> ?',
 			array(
 				Food_review_model::$HIGHEST_RATING,
 				$food_id,
 				self::$ACTIVE_FOOD,
-				User_model::$CERTIFIED_VENDOR
+				User_model::$INACTIVE_USER
 			));
 		$results = $query->result();
 		
@@ -169,11 +169,11 @@ class Food_model extends CI_Model {
 			where
 				f.id = ?
 				and f.status = ?
-				and u.status = ?',
+				and u.status <> ?',
 			array(
 				$food_id,
 				self::$ACTIVE_FOOD,
-				User_model::$CERTIFIED_VENDOR
+				User_model::$INACTIVE_USER
 			));
 		$results = $query->result();
 		
