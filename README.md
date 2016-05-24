@@ -7,11 +7,12 @@ The front-end and back-end of the server-side Yumbox application for home cookin
 - PHP 5.6 or higher
 - MySQL 5.6 or higher
 - Sass (install via rubygems)
+- Sphinx Search
 
 ## Application Setup ##
 
 1. Set document root to /public
-2. Create MySQL user 'yumbox'@'localhost'
+2. Create MySQL user 'yumbox'@'localhost' and 'sphinx'@'localhost'
 3. Source /application/database/build_database.sql; modify the database name from yumbox_dev to production name if needed.
 4. Run composer on /composer.json
 5. Create /application/config/secret_config.php with the following and fill in the values:
@@ -38,12 +39,23 @@ $config['wechat_secret']		= string;
 $config['stripe_secret_key']	= string;
 $config['stripe_public_key']	= string;
 
+// take rate (commission rate)
+$config["take_rate"]			= 0.0;
+// tax rate
+$config["tax_rate"]				= 0.0;
+
 // featured dishes
 $config['featured_rush_id']		= int;
 $config['featured_explore_id']	= int;
 ```
 
 6. If this is the production environment, create file _prd.txt in root
+7. Make sure searchd is started as a service. Add the following into root level crontab:
+
+```bash
+# Sphinx indexer
+*/15 * * * * indexer --rotate --all --config {PATH_TO_ROOT}/sphinx.conf
+```
 
 ## Server Setup ##
 
