@@ -51,7 +51,7 @@ class Food_category_model extends CI_Model {
 				on u.id = f.user_id
 				where
 					f.status = ? 
-					and u.status <> ?
+					and u.status > ?
 					and u.is_open = 1';
 					
 		// filter out non-rush items		
@@ -113,7 +113,7 @@ class Food_category_model extends CI_Model {
 	 *    min_price     => float
 	 *    max_price     => float
 	 */
-    public function getAllActiveCategories($limit, array $filters){
+	public function getAllActiveCategories($limit, array $filters){
 		// sort through filters
 		$is_rush = isset($filters["is_rush"])?$filters["is_rush"]:false;
 		$can_deliver = isset($filters["can_deliver"])?$filters["can_deliver"]:false;
@@ -121,6 +121,7 @@ class Food_category_model extends CI_Model {
 		$min_rating = isset($filters["min_rating"])?$filters["min_rating"]:false;
 		$min_price = isset($filters["min_price"])?$filters["min_price"]:false;
 		$max_price = isset($filters["max_price"])?$filters["max_price"]:false;
+		$food_ids_from_search = isset($filters["food_ids"])?$filters["food_ids"]:false;
 		
 		// base query string
 		$query_str = '
@@ -134,7 +135,7 @@ class Food_category_model extends CI_Model {
 			on u.id = f.user_id
 			where
 				f.status = ?
-				and u.status <> ?
+				and u.status > ?
 				and u.is_open = 1';
 		
 		// filter out non-rush items		
@@ -152,6 +153,10 @@ class Food_category_model extends CI_Model {
 		// user filter
 		if ($vendor_id !== false){
 			$query_str .= ' and u.id = ?';
+		}
+		// food id filter (generated from full-text search)
+		if ($food_ids_from_search !== false){
+			$query_str .= ' and f.id in ('.implode(",", $food_ids_from_search).')';
 		}
 	
 		// bindings
