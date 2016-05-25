@@ -110,18 +110,18 @@ class Menu extends Yumbox_Controller {
 		$this->lang->load("menu");
 		
 		// get user inputs
-		$search_query = $this->input->get('search', true);
-		$location = $this->input->get('location', true);
-		$chosen_categories = $this->input->get('category', true);
+		$search_query = $this->input->get('search');
+		$location = $this->input->get('location');
+		$chosen_categories = $this->input->get('category');
 		if ($chosen_categories==NULL)
 			$chosen_categories = array();
-		$can_deliver = $this->input->get('can_deliver', true)==""?false:$this->input->get('can_deliver', true);
+		$can_deliver = $this->input->get('can_deliver')==""?false:$this->input->get('can_deliver');
 		$price_filter = array(
-			"min"=>$this->input->get('price_min', true)==""?0:$this->input->get('price_min', true), 
-			"max"=>$this->input->get('price_max', true)==""?50:$this->input->get('price_max', true)
+			"min"=>$this->input->get('price_min')==""?0:$this->input->get('price_min'), 
+			"max"=>$this->input->get('price_max')==""?50:$this->input->get('price_max')
 		);
-		$rating_filter = $this->input->get('rating_min', true)==""?0:$this->input->get('rating_min', true);
-		$time_filter = $this->input->get('time_max', true)==""?5:$this->input->get('time_max', true);
+		$rating_filter = $this->input->get('rating_min')==""?0:$this->input->get('rating_min');
+		$time_filter = $this->input->get('time_max')==""?5:$this->input->get('time_max');
 		
 		// fetch data
 		/*if ($view==self::$MAP_VIEW){

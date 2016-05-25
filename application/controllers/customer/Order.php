@@ -449,7 +449,7 @@ class Order extends Yumbox_Controller {
 		}
 		
 		// retrieve explanation
-		$explanation = $this->input->post("explanation", true);
+		$explanation = $this->input->post("explanation");
 		
 		// save entry to database
 		$res = $this->refund_model->refundOrderItem($amount, $order_id, $refund->id, $refund_type, $explanation);

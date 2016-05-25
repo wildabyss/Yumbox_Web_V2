@@ -1,8 +1,8 @@
 <section id="food_detail">
-	<h1 class="title center"><?php echo strtoupper($food->food_name)?>
-		<?php if ($food->alternate_name != ""):?> | <?php echo $food->alternate_name?><?php endif?>
+	<h1 class="title center"><?php echo strtoupper(prevent_xss($food->food_name))?>
+		<?php if ($food->alternate_name != ""):?> | <?php echo prevent_xss($food->alternate_name)?><?php endif?>
 	</h1>
-	<h3 class="center"><a href="/vendor/profile/id/<?php echo $food->user_id?>"><?php echo $food->user_name?></a></h3>
+	<h3 class="center"><a href="/vendor/profile/id/<?php echo $food->user_id?>"><?php echo prevent_xss($food->user_name)?></a></h3>
 	<ul id="food_detail_gallery">
 		<?php if (count($food_pictures)==0):?>
 			<li>
@@ -44,13 +44,13 @@
 				<?php if ($food->descr == ""):?>
 				N/A
 				<?php else:?>
-				<?php echo $food->descr?>
+				<?php echo prevent_xss($food->descr)?>
 				<?php endif?>
 			</p>
 			
 			<div class="categories_container">
 			<?php foreach ($categories as $category):?>
-				<a class="category_tag"><?php echo ucfirst($category->name)?></a>
+				<a class="category_tag"><?php echo ucfirst(prevent_xss($category->name))?></a>
 			<?php endforeach?>
 			</div>
 		</div>
@@ -61,7 +61,7 @@
 				<?php if ($food->ingredients == ""):?>
 				N/A
 				<?php else:?>
-				<?php echo $food->ingredients?>
+				<?php echo prevent_xss($food->ingredients)?>
 				<?php endif?>
 			</p>
 		</div>
@@ -72,7 +72,7 @@
 				<?php if ($food->health_benefits == ""):?>
 				N/A
 				<?php else:?>
-				<?php echo $food->health_benefits?>
+				<?php echo prevent_xss($food->health_benefits)?>
 				<?php endif?>
 			</p>
 		</div>
@@ -83,7 +83,7 @@
 				<?php if ($food->eating_instructions == ""):?>
 				N/A
 				<?php else:?>
-				<?php echo $food->eating_instructions?>
+				<?php echo prevent_xss($food->eating_instructions)?>
 				<?php endif?>
 			</p>
 		</div>
@@ -103,10 +103,10 @@
 					<?php endif?>
 					
 					<div class="review_info">
-						<span><?php echo $review->user_name?></span>
+						<span><?php echo prevent_xss($review->user_name)?></span>
 						<p>&hearts; <?php echo $review->rating?>%</p>
 						<?php if ($review->review != ""):?>
-						<p>"<?php echo $review->review?>"</p>
+						<p>"<?php echo prevent_xss($review->review)?>"</p>
 						<?php endif?>
 					</div>
 				</li>

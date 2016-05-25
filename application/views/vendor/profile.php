@@ -9,7 +9,7 @@
 		</p>
 	</div>
 	<div class="intro_wrapper">
-		<h1 class="title"><a id="edit_user_name" data-type="text" data-onblur="ignore"><?php echo $user->name?></a></h1>
+		<h1 class="title"><a id="edit_user_name" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->name)?></a></h1>
 		<?php if (!$user->is_open):?>
 		<h3 class="is_closed">KITCHEN CLOSED</h3>
 		<?php else:?>
@@ -18,22 +18,22 @@
 		
 		<?php if ($is_my_profile):?>
 		<h3>EMAIL</h3>
-		<p><a id="edit_user_email" data-type="text" data-onblur="ignore"><?php echo $user->email?></a></p>
+		<p><a id="edit_user_email" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->email)?></a></p>
 		
 		<h3>ADDRESS</h3>
 		<p><a id="edit_user_addr" data-type="text" data-onblur="ignore">
 			<?php if ($user->address != ""):?>
-			<?php echo $user->address?>
-			<?php echo $user->city?>, <?php echo $user->province?>
-			<?php echo $user->country?>
-			<?php echo $user->postal_code?>
+			<?php echo prevent_xss($user->address)?>
+			<?php echo prevent_xss($user->city)?>, <?php echo prevent_xss($user->province)?>
+			<?php echo prevent_xss($user->country)?>
+			<?php echo prevent_xss($user->postal_code)?>
 			<?php endif?>
 		</a></p>
 		<?php endif?>
 		
 		<?php if (!$is_my_profile && $user->descr != "" || $is_my_profile):?>
 		<h3>ABOUT ME</h3>
-		<p><a id="edit_user_descr" data-type="textarea" data-onblur="ignore"><?php echo $user->descr?></a></p>
+		<p><a id="edit_user_descr" data-type="textarea" data-onblur="ignore"><?php echo prevent_xss($user->descr)?></a></p>
 		<?php endif?>
 	</div>
 </section>
@@ -75,6 +75,9 @@
 					errorMessage(respArr["error"]);
 					return respArr["error"];
 				}
+			},
+			validate:	function(value){
+				
 			}
 		});
 		

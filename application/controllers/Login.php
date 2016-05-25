@@ -45,7 +45,7 @@ class Login extends Yumbox_Controller {
 	
 	public function facebook(){
 		// get redirect URL
-		$requestUrl = $this->input->get("redirect", true);
+		$requestUrl = $this->input->get("redirect");
 		
 		// perform Facebook login
 		$res = false;
@@ -67,7 +67,7 @@ class Login extends Yumbox_Controller {
 	
 	public function google(){
 		// for Google, the request URL is set in the state parameter
-		$requestUrl = $this->input->get("state", true);
+		$requestUrl = $this->input->get("state");
 		
 		// perform Google login
 		$res = false;
@@ -90,7 +90,7 @@ class Login extends Yumbox_Controller {
 
 	public function index()
 	{
-		$requestUrl = $this->input->get("redirect", true);
+		$requestUrl = $this->input->get("redirect");
 		
 		if ($this->login_util->isUserLoggedIn()){
 			// session exists

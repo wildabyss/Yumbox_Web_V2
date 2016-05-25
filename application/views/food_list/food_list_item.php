@@ -5,19 +5,19 @@
 		<?php endif?>></a>
 	<div>
 		<a href="/menu/item/<?php echo $food->food_id?>">
-			<h3><?php echo $food->food_name?></h3>
+			<h3><?php echo prevent_xss($food->food_name)?></h3>
 		</a>
 		<a class="food_price"><h3>$<?php echo $food->food_price?></h3></a>
 		
 		<?php if ($food->food_alt_name != ""):?>
 		<a class="alt_name" href="/menu/item/<?php echo $food->food_id?>">
-			<h3><?php echo $food->food_alt_name?></h3>
+			<h3><?php echo prevent_xss($food->food_alt_name)?></h3>
 		</a>
 		<?php endif ?>
 		
 		<?php if (!isset($is_my_profile)):?>
 		<a class="food_maker" href="/vendor/profile/id/<?php echo $food->vendor_id?>">
-			<h4><?php echo $food->vendor_name?></h4>
+			<h4><?php echo prevent_xss($food->vendor_name)?></h4>
 		</a>
 		<?php endif?>
 		
@@ -34,7 +34,7 @@
 		<?php if (isset($categories)):?>
 		<div class="categories_container">
 		<?php foreach ($categories[$food->food_id] as $category):?>
-			<a class="category_tag"><?php echo ucfirst($category->name)?></a>
+			<a class="category_tag"><?php echo ucfirst(prevent_xss($category->name))?></a>
 		<?php endforeach?>
 		</div>
 		<?php endif?>

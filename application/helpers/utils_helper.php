@@ -34,6 +34,17 @@ function is_post_request(){
 }
 
 
+/**
+ * HTML encode the given output string to prevent XSS
+ */
+function prevent_xss($output){
+	return htmlspecialchars($output, ENT_QUOTES);
+}
+
+
+/**
+ * Create an external Google Map URL for the provided address
+ */
 function send_to_google_maps($address, $city, $province, $postal_code){
 	$str = $address." ".$city." ".$province." ".$postal_code;
 	$str = str_replace(" ", "+", $str);
