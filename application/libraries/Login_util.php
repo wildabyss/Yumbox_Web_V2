@@ -65,7 +65,7 @@ class Login_util {
 	public function loginFacebook($app_id, $app_secret, $requestUrl){
 		// initialize models
 		$CI =& get_instance();
-		$CI->load->model('user_model');
+		$CI->model->load('user_model');
 		
 		// Initialize Facebook
 		$fb_config = array(
@@ -103,7 +103,9 @@ class Login_util {
 			$fbId = $user['id'];
 			$name = $user['name'];
 			$email = $user['email'];
-			
+
+            $welcomeEmail = false;
+
 			// fetch user object from the database
 			if ($CI->user_model->getUserForFacebookId($fbId) === false){
 				// If it doesn't exist in the db, add the user
@@ -111,6 +113,9 @@ class Login_util {
 					$error = "Internal server error";
 					throw new Exception($error);
 				}
+                else {
+                    $welcomeEmail = true;
+                }
 			}
 			
 			// user object
@@ -122,6 +127,10 @@ class Login_util {
 			// successful retrieval of token
 			$_SESSION['fb_token'] = $accessToken;
 			$_SESSION['user_id'] = $user->id;
+
+            if ($welcomeEmail) {
+                $this->sendWelcomeEmail();
+            }
 
 			return true;
 		} else {
@@ -164,7 +173,9 @@ class Login_util {
 			$googleId = $user->id;
 			$name = $user->displayName;
 			$email = $user->emails[0]['value'];
-		
+
+            $welcomeEmail = false;
+
 			// fetch user object from the database
 			if ($CI->user_model->getUserForGoogleId($googleId) === false){
 				// If it doesn't exist in the db, add the user
@@ -172,6 +183,9 @@ class Login_util {
 					$error = "Internal server error";
 					throw new Exception($error);
 				}
+                else {
+                    $welcomeEmail = true;
+                }
 			}
 			
 			// user object
@@ -183,10 +197,40 @@ class Login_util {
 			// successful retrieval of token
 			$_SESSION['google_token'] = $accessToken;
 			$_SESSION['user_id'] = $user->id;
-			
-			return true;
+
+            if ($welcomeEmail) {
+                $this->sendWelcomeEmail();
+            }
+
+            return true;
 		} else {
 			return false;
 		}
 	}
+
+    private function sendWelcomeEmail() {
+        $CI =& get_instance();
+        $CI->load->model('user_model');
+
+        $user_id = $this->getUserId();
+        $user = $CI->user_model->getUserForUserId($user_id);
+
+        $mustache = new Mustache_Engine();
+        $CI->config->load('secret_config', TRUE);
+
+        //TODO: Do we really want to load email templates according to current language?
+        $CI->lang->load('email');
+        $subject = $mustache->render($CI->lang->line('sign_up_subject'), array(
+            'user' => $user,
+            'base_url' => $CI->config->item('base_url', 'secret_config'),
+        ));
+        $body = $mustache->render($CI->lang->line('sign_up_body'), array(
+            'user' => $user,
+            'base_url' => $CI->config->item('base_url', 'secret_config'),
+        ));
+
+        // Sending email to customer
+        $CI->load->library('mail_server');
+        $CI->mail_server->sendFromWebsite($user->email, $user->name, $subject, $body);
+    }
 }

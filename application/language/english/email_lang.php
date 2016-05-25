@@ -10,7 +10,7 @@ $lang['customer_invoice_body'] = <<<EOT
             {{# basket.foods_orders }}
             {{# . }}
             <tr style="border: 1px black solid">
-                <td width="30%" valign="middle" style="text-align: right"><img src="{{path}}"></td>
+                <td width="30%" valign="middle" style="text-align: right"><img src="{{base_url}}{{path}}"></td>
                 <td width="70%" valign="top">
                     <table width="100%" cellspacing="5px">
                         <tbody>
@@ -70,7 +70,7 @@ $lang['vendor_invoice_body'] = <<<EOT
         <tbody>
             {{# order }}
             <tr style="border: 1px black solid">
-                <td width="30%" valign="middle" style="text-align: right"><img src="{{path}}"></td>
+                <td width="30%" valign="middle" style="text-align: right"><img src="{{base_url}}{{path}}"></td>
                 <td width="70%" valign="top">
                     <table width="100%" cellspacing="5px">
                         <tbody>
@@ -125,7 +125,7 @@ $lang['customer_refund_body'] = <<<EOT
         <tbody>
             {{# order }}
             <tr style="border: 1px black solid">
-                <td width="30%" valign="middle" style="text-align: right"><img src="{{path}}"></td>
+                <td width="30%" valign="middle" style="text-align: right"><img src="{{base_url}}{{path}}"></td>
                 <td width="70%" valign="top">
                     <table width="100%" cellspacing="5px">
                         <tbody>
@@ -175,7 +175,7 @@ $lang['vendor_refund_body'] = <<<EOT
         <tbody>
             {{# order }}
             <tr style="border: 1px black solid">
-                <td width="30%" valign="middle" style="text-align: right"><img src="{{path}}"></td>
+                <td width="30%" valign="middle" style="text-align: right"><img src="{{base_url}}{{path}}"></td>
                 <td width="70%" valign="top">
                     <table width="100%" cellspacing="5px">
                         <tbody>
@@ -224,3 +224,14 @@ $lang['vendor_refund_body'] = <<<EOT
     </table>
 </div>
 EOT;
+
+$lang['sign_up_subject'] = 'Welcome to Yumbox';
+
+$lang['sign_up_body'] = <<<EOT
+<div style="width: 600px">
+    <p>Dear {{ user.name }},</p>
+    <p>Thank you for using Yumbox.</p>
+    <a href="{{ base_url }}">Yumbox</a>
+</div>
+EOT;
+

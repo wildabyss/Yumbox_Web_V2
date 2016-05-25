@@ -288,6 +288,7 @@ class Order extends Yumbox_Controller {
 
 		// Sending email to the customer and vendors
 		$mustache = new Mustache_Engine();
+        $this->config->load('secret_config', TRUE);
 
 		// Gathering information
 		$user_id = $this->login_util->getUserId();
@@ -302,10 +303,12 @@ class Order extends Yumbox_Controller {
 		$subject = $mustache->render($this->lang->line('customer_invoice_subject'), array(
 			'customer' => $user,
 			'basket' => $basket,
+            'base_url' => $this->config->item('base_url', 'secret_config'),
 		));
 		$body = $mustache->render($this->lang->line('customer_invoice_body'), array(
 			'customer' => $user,
 			'basket' => $basket,
+            'base_url' => $this->config->item('base_url', 'secret_config'),
 		));
 
 		// Sending email to customer
@@ -318,11 +321,13 @@ class Order extends Yumbox_Controller {
                 'customer' => $user,
 				'vendor' => $v,
 				'order' => $foods_orders[$v->id],
+                'base_url' => $this->config->item('base_url', 'secret_config'),
 			));
 			$body = $mustache->render($this->lang->line('vendor_invoice_body'), array(
                 'customer' => $user,
 				'vendor' => $v,
 				'order' => $foods_orders[$v->id],
+                'base_url' => $this->config->item('base_url', 'secret_config'),
 			));
 			$this->mail_server->sendFromWebsite($v->email, $v->name, $subject, $body);
 		}
@@ -411,6 +416,7 @@ class Order extends Yumbox_Controller {
 
         //Sending emails to customer and vendor of the food cancelled
         $mustache = new Mustache_Engine();
+        $this->config->load('secret_config', TRUE);
 
         // Gathering information
         $user = $this->user_model->getUserForUserId($user_id);
@@ -423,12 +429,14 @@ class Order extends Yumbox_Controller {
             'order' => $order,
             'explanation' => $explanation,
             'amount' => $amount,
+            'base_url' => $this->config->item('base_url', 'secret_config'),
         ));
         $body = $mustache->render($this->lang->line('customer_refund_body'), array(
             'customer' => $user,
             'order' => $order,
             'explanation' => $explanation,
             'amount' => $amount,
+            'base_url' => $this->config->item('base_url', 'secret_config'),
         ));
 
         // Sending email to customer
@@ -443,6 +451,7 @@ class Order extends Yumbox_Controller {
             'order' => $order,
             'explanation' => $explanation,
             'amount' => $amount,
+            'base_url' => $this->config->item('base_url', 'secret_config'),
         ));
         $body = $mustache->render($this->lang->line('vendor_refund_body'), array(
             'customer' => $user,
@@ -450,6 +459,7 @@ class Order extends Yumbox_Controller {
             'order' => $order,
             'explanation' => $explanation,
             'amount' => $amount,
+            'base_url' => $this->config->item('base_url', 'secret_config'),
         ));
         $this->mail_server->sendFromWebsite($vendor->email, $vendor->name, $subject, $body);
 
