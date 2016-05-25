@@ -221,4 +221,30 @@ class User_model extends CI_Model {
 		
 		return $address;
 	}
+	
+	
+	/**
+	 * Modify user name
+	 * Return true on success, error on failure
+	 */
+	public function modifyUsername($user_id, $username){
+		if (!$this->db->query('update user set name = ? where id = ?', [trim($username), $user_id])){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Modify user email
+	 * Return true on success, error on failure
+	 */
+	public function modifyEmail($user_id, $email){
+		if (!$this->db->query('update user set email = ? where id = ?', [trim($email), $user_id])){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
 }

@@ -17,8 +17,18 @@
 		<?php endif?>
 		
 		<?php if ($is_my_profile):?>
+		<h3>EMAIL</h3>
+		<p><a id="edit_user_email" data-type="text" data-onblur="ignore"><?php echo $user->email?></a></p>
+		
 		<h3>ADDRESS</h3>
-		<p></p>
+		<p><a id="edit_user_addr" data-type="text" data-onblur="ignore">
+			<?php if ($user->address != ""):?>
+			<?php echo $user->address?>
+			<?php echo $user->city?>, <?php echo $user->province?>
+			<?php echo $user->country?>
+			<?php echo $user->postal_code?>
+			<?php endif?>
+		</a></p>
 		<?php endif?>
 		
 		<?php if (!$is_my_profile && $user->descr != "" || $is_my_profile):?>
@@ -49,7 +59,48 @@
 
 	$(document).ready(function(){
 		<?php if ($is_my_profile):?>
-		$("#edit_user_name").editable();
+		$("#edit_user_name").editable({
+			url:		"/vendor/profile/change_username",
+			send:		"always",
+			params:		csrfData,
+			error:		function(response){
+				errorMessage("Unable to process");
+			},
+			success:	function(response){
+				var respArr = $.parseJSON(response);
+				
+				if ("success" in respArr){
+					successMessage("Saved");
+				} else {
+					errorMessage(respArr["error"]);
+					return respArr["error"];
+				}
+			}
+		});
+		
+		$("#edit_user_email").editable({
+			url:		"/vendor/profile/change_email",
+			send:		"always",
+			params:		csrfData,
+			error:		function(response){
+				errorMessage("Unable to process");
+			},
+			success:	function(response){
+				var respArr = $.parseJSON(response);
+				
+				if ("success" in respArr){
+					successMessage("Saved");
+				} else {
+					errorMessage(respArr["error"]);
+					return respArr["error"];
+				}
+			}
+		});
+		
+		$("#edit_user_addr").editable();
+		$("#edit_user_city").editable();
+		$("#edit_user_province").editable();
+		$("#edit_user_postal").editable();
 		
 		$("#edit_user_descr").editable({
 			rows: 3

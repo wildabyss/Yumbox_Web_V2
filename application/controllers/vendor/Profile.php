@@ -66,6 +66,76 @@ class Profile extends Yumbox_Controller {
 		$this->load->view("vendor/profile", $data);
 		$this->footer();
 	}
+	
+	
+	/**
+	 * AJAX method for modifying a user's display name
+	 * echo json string:
+	 *   {success, error}
+	 */
+	public function change_username(){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current user id and new name
+		$user_id = $this->login_util->getUserId();
+		$username = $this->input->post("value");
+		
+		// modify username
+		$res = $this->user_model->modifyUsername($user_id, $username);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
+	 * AJAX method for modifying a user's email
+	 * echo json string:
+	 *   {success, error}
+	 */
+	public function change_email(){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current user id and new name
+		$user_id = $this->login_util->getUserId();
+		$email = $this->input->post("value");
+		
+		// modify username
+		$res = $this->user_model->modifyEmail($user_id, $email);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
+		echo json_encode($json_arr);
+	}
 
 	
 	/**
