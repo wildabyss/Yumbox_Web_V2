@@ -64,7 +64,6 @@ $autoload['libraries'] = array(
 	'session', 
 	'login_util',
 	'accounting',
-	'search',
 	'time_prediction'
 );
 

@@ -50,7 +50,7 @@
 						<input type="checkbox" id="rad_cat_<?php echo $category->id?>" 
 							value="<?php echo $category->id?>" name="category[]" 
 							<?php if (in_array($category->id, $chosen_categories)):?>checked<?php endif?> />
-						<label for="rad_cat_<?php echo $category->id?>"><?php echo ucfirst(prevent_xss($category->name))?></label>
+						<label for="rad_cat_<?php echo $category->id?>"><?php echo prevent_xss(ucfirst($category->name))?></label>
 					<?php endforeach?>
 				</div>
 			</div>

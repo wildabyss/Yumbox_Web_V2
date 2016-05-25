@@ -1,5 +1,5 @@
 <section id="food_detail">
-	<h1 class="title center"><?php echo strtoupper(prevent_xss($food->food_name))?>
+	<h1 class="title center"><?php echo prevent_xss(strtoupper($food->food_name))?>
 		<?php if ($food->alternate_name != ""):?> | <?php echo prevent_xss($food->alternate_name)?><?php endif?>
 	</h1>
 	<h3 class="center"><a href="/vendor/profile/id/<?php echo $food->user_id?>"><?php echo prevent_xss($food->user_name)?></a></h3>
@@ -50,7 +50,7 @@
 			
 			<div class="categories_container">
 			<?php foreach ($categories as $category):?>
-				<a class="category_tag"><?php echo ucfirst(prevent_xss($category->name))?></a>
+				<a class="category_tag"><?php echo prevent_xss(ucfirst($category->name))?></a>
 			<?php endforeach?>
 			</div>
 		</div>

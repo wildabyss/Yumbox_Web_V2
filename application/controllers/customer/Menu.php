@@ -56,47 +56,33 @@ class Menu extends Yumbox_Controller {
 	}
 	
 	
-	/**
-	 * Get the data required for food listing in the view
-	 * @return: an array with "foods" => array of foods and "categories" => array of categories
-	 */
-	protected function dataForFoodListing($is_rush, $search_query, $location,
-		array $chosen_categories, $can_deliver, array $price_filter, $rating_filter, $time_filter){
-		// filters
-		$filters = array();
-		$filters["is_rush"] = $is_rush;
-		$filters["can_deliver"] = $can_deliver;
-		$filters["min_rating"] = $rating_filter;
-		$filters["min_price"] = $price_filter["min"];
-		$filters["max_price"] = $price_filter["max"];
-		$filters["max_time"] = $time_filter;
-		$filters["location"] = $location;
+	protected function dataForFoodListing($foods, $category=false){
+		if (count($foods)==0)
+			return "";
 		
-		// search for foods with the chosen categories
-		$foods = array();
-		if (count($chosen_categories)==0){
-			// show all categories
-			$categories = $this->food_category_model->getAllActiveCategories(self::$MAX_RESULTS_CATEGORIES, $filters);
-		} else {
-			// show selected categories
-			$categories = $this->food_category_model->getAllActiveRelatedCategories($chosen_categories, self::$MAX_RESULTS_CATEGORIES, $filters);
-		}
+		// food category display
+		$list_data = array();
+		if ($category !== false)
+			$list_data["category"] = $category;
+		$food_list_display = $this->load->view("food_list/food_list_start", $list_data, true);
 		
-		// get all foods for each category
-		foreach ($categories as $category){
-			$filters_food = $filters;
-			$filters_food["category_id"] = $category->id;
+		// food list display
+		foreach ($foods as $food){
+			// change for display
+			if ($food->total_orders=="")
+				$food->total_orders=0;
 			
-			$foods[$category->id] = $this->food_model->
-				getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_RESULTS_FOODS, $filters_food);
+			// show predicted pickup time
+			$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
+			$food->prep_time = prep_time_for_display($pickup_time);
+			
+			$food_data["food"] = $food;
+			$food_list_display .= $this->load->view("food_list/food_list_item", $food_data, true);
 		}
 		
-		// array to be returned
-		$ret = array(
-			"foods" => $foods,
-			"categories" => $categories
-		);
-		return $ret;
+		$food_list_display .= $this->load->view("food_list/food_list_end", $list_data, true);
+		
+		return $food_list_display;
 	}
 	
 	
@@ -121,41 +107,32 @@ class Menu extends Yumbox_Controller {
 			"max"=>$this->input->get('price_max')==""?50:$this->input->get('price_max')
 		);
 		$rating_filter = $this->input->get('rating_min')==""?0:$this->input->get('rating_min');
-		$time_filter = $this->input->get('time_max')==""?5:$this->input->get('time_max');
 		
-		// fetch data
-		/*if ($view==self::$MAP_VIEW){
-			// map view
-			
-			
-		} else {*/
-			// list view
-			
-			$foods_and_cats = $this->dataForFoodListing($is_rush, $search_query, $location, $chosen_categories, 
-				$can_deliver, $price_filter, $rating_filter, $time_filter);
-			$foods = $foods_and_cats["foods"];
-			$categories = $foods_and_cats["categories"];
-		//}
+		// search and filtering
+		$this->load->library('search');
+		// filters
+		$filters = array();
+		$filters["is_rush"] = $is_rush;
+		$filters["category_ids"] = $chosen_categories;
+		$filters["can_deliver"] = $can_deliver;
+		$filters["min_rating"] = $rating_filter;
+		$filters["min_price"] = $price_filter["min"];
+		$filters["max_price"] = $price_filter["max"];
+		$filters["location"] = $location;
+		$show_by_categories = count($chosen_categories)==0;
+		// perform search
+		$foods_and_cats = $this->search->searchForFood($search_query, $filters, $show_by_categories);
+		$foods = $foods_and_cats["foods"];
+		$categories = $foods_and_cats["categories"];
 		
 		// parse food data for display
 		$food_list_display = "";
-		foreach ($categories as $category){
-			$list_data["category"] = $category;
-			$food_list_display .= $this->load->view("food_list/food_list_start", $list_data, true);
-			
-			foreach ($foods[$category->id] as $food){
-				if ($food->total_orders=="")
-					$food->total_orders=0;
-				
-				// show predicted pickup time
-				$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
-				$food->prep_time = prep_time_for_display($pickup_time);
-				
-				$food_data["food"] = $food;
-				$food_list_display .= $this->load->view("food_list/food_list_item", $food_data, true);
+		if ($show_by_categories){
+			foreach ($categories as $category){
+				$food_list_display .= dataForFoodListing($foods[$category->id], $category)
 			}
-			
-			$food_list_display .= $this->load->view("food_list/food_list_end", $list_data, true);
+		} else {
+			$food_list_display .= dataForFoodListing($foods);
 		}
 		
 		// bind to data

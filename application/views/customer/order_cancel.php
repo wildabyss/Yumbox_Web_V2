@@ -6,7 +6,7 @@
 		
 		<div class="vendor_section">
 			<div class="title">
-				<h3><a href="/vendor/profile/id/<?php echo $vendor->id?>"><?php echo strtoupper(prevent_xss($vendor->name))?></a></h3>
+				<h3><a href="/vendor/profile/id/<?php echo $vendor->id?>"><?php echo prevent_xss(strtoupper($vendor->name))?></a></h3>
 				
 				<div class="pickup">
 					<p class="location">Pick-up:</p>

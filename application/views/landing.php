@@ -9,7 +9,7 @@
 			<a href="/menu/item/<?php echo $rush_food_id ?>" class="button">
 				Featured Rush Pick
 				<h1><?php echo prevent_xss($rush_food_name)?></h1>
-				<h4>By <?php echo ucwords(prevent_xss($rush_vendor))?></h4>
+				<h4>By <?php echo prevent_xss(ucwords($rush_vendor))?></h4>
 				<p><?php echo prevent_xss($rush_food_descr)?></p>
 			</a>
 		</div>

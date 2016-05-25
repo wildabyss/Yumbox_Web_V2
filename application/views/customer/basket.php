@@ -16,15 +16,15 @@
 		<?php foreach ($vendors as $vendor):?>
 		<div class="vendor_section">
 			<div class="title">
-				<h3><a href="/vendor/profile/id/<?php echo $vendor->id?>"><?php echo strtoupper($vendor->name)?></a></h3>
+				<h3><a href="/vendor/profile/id/<?php echo $vendor->id?>"><?php echo prevent_xss(strtoupper($vendor->name))?></a></h3>
 				
 				<div class="pickup">
 					<p class="location">Pick-up:</p>
 					<p>
-						<a target="_blank" href="<?php echo send_to_google_maps($vendor->address, $vendor->city, $vendor->province, $vendor->postal_code)?>">
-							<?php echo $vendor->address?><br/>
-							<?php echo $vendor->city?>, <?php echo $vendor->province?><br/>
-							<?php echo $vendor->postal_code?>
+						<a target="_blank" href="<?php echo prevent_xss(send_to_google_maps($vendor->address, $vendor->city, $vendor->province, $vendor->postal_code))?>">
+							<?php echo prevent_xss($vendor->address)?><br/>
+							<?php echo prevent_xss($vendor->city)?>, <?php echo prevent_xss($vendor->province)?><br/>
+							<?php echo prevent_xss($vendor->postal_code)?>
 						</a>
 					</p>
 				</div>
@@ -42,9 +42,9 @@
 						<?php endif?>
 					></a>
 					<div class="food_name">
-						<h3><a href="/menu/item/<?php echo $food_order->food_id?>"><?php echo $food_order->name?></a></h3>
+						<h3><a href="/menu/item/<?php echo $food_order->food_id?>"><?php echo prevent_xss($food_order->name)?></a></h3>
 						<?php if ($food_order->alternate_name != ""):?>
-						<h3><a href="/menu/item/<?php echo $food_order->food_id?>"><?php echo $food_order->alternate_name?></a></h3>
+						<h3><a href="/menu/item/<?php echo $food_order->food_id?>"><?php echo prevent_xss($food_order->alternate_name)?></a></h3>
 						</a>
 						<?php endif?>
 					</div>

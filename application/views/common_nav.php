@@ -32,7 +32,7 @@
 					<a class="banner_button" href="<?php echo $sign_in_link?>"><?php echo $sign_in_button?></a>
 					<?php elseif (isset($user_name)):?>
 					<div id="user_menu_trigger">
-						<a class="banner_button"><?php echo strtoupper(prevent_xss($user_name))?></a>
+						<a class="banner_button"><?php echo prevent_xss(strtoupper($user_name))?></a>
 						<a id="user_menu_visual">&#9660;</a>
 					</div>
 					<?php endif?>
