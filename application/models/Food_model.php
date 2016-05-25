@@ -21,7 +21,8 @@ class Food_model extends CI_Model {
 	 *
 	 * @param $filters:
 	 *    is_rush		=> bool
-	 *    category_id   => int
+	 *    category_ids   => array
+	 *    food_ids		=> array
 	 *    can_deliver   => bool
 	 *    vendor_id     => int
 	 *    min_rating	=> int
@@ -32,7 +33,8 @@ class Food_model extends CI_Model {
 		
 		// sort through filters
 		$is_rush = isset($filters["is_rush"])?$filters["is_rush"]:false;
-		$categoryId = isset($filters["category_id"])?$filters["category_id"]:false;
+		$category_ids = isset($filters["category_ids"])?$filters["category_id"]:false;
+		$food_ids = isset($filters["food_ids"])?$filters["food_ids"]:false;
 		$can_deliver = isset($filters["can_deliver"])?$filters["can_deliver"]:false;
 		$vendor_id = isset($filters["vendor_id"])?$filters["vendor_id"]:false;
 		$min_rating = isset($filters["min_rating"])?$filters["min_rating"]:false;
@@ -65,9 +67,13 @@ class Food_model extends CI_Model {
 		if ($is_rush){
 			$query_str .= ' and f.pickup_method = ? and f.prep_time_hours <= ?';
 		} 
-		// filter selected category
-		if ($categoryId !== false){
-			$query_str .= ' and a.food_category_id = ?';
+		// filter selected categories
+		if ($category_ids !== false){
+			$query_str .= ' and a.food_category_id in ('.$this->db->escape(implode(",", $category_ids)).')';
+		}
+		// filter food ids from fulltext search
+		if ($food_ids !== false){
+			$query_str .= ' and f.id in ('.$this->db->escape(implode(",", $food_ids)).')';
 		}
 		// filter minimum rating
 		if ($min_rating !== false){
@@ -92,9 +98,6 @@ class Food_model extends CI_Model {
 		if ($is_rush){
 			$bindings[] = Food_model::$PICKUP_ANYTIME;
 			$bindings[] = Time_prediction::$RUSH_HOUR_CUTOFF;
-		}
-		if ($categoryId !== false){
-			$bindings[] = $categoryId;
 		}
 		if ($min_rating !== false){
 			$bindings[] = $min_rating;
