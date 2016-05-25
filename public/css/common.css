@@ -540,6 +540,10 @@ nav ul#mobile_user_menu a.logo {
   background-color: #ed7a5d;
 }
 
+.ui-state-error {
+  display: none !important;
+}
+
 .ui-button-text {
   font-size: 1.3rem;
 }
@@ -1252,7 +1256,7 @@ div.about_text h1 {
 }
 
 #profile_intro input {
-  line-height: 20px;
+  font-size: inherit;
 }
 
 #profile_intro .pic_wrapper {

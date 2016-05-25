@@ -1,3 +1,4 @@
+<script src="/js/editable-address.js"></script>
 <section id="profile_intro">
 	<div class="pic_wrapper">
 		<a id="profile_pic"></a>
@@ -21,11 +22,10 @@
 		<p><a id="edit_user_email" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->email)?></a></p>
 		
 		<h3>ADDRESS</h3>
-		<p><a id="edit_user_addr" data-type="text" data-onblur="ignore">
+		<p><a id="edit_user_addr" data-type="address" data-onblur="ignore">
 			<?php if ($user->address != ""):?>
-			<?php echo prevent_xss($user->address)?>
-			<?php echo prevent_xss($user->city)?>, <?php echo prevent_xss($user->province)?>
-			<?php echo prevent_xss($user->country)?>
+			<?php echo prevent_xss($user->address)?><br/>
+			<?php echo prevent_xss($user->city)?>, <?php echo prevent_xss($user->province)?>, <?php echo prevent_xss($user->country)?><br/>
 			<?php echo prevent_xss($user->postal_code)?>
 			<?php endif?>
 		</a></p>
@@ -33,7 +33,7 @@
 		
 		<?php if (!$is_my_profile && $user->descr != "" || $is_my_profile):?>
 		<h3>ABOUT ME</h3>
-		<p><a id="edit_user_descr" data-type="textarea" data-onblur="ignore"><?php echo prevent_xss($user->descr)?></a></p>
+		<p class="edit_descr_container"><a id="edit_user_descr" data-type="textarea" data-onblur="ignore"><?php echo prevent_xss($user->descr)?></a></p>
 		<?php endif?>
 	</div>
 </section>
@@ -77,7 +77,10 @@
 				}
 			},
 			validate:	function(value){
-				
+				if ($.trim(value) == ""){
+					errorMessage("Cannot be blank");
+					return "cannot be blank";
+				}
 			}
 		});
 		
@@ -97,10 +100,48 @@
 					errorMessage(respArr["error"]);
 					return respArr["error"];
 				}
+			},
+			validate:	function(value){
+				if ($.trim(value) == ""){
+					errorMessage("Cannot be blank");
+					return "cannot be blank";
+				}
 			}
 		});
 		
-		$("#edit_user_addr").editable();
+		$("#edit_user_addr").editable({
+			url:		"/vendor/profile/change_address",
+			value:		{
+				 city: "Moscow", 
+            street: "Lenina", 
+            building: "12"
+			},
+			send:		"always",
+			params:		csrfData,
+			error:		function(response){
+				errorMessage("Unable to process");
+			},
+			success:	function(response){
+				var respArr = $.parseJSON(response);
+				
+				if ("success" in respArr){
+					successMessage("Saved");
+				} else {
+					errorMessage(respArr["error"]);
+					return respArr["error"];
+				}
+			},
+			display: function(value){
+				if (!value){
+					$(this).empty();
+					return;
+				}
+				var html = '<b>' + $('<div>').text(value.city).html() + '</b>, ' + $('<div>').text(value.street).html() + ' st., bld. ' + $('<div>').text(value.building).html();
+				$(this).html(html); 
+				//$(this).html(value.address+"<br/>"+value.city+", "+value.province+", "+value.country+"<br/>"+value.postal_code);
+			}
+		});
+		
 		$("#edit_user_city").editable();
 		$("#edit_user_province").editable();
 		$("#edit_user_postal").editable();
