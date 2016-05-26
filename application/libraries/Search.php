@@ -2,7 +2,10 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Search {
-	public static $DEFAULT_COORDS = [43.6532, -79.3832];
+	public static $DEFAULT_COORDS = array(
+		"latitude" => 43.6532, 
+		"longitude" => -79.3832
+	);
 	public static $DEFAULT_LOCATION = "Toronto, Ontario";
 	
 	// location based search radius
@@ -29,13 +32,14 @@ class Search {
 	 * @return [latitude, longitude]
 	 */
 	public function getUserCoordinates($user_id){
-		$this->load->helper('cookie');
+		$CI =& get_instance();
+		$CI->load->helper('cookie');
 		
 		// attempt to retrieve location from cookies
 		$latitude = get_cookie("latitude");
 		$longitude = get_cookie("longitude");
 		
-		if ($latitude == NULL || $longitude == NULL){
+		if ($latitude == NULL || $longitude == NULL || $latitude == 'undefined' || $longitude == 'undefined'){
 			if ($user_id !== false){
 				// attempt to get from user address
 				$CI =& get_instance();

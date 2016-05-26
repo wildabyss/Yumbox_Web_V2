@@ -46,27 +46,29 @@
 				lat: Cookies.get('latitude'),
 				lng: Cookies.get('longitude')
 			}; 
-			if (mapInfo.currentGeo.lat === undefined || mapInfo.currentGeo.lng === undefined){
+
+			if (mapInfo.currentGeo.lat === undefined || mapInfo.currentGeo.lng === undefined || mapInfo.currentGeo.lat == 'undefined' || mapInfo.currentGeo.lng == 'undefined'){
 				// use geolocation
 				navigator.geolocation.getCurrentPosition(function(position) {
 					mapInfo.currentGeo = {
 						lat: position.coords.latitude,
 						lng: position.coords.longitude,
-					}
+					};
 				}, function() {
+
 					// no location observed, use default location
 					mapInfo.currentGeo = {
-						lat: <?php echo $location["latitude"]?>,
-						lng: <?php echo $location["longitude"]?>
-					}
+						lat: '<?php echo $location["latitude"]?>',
+						lng: '<?php echo $location["longitude"]?>'
+					};
 				});
 				
 				// save to cookie
 				Cookies.set('latitude', mapInfo.currentGeo.lat);
 				Cookies.set('longitude', mapInfo.currentGeo.lng);
-				
+
 				// reload
-				location.reload();
+				//location.reload();
 			}
 		</script>
 	
