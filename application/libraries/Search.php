@@ -36,18 +36,23 @@ class Search {
 		$longitude = get_cookie("longitude");
 		
 		if ($latitude == NULL || $longitude == NULL){
-			// attempt to get from user address
-			$CI =& get_instance();
-			$CI->load->model('user');
-			$address = $CI->user_model->getOrCreateAddress($user_id);
-			if ($address->longitude == "" || $address->latitude == ""){
+			if ($user_id !== false){
+				// attempt to get from user address
+				$CI =& get_instance();
+				$CI->load->model('user');
+				$address = $CI->user_model->getOrCreateAddress($user_id);
+				if ($address->longitude == "" || $address->latitude == ""){
+					// use default
+					return self::$DEFAULT_COORDS;
+				} else {
+					return array(
+						"latitude" => $address->latitude,
+						"longitude" => $address->longitude
+					);
+				}
+			} else {
 				// use default
 				return self::$DEFAULT_COORDS;
-			} else {
-				return array(
-					"latitude" => $address->latitude,
-					"longitude" => $address->longitude
-				);
 			}
 		} else {
 			return array(

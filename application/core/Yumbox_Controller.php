@@ -35,13 +35,9 @@ class Yumbox_Controller extends CI_Controller {
 				$order_count = $this->order_basket_model->getTotalOrdersInBasket($open_basket->id);
 				if ($order_count===false) $order_count = 0;
 				
-				// get user location
-				$location = $this->search->getSavedUserCoordinates($user_id);
-				
 				// bind data
 				$data["order_count"] = $order_count;
 				$data["is_vendor"] = $is_vendor;
-				$data["location"] = $location;
 				
 				return $this->load->view("common_nav", $data, !$display);
 			}
@@ -58,11 +54,15 @@ class Yumbox_Controller extends CI_Controller {
 	 * Display the header common to Yumbox web application
 	 */
 	protected function header(){
-		// load language
-		$this->lang->load("header");
+		// get user location
+		$user_id = $this->login_util->getUserId();
+		$location = $this->search->getUserCoordinates($user_id);
+		
+		// bind data
+		$data['location'] = $location;
 				
 		// Load views
-		$this->load->view("common_header");
+		$this->load->view("common_header", $data);
 	}
 	
 	/**
