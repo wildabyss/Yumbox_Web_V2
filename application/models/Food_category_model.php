@@ -66,7 +66,8 @@ class Food_category_model extends CI_Model {
 		if ($min_price !== false){
 			$query_str .= ' and f.price >= ? and f.price <= ?';
 		}
-					
+		
+		// filter categories	
 		$query_str .= ' and a.food_category_id in (';
 		$counter = 0;
 		foreach ($category_ids as $cat_id){

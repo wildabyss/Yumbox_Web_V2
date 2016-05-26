@@ -11,7 +11,8 @@ class Search {
 	
 	// maximum number of results per pagination
 	public static $MAX_CATEGORIES_PAGE = 5;
-	public static $MAX_FOODS_PAGE = 5;
+	public static $MAX_FOODS_PAGE = 4;
+	public static $MAX_FOODS_PAGE_NO_CATEGORIES = 20;
 	
 	public function geocodeLocation($location_str){
 		// load helper
@@ -32,43 +33,50 @@ class Search {
 	 * @return [foods, categories]
 	 */
 	public function searchForFood($search_query, $filters=array(), $show_by_categories=true){
-		// perform Sphinx full-text search
+		$search_query = trim($search_query);
+
 		$fulltext_results = array();
-		$sphinxdb = new mysqli("0", "", "", "", 9306);
-		if (!$sphinxdb->connect_errno){
-			$ultimate_number = 500000;
+		// perform Sphinx full-text search
+		if ($search_query != ""){
+			$sphinxdb = new mysqli("0", "", "", "", 9306);
+			if (!$sphinxdb->connect_errno){
+				$ultimate_number = 500000;
 			
-			// escape search query
-			$search_query_filt = $sphinxdb->real_escape_string($search_query);
+				// escape search query
+				$search_query_filt = $sphinxdb->real_escape_string($search_query);
 			
-			// form sql query
-			$sql_query = <<<EOT
-				select 
-					id
-				from
-					food_name
-				where
-					match('$search_query_filt')
-				limit
-					$ultimate_number
-				option
-					max_matches = $ultimate_number
+				// form sql query
+				$sql_query = <<<EOT
+					select 
+						id
+					from
+						food_name_index
+					where
+						match('$search_query_filt')
+					limit
+						$ultimate_number
+					option
+						max_matches = $ultimate_number
 EOT;
 
-			// fetch results
-			if ($sphinx_res = $sphinxdb->query($sql_query)){
-				while ($row_assoc = $sphinx_res->fetch_assoc()){
-					$fulltext_results[] = $row_assoc["id"];
+				// fetch results
+				if ($sphinx_res = $sphinxdb->query($sql_query)){
+					while ($row_assoc = $sphinx_res->fetch_assoc()){
+						$fulltext_results[] = $row_assoc["id"];
+					}
+					$sphinx_res->close();
+
+					// add to filters
+					$filters["food_ids"] = $fulltext_results;
+				} else {
+					throw new Exception("Sphinx query failed");
 				}
-				$sphinx_res->close();
-			} else {
-				throw new Exception("Sphinx query failed");
-			}
 			
-			// close Sphinx engine
-			$sphinxdb->close();
-		} else {
-			throw new Exception("Cannot connect to Sphihx");
+				// close Sphinx engine
+				$sphinxdb->close();
+			} else {
+				throw new Exception("Cannot connect to Sphihx");
+			}
 		}
 		
 		
@@ -83,9 +91,9 @@ EOT;
 		
 		// find all categories
 		if (isset($filters["category_ids"]) && count($filters["category_ids"])>0){
-			$categories = $this->food_category_model->getAllActiveRelatedCategories($filters["category_ids"], self::$MAX_CATEGORIES_PAGE, $filters);
+			$categories = $CI->food_category_model->getAllActiveRelatedCategories($filters["category_ids"], self::$MAX_CATEGORIES_PAGE, $filters);
 		} else {
-			$categories = $this->food_category_model->getAllActiveCategories(self::$MAX_CATEGORIES_PAGE, $filters);
+			$categories = $CI->food_category_model->getAllActiveCategories(self::$MAX_CATEGORIES_PAGE, $filters);
 		}
 		
 		// find all foods
@@ -93,11 +101,11 @@ EOT;
 			// get all foods for each category
 			foreach ($categories as $category){
 				$filters["category_ids"] = [$category->id];
-				$foods[$category->id] = $this->food_model->getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_RESULTS_FOODS, $filters);
+				$foods[$category->id] = $CI->food_model->getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_FOODS_PAGE, $filters);
 			}
 		} else {
 			// get all foods
-			$foods = $this->food_model->getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_RESULTS_FOODS, $filters);
+			$foods = $CI->food_model->getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_FOODS_PAGE_NO_CATEGORIES, $filters);
 		}
 		
 		// array to be returned

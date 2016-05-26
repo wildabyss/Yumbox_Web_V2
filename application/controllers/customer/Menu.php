@@ -14,7 +14,7 @@ class Menu extends Yumbox_Controller {
 	 * @return an array of data to be passed to view
 	 */
 	protected function dataForMenuFilter($is_rush, $is_list, $search_query, $location,
-		array $chosen_categories, $can_deliver, array $price_filter, $rating_filter, $time_filter){
+		array $chosen_categories, $can_deliver, array $price_filter, $rating_filter){
 		// load language
 		$this->lang->load("landing");
 		
@@ -50,7 +50,6 @@ class Menu extends Yumbox_Controller {
 		$data['search_query'] = $search_query;
 		$data['price_filter'] = $price_filter;
 		$data['rating_filter'] = $rating_filter;
-		$data['time_filter'] = $time_filter;
 		
 		return $data;
 	}
@@ -129,15 +128,15 @@ class Menu extends Yumbox_Controller {
 		$food_list_display = "";
 		if ($show_by_categories){
 			foreach ($categories as $category){
-				$food_list_display .= dataForFoodListing($foods[$category->id], $category)
+				$food_list_display .= $this->dataForFoodListing($foods[$category->id], $category);
 			}
 		} else {
-			$food_list_display .= dataForFoodListing($foods);
+			$food_list_display .= $this->dataForFoodListing($foods);
 		}
 		
 		// bind to data
 		$filter_data = $this->dataForMenuFilter($is_rush, $view!=self::$MAP_VIEW, $search_query, $location,
-			$chosen_categories, $can_deliver, $price_filter, $rating_filter, $time_filter);
+			$chosen_categories, $can_deliver, $price_filter, $rating_filter);
 		$data["foods"] = $foods;
 		$data['food_list_display'] = $food_list_display;
 		$data['empty_string'] = $this->lang->line("no_result");

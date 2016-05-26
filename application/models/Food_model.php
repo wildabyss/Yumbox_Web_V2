@@ -33,14 +33,14 @@ class Food_model extends CI_Model {
 		
 		// sort through filters
 		$is_rush = isset($filters["is_rush"])?$filters["is_rush"]:false;
-		$category_ids = isset($filters["category_ids"])?$filters["category_id"]:false;
+		$category_ids = isset($filters["category_ids"])?$filters["category_ids"]:false;
 		$food_ids = isset($filters["food_ids"])?$filters["food_ids"]:false;
 		$can_deliver = isset($filters["can_deliver"])?$filters["can_deliver"]:false;
 		$vendor_id = isset($filters["vendor_id"])?$filters["vendor_id"]:false;
 		$min_rating = isset($filters["min_rating"])?$filters["min_rating"]:false;
 		$min_price = isset($filters["min_price"])?$filters["min_price"]:false;
 		$max_price = isset($filters["max_price"])?$filters["max_price"]:false;
-		
+	
 		// base query
 		$query_str = '
 			select 
@@ -51,8 +51,8 @@ class Food_model extends CI_Model {
 				p.path pic_path,
 				total_orders(f.id) total_orders,
 				u.id vendor_id, u.name vendor_name
-			from food_category_assoc a
-			left join food f
+			from food f
+			left join food_category_assoc a
 			on f.id = a.food_id
 			left join user u
 			on u.id = f.user_id
@@ -60,7 +60,7 @@ class Food_model extends CI_Model {
 			on p.food_id = f.id
 			where
 				f.status = ?
-				and u.status <> ?
+				and u.status > ?
 				and u.is_open = 1';
 		
 		// filter out non-rush items
@@ -69,11 +69,22 @@ class Food_model extends CI_Model {
 		} 
 		// filter selected categories
 		if ($category_ids !== false){
-			$query_str .= ' and a.food_category_id in ('.$this->db->escape(implode(",", $category_ids)).')';
+			$query_str .= ' and a.food_category_id in (';
+			for ($i=0; $i<count($category_ids); $i++){
+				if ($i>0) $query_str .= ",";
+				$query_str .= $this->db->escape($category_ids[$i]);
+			}
+			$query_str .= ")";
 		}
+
 		// filter food ids from fulltext search
 		if ($food_ids !== false){
-			$query_str .= ' and f.id in ('.$this->db->escape(implode(",", $food_ids)).')';
+			$query_str .= ' and f.id in (';
+			for ($i=0; $i<count($food_ids); $i++){
+				if ($i>0) $query_str .= ",";
+				$query_str .= $this->db->escape($food_ids[$i]);
+			}
+			$query_str .= ")";
 		}
 		// filter minimum rating
 		if ($min_rating !== false){
