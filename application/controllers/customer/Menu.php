@@ -20,15 +20,6 @@ class Menu extends Yumbox_Controller {
 		
 		// get main food categories
 		$main_categories = $this->food_category_model->getAllMainCategories();
-		
-		// get user location
-		if ($location == ""){
-			$location = $this->user_model->getUserAddressString($this->login_util->getUserId());
-			if ($location === false || $location==""){
-				// use default
-				$location = Search::$DEFAULT_LOCATION;
-			}
-		}
 
 		// bind model data
 		$data["quick_menu_text"] = $this->lang->line("quick_menu_text");
@@ -111,7 +102,28 @@ class Menu extends Yumbox_Controller {
 			"max"=>$this->input->get('price_max')==""?50:$this->input->get('price_max')
 		);
 		$rating_filter = $this->input->get('rating_min')==""?0:$this->input->get('rating_min');
-		
+	
+		// get user location
+                if ($location==""){
+                        $user_id = $this->login_util->getUserId();
+                        $coords = $this->search->getUserCoordinates($user_id);
+                        $location = "{$coords["latitude"]}, {$coords["longitude"]}";
+                } else {
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($location));
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+                        $output = curl_exec($ch);
+                        curl_close($ch);
+
+                        $output_arr = json_decode($output);
+                        if ($output_arr !== false && $output_arr != NULL){
+                                $latitude = $output_arr->results[0]->geometry->location->lat;
+                                $longitude = $output_arr->results[0]->geometry->location->lng;
+                                setcookie("latitude", $latitude);
+                                setcookie("longitude", $longitude);
+                        }
+                }
+	
 		// search filters
 		$filters = array();
 		$filters["is_rush"] = $is_rush;

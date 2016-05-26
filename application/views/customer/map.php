@@ -87,4 +87,4 @@
 		printMarkers();
     }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAofIUjndHtKWzUxJ34j4MhZ7fEgQFWY6I&callback=initMap" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo $this->config->item('map_api_key')?>&callback=initMap" async defer></script>

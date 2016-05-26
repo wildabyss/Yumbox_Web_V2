@@ -43,7 +43,7 @@ class Search {
 			if ($user_id !== false){
 				// attempt to get from user address
 				$CI =& get_instance();
-				$CI->load->model('user');
+				$CI->load->model('user_model');
 				$address = $CI->user_model->getOrCreateAddress($user_id);
 				if ($address->longitude == "" || $address->latitude == ""){
 					// use default
