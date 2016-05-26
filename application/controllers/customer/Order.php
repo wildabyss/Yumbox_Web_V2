@@ -67,6 +67,14 @@ class Order extends Yumbox_Controller {
 	}
 	
 	
+	public function __construct(){
+		parent::__construct();
+		
+		// load accounting library
+		$this->load->library("accounting");
+	}
+	
+	
 	/**
 	 * AJAX method
 	 * Add order to the un-paid (open) order_basket

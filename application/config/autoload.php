@@ -63,8 +63,8 @@ $autoload['libraries'] = array(
 	'email', 
 	'session', 
 	'login_util',
-	'accounting',
-	'time_prediction'
+	'time_prediction',
+	'search'
 );
 
 /*

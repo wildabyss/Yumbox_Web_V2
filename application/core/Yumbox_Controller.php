@@ -35,9 +35,13 @@ class Yumbox_Controller extends CI_Controller {
 				$order_count = $this->order_basket_model->getTotalOrdersInBasket($open_basket->id);
 				if ($order_count===false) $order_count = 0;
 				
+				// get user location
+				$location = $this->search->getSavedUserCoordinates($user_id);
+				
 				// bind data
 				$data["order_count"] = $order_count;
 				$data["is_vendor"] = $is_vendor;
+				$data["location"] = $location;
 				
 				return $this->load->view("common_nav", $data, !$display);
 			}

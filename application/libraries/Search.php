@@ -2,8 +2,8 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Search {
-	public static $TORONTO_COORDS = [43.6532, -79.3832];
-	public static $TORONTO_SEARCH = "Toronto, Ontario";
+	public static $DEFAULT_COORDS = [43.6532, -79.3832];
+	public static $DEFAULT_SEARCH = "Toronto, Ontario";
 	
 	// location based search radius
 	public static $SEARCH_RADIUS = 25;		// 25KM radius for search results
@@ -21,6 +21,40 @@ class Search {
 		
 		// map request url
 		
+	}
+	
+	
+	/** 
+	 * Get saved user coordinates from datastore
+	 * @return [latitude, longitude]
+	 */
+	public function getUserCoordinates($user_id){
+		$this->load->helper('cookie');
+		
+		// attempt to retrieve location from cookies
+		$latitude = get_cookie("latitude");
+		$longitude = get_cookie("longitude");
+		
+		if ($latitude == NULL || $longitude == NULL){
+			// attempt to get from user address
+			$CI =& get_instance();
+			$CI->load->model('user');
+			$address = $CI->user_model->getOrCreateAddress($user_id);
+			if ($address->longitude == "" || $address->latitude == ""){
+				// use default
+				return self::$DEFAULT_COORDS;
+			} else {
+				return array(
+					"latitude" => $address->latitude,
+					"longitude" => $address->longitude
+				);
+			}
+		} else {
+			return array(
+				"latitude" => $latitude,
+				"longitude" => $longitude
+			);
+		}
 	}
 	
 	

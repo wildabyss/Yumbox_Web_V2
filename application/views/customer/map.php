@@ -7,7 +7,6 @@
 <script>
 	//global variables
 	var map;
-	var mapInfo = {};
 	var geocodingUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
 	var prev_infowindow =false;  
 	var sampleData = [{
@@ -34,7 +33,6 @@
 	
 	var printMarkers = function(){
 		sampleData.forEach(function(kitchen){
-		  console.log(kitchen.address);
 		  $.ajax({
 			url: geocodingUrl,
 			dataType:'json',
@@ -43,8 +41,6 @@
 			  key: 'AIzaSyAbFvvZUUwbJ-yieOa5g49ERWWLwmTHEh8'
 			}
 		  }).then(function(res) {   
-			console.log(res.results[0].geometry.location); 
-			console.log(kitchen.name);
 			var kitchenLoc =  res.results[0].geometry.location;
 			//create markers here
 			printOneMarker(kitchenLoc,kitchen);
@@ -79,27 +75,14 @@
 		});
 	};
 	
-	var centerCurrentLocation = function(){
-		navigator.geolocation.getCurrentPosition(function(position) {
-			mapInfo.currentGeo = {
-				lat: position.coords.latitude,
-				lng: position.coords.longitude,
-			}
-			console.log(mapInfo.currentGeo);
-			map.setCenter(new google.maps.LatLng(mapInfo.currentGeo.lat, mapInfo.currentGeo.lng));
-		}, function() {
-			console.log("Error!!!!!!!!!");
-		});
-	};
-	
 	var initMap = function(){
 		//this is using a default location at Toronto downtown to show a map
 		map = new google.maps.Map(document.getElementById('map'), {
-			center: {lat: 43.6532, lng: -79.3832},
 			//zoom controls the range of the map. 0 is global. the bigger the number is, the closer it will be
 			zoom: 12
 		});
-		centerCurrentLocation();
+		// center current location
+		map.setCenter(new google.maps.LatLng(mapInfo.currentGeo.lat, mapInfo.currentGeo.lng));
 		
 		printMarkers();
     }

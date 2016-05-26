@@ -55,7 +55,12 @@ class Menu extends Yumbox_Controller {
 	}
 	
 	
-	protected function dataForFoodListing($foods, $category=false){
+	/**
+	 * Return string that contains the views for $foods
+	 * If $category provided, assume that $foods is grouped by category->id, otherwise assume that $foods
+	 * is a flat array of food objects
+	 */
+	 protected function displayFoodListing($foods, $category=false){
 		if (count($foods)==0)
 			return "";
 		
@@ -107,9 +112,7 @@ class Menu extends Yumbox_Controller {
 		);
 		$rating_filter = $this->input->get('rating_min')==""?0:$this->input->get('rating_min');
 		
-		// search and filtering
-		$this->load->library('search');
-		// filters
+		// search filters
 		$filters = array();
 		$filters["is_rush"] = $is_rush;
 		$filters["category_ids"] = $chosen_categories;
@@ -128,10 +131,10 @@ class Menu extends Yumbox_Controller {
 		$food_list_display = "";
 		if ($show_by_categories){
 			foreach ($categories as $category){
-				$food_list_display .= $this->dataForFoodListing($foods[$category->id], $category);
+				$food_list_display .= $this->displayFoodListing($foods[$category->id], $category);
 			}
 		} else {
-			$food_list_display .= $this->dataForFoodListing($foods);
+			$food_list_display .= $this->displayFoodListing($foods);
 		}
 		
 		// bind to data

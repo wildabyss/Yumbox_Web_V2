@@ -134,6 +134,46 @@ class User_model extends CI_Model {
 	
 	
 	/**
+	 * Attempt to fetch the address for $user_id
+	 * Create one if it doesn't exist
+	 * Assume here that user exists
+	 */
+	public function getOrCreateAddress($user_id){
+		$address = false;
+		
+		do {
+			// fetch address for user
+			$query = $this->db->query('
+				select
+					a.address, a.city, a.province, a.postal_code, a.country,
+					a.latitude, a.longitude
+				from
+					address a
+				where
+					a.user_id = ?', array("$user_id"));
+			$results = $query->result();
+			if (count($results)>=1){
+				$address = $results[0];
+			} else {
+				// doesn't exist, create one
+				
+				if (!$query = $this->db->query('
+					insert into address
+						(user_id)
+					values
+						(?)', array($user_id))){
+					
+					throw new Exception($this->db->error);
+				}
+			}
+
+		} while ($address === false);
+		
+		return $address;
+	}
+	
+	
+	/**
 	 * Fetch the address information of the user and concatenate to string
 	 * @return false if user not exist
 	 */
@@ -180,46 +220,6 @@ class User_model extends CI_Model {
 			return false;
 		else
 			return true;
-	}
-	
-	
-	/**
-	 * Attempt to fetch the address for $user_id
-	 * Create one if it doesn't exist
-	 * Assume here that user exists
-	 */
-	public function getOrCreateAddress($user_id){
-		$address = false;
-		
-		do {
-			// fetch address for user
-			$query = $this->db->query('
-				select
-					a.address, a.city, a.province, a.postal_code, a.country,
-					a.latitude, a.longitude
-				from
-					address a
-				where
-					a.user_id = ?', array("$user_id"));
-			$results = $query->result();
-			if (count($results)>=1){
-				$address = $results[0];
-			} else {
-				// doesn't exist, create one
-				
-				if (!$query = $this->db->query('
-					insert into address
-						(user_id)
-					values
-						(?)', array($user_id))){
-					
-					throw new Exception($this->db->error);
-				}
-			}
-
-		} while ($address === false);
-		
-		return $address;
 	}
 	
 	
