@@ -146,6 +146,13 @@
 		$( "#btn_list" ).button().click(function(e){
 			filter_button_click(e, true);
 		});
+
+		$("#search").keydown(function(e){
+			e.preventDefault();
+			if (e.which == 13){
+				$("#filter_form").submit();
+			}
+		});
 		
 		// filter button
 		$("#btn_filter").button().click(function(e){
