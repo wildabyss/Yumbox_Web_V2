@@ -26,7 +26,7 @@ class Menu extends Yumbox_Controller {
 			$location = $this->user_model->getUserAddressString($this->login_util->getUserId());
 			if ($location === false || $location==""){
 				// use default
-				$location = Search::$TORONTO_SEARCH;
+				$location = Search::$DEFAULT_LOCATION;
 			}
 		}
 

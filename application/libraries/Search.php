@@ -3,7 +3,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Search {
 	public static $DEFAULT_COORDS = [43.6532, -79.3832];
-	public static $DEFAULT_SEARCH = "Toronto, Ontario";
+	public static $DEFAULT_LOCATION = "Toronto, Ontario";
 	
 	// location based search radius
 	public static $SEARCH_RADIUS = 25;		// 25KM radius for search results
