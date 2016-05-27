@@ -77,7 +77,7 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
+	'hostname' => 'mysql',
 	'username' => $config["database_username"],
 	'password' => $config["database_password"],
 	'database' => 'yumbox_dev',

@@ -141,6 +141,7 @@ $autoload['language'] = array();
 |	$autoload['model'] = array('first_model' => 'first');
 */
 $autoload['model'] = array(
+    'email_model',
 	'food_model', 
 	'food_category_model',
 	'food_review_model',

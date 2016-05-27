@@ -44,25 +44,82 @@ class Mail_server {
 	}
 
 	public function sendFromWebsite($recipient_email, $recipient_name, $subject, $body) {
-		$mail = $this->createConnection();
-
 		$CI =& get_instance();
 		$CI->config->load('secret_config', TRUE);
 
-		$mail->setFrom($CI->config->item('website_email_address', 'secret_config'), $CI->config->item('website_email_name', 'secret_config'));
-		$mail->addAddress($recipient_email, $recipient_name);
-		$website_replyto_address = $CI->config->item('website_replyto_address', 'secret_config');
-		if ($website_replyto_address != '') {
-			$mail->addReplyTo($website_replyto_address, $CI->config->item('website_replyto_name', 'secret_config'));
-		}
+        $from_email = $CI->config->item('website_email_address', 'secret_config');
+        $from_name = $CI->config->item('website_email_name', 'secret_config');
+        $replyto_address = $CI->config->item('website_replyto_address', 'secret_config');
+        $replyto_name = $CI->config->item('website_replyto_name', 'secret_config');
 
-		$mail->Subject = $subject;
-		$mail->Body    = $body;
-
-		if (!$mail->send()) {
-			throw new Exception('Mailer Error: ' . $mail->ErrorInfo);
-		} else {
-			return true;
-		}
+        if ($CI->config->item('queue_mail', 'secret_config') == '1') {
+            $CI->email_model->addEmailToQueue(
+                $from_email,
+                $from_name,
+                $replyto_address,
+                $replyto_name,
+                array(
+                    $recipient_email => $recipient_name,
+                ),
+                array(),
+                array(),
+                $subject,
+                $body
+            );
+        }
+        else {
+            return $this->send(
+                $from_email,
+                $from_name,
+                $replyto_address,
+                $replyto_name,
+                array(
+                    $recipient_email => $recipient_name,
+                ),
+                array(),
+                array(),
+                $subject,
+                $body
+            );
+        }
 	}
+
+    public function send($from_email, $from_name, $replyto_address, $replyto_name, array $recipients, array $cc, array $bcc, $subject, $body)
+    {
+        $mail = $this->createConnection();
+
+        $CI =& get_instance();
+        $CI->config->load('secret_config', TRUE);
+
+        $mail->setFrom($from_email, $from_name);
+
+        if (count($recipients) == 0) {
+            throw new \Exception('Can not send an email without any recipient');
+        }
+
+        foreach ($recipients as $email => $name) {
+            $mail->addAddress($email, $name);
+        }
+
+        foreach ($cc as $email => $name) {
+            $mail->addCC($email, $name);
+        }
+
+        foreach ($bcc as $email => $name) {
+            $mail->addBCC($email, $name);
+        }
+
+        if ($replyto_address != '') {
+            $mail->addReplyTo($replyto_address, $replyto_name);
+        }
+
+        $mail->Subject = $subject;
+        $mail->Body    = $body;
+
+        if (!$mail->send()) {
+            throw new \Exception('Mailer Error: ' . $mail->ErrorInfo);
+        } else {
+            return true;
+        }
+    }
 }
