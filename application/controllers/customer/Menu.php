@@ -104,25 +104,18 @@ class Menu extends Yumbox_Controller {
 		$rating_filter = $this->input->get('rating_min')==""?0:$this->input->get('rating_min');
 	
 		// get user location
-                if ($location==""){
-                        $user_id = $this->login_util->getUserId();
-                        $coords = $this->search->getUserCoordinates($user_id);
-                        $location = "{$coords["latitude"]}, {$coords["longitude"]}";
-                } else {
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($location));
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-                        $output = curl_exec($ch);
-                        curl_close($ch);
-
-                        $output_arr = json_decode($output);
-                        if ($output_arr !== false && $output_arr != NULL){
-                                $latitude = $output_arr->results[0]->geometry->location->lat;
-                                $longitude = $output_arr->results[0]->geometry->location->lng;
-                                setcookie("latitude", $latitude);
-                                setcookie("longitude", $longitude);
-                        }
-                }
+		if ($location==""){
+			$user_id = $this->login_util->getUserId();
+			$coords = $this->search->getUserCoordinates($user_id);
+			$location = "{$coords["latitude"]}, {$coords["longitude"]}";
+		} else {
+			$coords = $this->search->geocodeLocation($location);
+			
+			if ($coords !== false){
+				setcookie("latitude", $coords["latitude"]);
+				setcookie("longitude", $coords["longitude"]);
+			}
+		}
 	
 		// search filters
 		$filters = array();

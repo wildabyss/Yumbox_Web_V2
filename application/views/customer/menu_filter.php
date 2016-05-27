@@ -148,8 +148,8 @@
 		});
 
 		$("#search").keydown(function(e){
-			e.preventDefault();
 			if (e.which == 13){
+				e.preventDefault();
 				$("#filter_form").submit();
 			}
 		});

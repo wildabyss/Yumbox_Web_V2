@@ -17,13 +17,36 @@ class Search {
 	public static $MAX_FOODS_PAGE = 4;
 	public static $MAX_FOODS_PAGE_NO_CATEGORIES = 20;
 	
+	
+	/**
+	 * Geocode a location string and return geographic coordinates
+	 * @return array ["latitude", "longitude"], false on failure
+	 */
 	public function geocodeLocation($location_str){
-		// load helper
-		$CI =& get_instance();
-		$CI->load->helper('utils');
-		
 		// map request url
-		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($location_str));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$output = curl_exec($ch);
+		if ($output === false){
+			return false;
+		}
+		curl_close($ch);
+
+		// decipher response
+		$output_arr = json_decode($output);
+		if ($output_arr !== false && $output_arr != NULL){
+			if (isset($output_arr->error_message))
+				return false;
+			else{
+				$latitude = $output_arr->results[0]->geometry->location->lat;
+				$longitude = $output_arr->results[0]->geometry->location->lng;
+				
+				return array("latitude"=>$latitude, "longitude"=>$longitude);
+			}
+		} else {
+			return false;
+		}
 	}
 	
 	
@@ -118,7 +141,7 @@ EOT;
 				// close Sphinx engine
 				$sphinxdb->close();
 			} else {
-				throw new Exception("Cannot connect to Sphihx");
+				throw new Exception("Cannot connect to Sphinx");
 			}
 		}
 		
