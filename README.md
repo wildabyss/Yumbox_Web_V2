@@ -20,33 +20,49 @@ The front-end and back-end of the server-side Yumbox application for home cookin
 ```php
 <?php
 
-/** This file should not be checked into the code source or be made public **/
+/** This file should never be checked into the code source or be made public **/
 
-$config['base_url'] 			= 'https://localhost/';
+// CodeIgniter configs
+$config['base_url'] 			= 'https://yumbox.co/';
 $config["database_username"] 	= "yumbox";
-$config["database_password"] 	= string;
-$config['encryption_key'] 		= string;
+$config["database_password"] 	= "";
+$config['encryption_key'] 		= '';
 
-$config['facebook_app_id']		= string;
-$config['facebook_secret']		= string;
+// Facebook app
+$config['facebook_app_id']		= '';
+$config['facebook_secret']		= '';
 
-$config['google_client_id']		= string;
-$config['google_client_secret']	= string;
+// Google oAuth2
+$config['google_client_id']		= '';
+$config['google_client_secret']	= '';
 
-$config['wechat_app_id']		= string;
-$config['wechat_secret']		= string;
+// Stripe payment
+$config['stripe_secret_key']	= '';
+$config['stripe_public_key']	= '';
 
-$config['stripe_secret_key']	= string;
-$config['stripe_public_key']	= string;
+// Google Map
+$config['map_api_key']          = '';
 
-// take rate (commission rate)
-$config["take_rate"]			= 0.0;
+// SMTP server
+$config['website_email_address']    = 'info@yumbox.ca';
+$config['website_email_name']       = 'Yumbox';
+$config['website_replyto_address']  = '';
+$config['website_replyto_name']     = '';
+$config['smtp_host']                = 'smtp.office365.com';
+$config['smtp_port']                = '587';
+$config['smtp_authentication']      = '1';
+$config['smtp_username']            = 'info@yumbox.ca';
+$config['smtp_password']            = '';
+$config['smtp_security']            = 'tls';
+
 // tax rate
-$config["tax_rate"]				= 0.0;
+$config['tax_rate']				= 0.0;
+// take rate (commission rate)
+$config['take_rate']			= 0.0;
 
 // featured dishes
-$config['featured_rush_id']		= int;
-$config['featured_explore_id']	= int;
+$config['featured_rush_id']		= 8;
+$config['featured_explore_id']	= 9;
 ```
 
 6. If this is the production environment, create file _prd.txt in root
