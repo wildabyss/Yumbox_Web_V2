@@ -3,9 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Mail_queue extends CI_Controller
 {
-    public function serve($count = 10)
+    public function serve($count = -1)
     {
         $this->load->library('mail_server');
+
+        if ($count === -1) {
+            $this->config->load('secret_config', TRUE);
+            $count = (int)$this->config->item('queue_send_per_exe', 'secret_config');
+        }
 
         for ($i=0; $i<$count; $i++) {
             $mail = $this->email_model->getEmailFromQueue();
