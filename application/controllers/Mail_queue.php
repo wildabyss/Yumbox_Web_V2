@@ -5,6 +5,10 @@ class Mail_queue extends CI_Controller
 {
     public function serve($count = -1)
     {
+        if (php_sapi_name() !== 'cli') {
+            die('This method can only be executed through CLI');
+        }
+
         $this->load->library('mail_server');
 
         if ($count === -1) {
