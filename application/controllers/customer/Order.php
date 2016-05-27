@@ -67,6 +67,113 @@ class Order extends Yumbox_Controller {
 	}
 	
 	
+	/**
+	 * Send Email notification for newly created basket
+	 */
+	protected function sendEmailNewOrders($basket_id){
+		// Sending email to the customer and vendors
+		$mustache = new Mustache_Engine();
+
+		// Gathering information
+		$user_id = $this->login_util->getUserId();
+		$user = $this->user_model->getUserForUserId($user_id);
+		$basket = $this->getOrdersInBasket($basket_id);
+		// flatten array values
+        $foods_orders = $basket['foods_orders'];
+        $basket['foods_orders'] = array_values($basket['foods_orders']);
+
+		// Loading the email template for the customer
+		//TODO: Do we really want to load email templates according to current language?
+		$this->lang->load('email');
+		$subject = $mustache->render($this->lang->line('customer_invoice_subject'), array(
+			'customer' => $user,
+			'basket' => $basket,
+            'base_url' => $this->config->item('base_url'),
+		));
+		$body = $mustache->render($this->lang->line('customer_invoice_body'), array(
+			'customer' => $user,
+			'basket' => $basket,
+            'base_url' => $this->config->item('base_url'),
+		));
+
+		// Sending email to customer
+		$this->load->library('mail_server');
+		$this->mail_server->sendFromWebsite($user->email, $user->name, $subject, $body);
+
+		// Sending email to vendor(s)
+		foreach ($basket['vendors'] as $v) {
+			$subject = $mustache->render($this->lang->line('vendor_invoice_subject'), array(
+                'customer' => $user,
+				'vendor' => $v,
+				'order' => $foods_orders[$v->id],
+                'base_url' => $this->config->item('base_url'),
+			));
+			$body = $mustache->render($this->lang->line('vendor_invoice_body'), array(
+                'customer' => $user,
+				'vendor' => $v,
+				'order' => $foods_orders[$v->id],
+                'base_url' => $this->config->item('base_url'),
+			));
+			$this->mail_server->sendFromWebsite($v->email, $v->name, $subject, $body);
+		}
+	}
+	
+	
+	/**
+	 * Send Email notification for newly canceled order
+	 */
+	protected function sendEmailCanceledOrder($order, $explanation, $amount){
+		// Sending emails to customer and vendor of the food cancelled
+        $mustache = new Mustache_Engine();
+
+        // Gathering information
+		$user_id = $this->login_util->getUserId();
+        $user = $this->user_model->getUserForUserId($user_id);
+
+        // Loading the email template for the customer
+        //TODO: Do we really want to load email templates according to current language?
+        $this->lang->load('email');
+        $subject = $mustache->render($this->lang->line('customer_refund_subject'), array(
+            'customer' => $user,
+            'order' => $order,
+            'explanation' => $explanation,
+            'amount' => $amount,
+            'base_url' => $this->config->item('base_url'),
+        ));
+        $body = $mustache->render($this->lang->line('customer_refund_body'), array(
+            'customer' => $user,
+            'order' => $order,
+            'explanation' => $explanation,
+            'amount' => $amount,
+            'base_url' => $this->config->item('base_url'),
+        ));
+
+        // Sending email to customer
+        $this->load->library('mail_server');
+        $this->mail_server->sendFromWebsite($user->email, $user->name, $subject, $body);
+
+        // Sending email to vendor(s)
+        $vendor = $this->user_model->getUserForUserId($order->vendor_id);
+        $subject = $mustache->render($this->lang->line('vendor_refund_subject'), array(
+            'customer' => $user,
+            'vendor' => $vendor,
+            'order' => $order,
+            'explanation' => $explanation,
+            'amount' => $amount,
+            'base_url' => $this->config->item('base_url'),
+        ));
+        $body = $mustache->render($this->lang->line('vendor_refund_body'), array(
+            'customer' => $user,
+            'vendor' => $vendor,
+            'order' => $order,
+            'explanation' => $explanation,
+            'amount' => $amount,
+            'base_url' => $this->config->item('base_url'),
+        ));
+        $this->mail_server->sendFromWebsite($vendor->email, $vendor->name, $subject, $body);
+	}
+	
+	
 	public function __construct(){
 		parent::__construct();
 		
@@ -349,45 +456,8 @@ class Order extends Yumbox_Controller {
 		$json_arr["basket_id"] = $basket_id;
 		echo json_encode($json_arr);
 
-		
-		// Sending email to the customer
-		$mustache = new Mustache_Engine();
-
-		// Gathering information
-		$user_id = $this->login_util->getUserId();
-		$user = $this->user_model->getUserForUserId($user_id);
-		$basket = $this->getOrdersInBasket($basket_id, false);
-
-		// Loading the email template for the customer
-		//TODO: Do we really want to load email templates according to current language?
-		$this->lang->load('email');
-		$subject = $mustache->render($this->lang->line('customer_invoice_subject'), array(
-			'customer' => $user,
-			'basket' => $basket,
-		));
-		$body = $mustache->render($this->lang->line('customer_invoice_body'), array(
-			'customer' => $user,
-			'basket' => $basket,
-		));
-
-		// Sending email to customer
-		$this->load->library('mail_server');
-		$this->mail_server->sendFromWebsite($user->email, $user->name, $subject, $body);
-
-		// Sending email to vendor(s)
-		foreach ($basket['vendors'] as $v) {
-			$subject = $mustache->render($this->lang->line('vendor_invoice_subject'), array(
-                'customer' => $user,
-				'vendor' => $v,
-				'order' => $basket['foods_orders'][$v->id],
-			));
-			$body = $mustache->render($this->lang->line('vendor_invoice_body'), array(
-                'customer' => $user,
-				'vendor' => $v,
-				'order' => $basket['foods_orders'][$v->id],
-			));
-			$this->mail_server->sendFromWebsite($v->email, $v->name, $subject, $body);
-		}
+		// send notification emails
+		$this->sendEmailNewOrders($basket_id);
 	}
 	
 	
@@ -467,9 +537,13 @@ class Order extends Yumbox_Controller {
 			return;
 		}
 		
+		// at this point, the refund is sucessful
 		$json_arr["success"] = "1";
 		$json_arr["basket_id"] = $order->order_basket_id;
 		echo json_encode($json_arr);
+		
+		// send notification email
+		$this->sendEmailCanceledOrder($order, $explanation, $amount);
 	}
 	
 	
