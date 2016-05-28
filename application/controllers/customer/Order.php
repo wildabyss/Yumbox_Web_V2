@@ -79,8 +79,8 @@ class Order extends Yumbox_Controller {
 		$user = $this->user_model->getUserForUserId($user_id);
 		$basket = $this->getOrdersInBasket($basket_id);
 		// flatten array values
-        $foods_orders = $basket['foods_orders'];
-        $basket['foods_orders'] = array_values($basket['foods_orders']);
+		$foods_orders = $basket['foods_orders'];
+		$basket['foods_orders'] = array_values($basket['foods_orders']);
 
 		// Loading the email template for the customer
 		//TODO: Do we really want to load email templates according to current language?
@@ -88,12 +88,12 @@ class Order extends Yumbox_Controller {
 		$subject = $mustache->render($this->lang->line('customer_invoice_subject'), array(
 			'customer' => $user,
 			'basket' => $basket,
-            'base_url' => $this->config->item('base_url'),
+			'base_url' => $this->config->item('base_url'),
 		));
 		$body = $mustache->render($this->lang->line('customer_invoice_body'), array(
 			'customer' => $user,
 			'basket' => $basket,
-            'base_url' => $this->config->item('base_url'),
+			'base_url' => $this->config->item('base_url'),
 		));
 
 		// Sending email to customer
@@ -103,16 +103,16 @@ class Order extends Yumbox_Controller {
 		// Sending email to vendor(s)
 		foreach ($basket['vendors'] as $v) {
 			$subject = $mustache->render($this->lang->line('vendor_invoice_subject'), array(
-                'customer' => $user,
+				'customer' => $user,
 				'vendor' => $v,
 				'order' => $foods_orders[$v->id],
-                'base_url' => $this->config->item('base_url'),
+				'base_url' => $this->config->item('base_url'),
 			));
 			$body = $mustache->render($this->lang->line('vendor_invoice_body'), array(
-                'customer' => $user,
+				'customer' => $user,
 				'vendor' => $v,
 				'order' => $foods_orders[$v->id],
-                'base_url' => $this->config->item('base_url'),
+				'base_url' => $this->config->item('base_url'),
 			));
 			$this->mail_server->sendFromWebsite($v->email, $v->name, $subject, $body);
 		}
@@ -124,53 +124,53 @@ class Order extends Yumbox_Controller {
 	 */
 	protected function sendEmailCanceledOrder($order, $explanation, $amount){
 		// Sending emails to customer and vendor of the food cancelled
-        $mustache = new Mustache_Engine();
+		$mustache = new Mustache_Engine();
 
-        // Gathering information
+		// Gathering information
 		$user_id = $this->login_util->getUserId();
-        $user = $this->user_model->getUserForUserId($user_id);
+		$user = $this->user_model->getUserForUserId($user_id);
 
-        // Loading the email template for the customer
-        //TODO: Do we really want to load email templates according to current language?
-        $this->lang->load('email');
-        $subject = $mustache->render($this->lang->line('customer_refund_subject'), array(
-            'customer' => $user,
-            'order' => $order,
-            'explanation' => $explanation,
-            'amount' => $amount,
-            'base_url' => $this->config->item('base_url'),
-        ));
-        $body = $mustache->render($this->lang->line('customer_refund_body'), array(
-            'customer' => $user,
-            'order' => $order,
-            'explanation' => $explanation,
-            'amount' => $amount,
-            'base_url' => $this->config->item('base_url'),
-        ));
+		// Loading the email template for the customer
+		//TODO: Do we really want to load email templates according to current language?
+		$this->lang->load('email');
+		$subject = $mustache->render($this->lang->line('customer_refund_subject'), array(
+			'customer' => $user,
+			'order' => $order,
+			'explanation' => $explanation,
+			'amount' => $amount,
+			'base_url' => $this->config->item('base_url'),
+		));
+		$body = $mustache->render($this->lang->line('customer_refund_body'), array(
+			'customer' => $user,
+			'order' => $order,
+			'explanation' => $explanation,
+			'amount' => $amount,
+			'base_url' => $this->config->item('base_url'),
+		));
 
-        // Sending email to customer
-        $this->load->library('mail_server');
-        $this->mail_server->sendFromWebsite($user->email, $user->name, $subject, $body);
+		// Sending email to customer
+		$this->load->library('mail_server');
+		$this->mail_server->sendFromWebsite($user->email, $user->name, $subject, $body);
 
-        // Sending email to vendor(s)
-        $vendor = $this->user_model->getUserForUserId($order->vendor_id);
-        $subject = $mustache->render($this->lang->line('vendor_refund_subject'), array(
-            'customer' => $user,
-            'vendor' => $vendor,
-            'order' => $order,
-            'explanation' => $explanation,
-            'amount' => $amount,
-            'base_url' => $this->config->item('base_url'),
-        ));
-        $body = $mustache->render($this->lang->line('vendor_refund_body'), array(
-            'customer' => $user,
-            'vendor' => $vendor,
-            'order' => $order,
-            'explanation' => $explanation,
-            'amount' => $amount,
-            'base_url' => $this->config->item('base_url'),
-        ));
-        $this->mail_server->sendFromWebsite($vendor->email, $vendor->name, $subject, $body);
+		// Sending email to vendor(s)
+		$vendor = $this->user_model->getUserForUserId($order->vendor_id);
+		$subject = $mustache->render($this->lang->line('vendor_refund_subject'), array(
+			'customer' => $user,
+			'vendor' => $vendor,
+			'order' => $order,
+			'explanation' => $explanation,
+			'amount' => $amount,
+			'base_url' => $this->config->item('base_url'),
+		));
+		$body = $mustache->render($this->lang->line('vendor_refund_body'), array(
+			'customer' => $user,
+			'vendor' => $vendor,
+			'order' => $order,
+			'explanation' => $explanation,
+			'amount' => $amount,
+			'base_url' => $this->config->item('base_url'),
+		));
+		$this->mail_server->sendFromWebsite($vendor->email, $vendor->name, $subject, $body);
 	}
 	
 	

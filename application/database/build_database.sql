@@ -336,6 +336,35 @@ create table refund
         on delete restrict
 ) engine = InnoDB;
 
+/** Email queue tables **/
+CREATE TABLE IF NOT EXISTS `mail_queue` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `from_address` VARCHAR(255) NOT NULL,
+  `from_name` VARCHAR(255) NOT NULL,
+  `replyto` VARCHAR(255) NOT NULL,
+  `replyto_name` VARCHAR(255) NOT NULL,
+  `subject` VARCHAR(1024) NOT NULL,
+  `body` MEDIUMTEXT NOT NULL,
+  `enqueue_date` DATETIME NOT NULL,
+  `sent_date` DATETIME NOT NULL,
+  `tries` SMALLINT NOT NULL DEFAULT 0,
+  `try_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `mail_recipient` (
+  `mail_id` BIGINT UNSIGNED NOT NULL,
+  `address` VARCHAR(255) NOT NULL,
+  `recipient_type` TINYINT NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`mail_id`, `address`, `recipient_type`),
+  CONSTRAINT `fk_mail_recipient_mail_queue`
+    FOREIGN KEY (`mail_id`)
+    REFERENCES `mail_queue` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
 drop table if exists ci_sessions;
 CREATE TABLE IF NOT EXISTS `ci_sessions` (
         `id` varchar(40) NOT NULL,
@@ -541,34 +570,3 @@ insert into food_category (name, main) values ('drink', 1); #14
 insert into food_category (name, main) values ('italian', 1); #15
 insert into food_category (name, main) values ('mexican', 1); #16 
 insert into food_category (name, main) values ('persian', 1); #17 
-
-
-/** Email queue tables **/
-
-CREATE TABLE IF NOT EXISTS `mail_queue` (
-  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `from_address` VARCHAR(255) NOT NULL,
-  `from_name` VARCHAR(255) NOT NULL,
-  `replyto` VARCHAR(255) NOT NULL,
-  `replyto_name` VARCHAR(255) NOT NULL,
-  `subject` VARCHAR(1024) NOT NULL,
-  `body` MEDIUMTEXT NOT NULL,
-  `enqueue_date` DATETIME NOT NULL,
-  `sent_date` DATETIME NOT NULL,
-  `tries` SMALLINT NOT NULL DEFAULT 0,
-  `try_date` DATETIME NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
-
-CREATE TABLE IF NOT EXISTS `mail_recipient` (
-  `mail_id` BIGINT UNSIGNED NOT NULL,
-  `address` VARCHAR(255) NOT NULL,
-  `recipient_type` TINYINT NOT NULL,
-  `name` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`mail_id`, `address`, `recipient_type`),
-  CONSTRAINT `fk_mail_recipient_mail_queue`
-    FOREIGN KEY (`mail_id`)
-    REFERENCES `mail_queue` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;

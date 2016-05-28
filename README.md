@@ -43,6 +43,10 @@ $config['stripe_public_key']	= '';
 // Google Map
 $config['map_api_key']          = '';
 
+// Mail queue
+$config['queue_mail']				= true;
+$config['queue_send_per_exe']	= 10;
+
 // SMTP server
 $config['website_email_address']    = 'info@yumbox.ca';
 $config['website_email_name']       = 'Yumbox';
@@ -71,6 +75,14 @@ $config['featured_explore_id']	= 9;
 ```bash
 # Sphinx indexer
 */15 * * * * indexer --rotate --all --config {PATH_TO_ROOT}/sphinx.conf
+```
+
+8. Recommend setting queue_mail = true in secret_config.php to enable asynchronous mail notification.
+Add the following to the root level crontab:
+
+```bash
+# Mail queue
+*/2 * * * * php {PATH_TO_ROOT}/public/index.php mail_queue serve
 ```
 
 ## Server Setup ##

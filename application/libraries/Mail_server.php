@@ -2,7 +2,11 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Mail_server {
-	private function createConnection() {
+	/**
+	 * Establish PHPMailer connection and return the PHPMailer object
+	 * with the correct settings
+	 */
+	protected function createConnection() {
 		$mail = new PHPMailer();
 
 		$CI =& get_instance();
@@ -43,83 +47,92 @@ class Mail_server {
 		return $mail;
 	}
 
+	/**
+	 * Send an email with the specified recipient and body
+	 * Depending on the configuration, immediately send or add to mail queue
+	 */
 	public function sendFromWebsite($recipient_email, $recipient_name, $subject, $body) {
 		$CI =& get_instance();
 		$CI->config->load('secret_config', TRUE);
 
-        $from_email = $CI->config->item('website_email_address', 'secret_config');
-        $from_name = $CI->config->item('website_email_name', 'secret_config');
-        $replyto_address = $CI->config->item('website_replyto_address', 'secret_config');
-        $replyto_name = $CI->config->item('website_replyto_name', 'secret_config');
+		$from_email = $CI->config->item('website_email_address', 'secret_config');
+		$from_name = $CI->config->item('website_email_name', 'secret_config');
+		$replyto_address = $CI->config->item('website_replyto_address', 'secret_config');
+		$replyto_name = $CI->config->item('website_replyto_name', 'secret_config');
 
-        if ($CI->config->item('queue_mail', 'secret_config') == '1') {
-            $CI->email_model->addEmailToQueue(
-                $from_email,
-                $from_name,
-                $replyto_address,
-                $replyto_name,
-                array(
-                    $recipient_email => $recipient_name,
-                ),
-                array(),
-                array(),
-                $subject,
-                $body
-            );
-        }
-        else {
-            return $this->send(
-                $from_email,
-                $from_name,
-                $replyto_address,
-                $replyto_name,
-                array(
-                    $recipient_email => $recipient_name,
-                ),
-                array(),
-                array(),
-                $subject,
-                $body
-            );
-        }
+		if ($CI->config->item('queue_mail', 'secret_config') === true) {
+			// Queue the mail to the mail server
+			$CI->email_model->addEmailToQueue(
+				$from_email,
+				$from_name,
+				$replyto_address,
+				$replyto_name,
+				array(
+					$recipient_email => $recipient_name,
+				),
+				array(),
+				array(),
+				$subject,
+				$body
+			);
+		} else {
+			// Immediate send
+			return $this->send(
+				$from_email,
+				$from_name,
+				$replyto_address,
+				$replyto_name,
+				array(
+					$recipient_email => $recipient_name,
+				),
+				array(),
+				array(),
+				$subject,
+				$body
+			);
+		}
 	}
 
-    public function send($from_email, $from_name, $replyto_address, $replyto_name, array $recipients, array $cc, array $bcc, $subject, $body)
-    {
-        $mail = $this->createConnection();
+	/**
+	 * Immediately send an email with the specified recipient and body
+	 * To be used from the queue or sendFromWebsite method
+	 */
+	public function send($from_email, $from_name, $replyto_address, $replyto_name, array $recipients, array $cc, array $bcc, $subject, $body)
+	{
+		$mail = $this->createConnection();
 
-        $CI =& get_instance();
-        $CI->config->load('secret_config', TRUE);
+		$CI =& get_instance();
+		$CI->config->load('secret_config', TRUE);
 
-        $mail->setFrom($from_email, $from_name);
+		$mail->setFrom($from_email, $from_name);
 
-        if (count($recipients) == 0) {
-            throw new \Exception('Can not send an email without any recipient');
-        }
+		if (count($recipients) == 0) {
+			throw new \Exception('Can not send an email without any recipient');
+		}
 
-        foreach ($recipients as $email => $name) {
-            $mail->addAddress($email, $name);
-        }
+		foreach ($recipients as $email => $name) {
+			$mail->addAddress($email, $name);
+		}
 
-        foreach ($cc as $email => $name) {
-            $mail->addCC($email, $name);
-        }
+		foreach ($cc as $email => $name) {
+			$mail->addCC($email, $name);
+		}
 
-        foreach ($bcc as $email => $name) {
-            $mail->addBCC($email, $name);
-        }
+		foreach ($bcc as $email => $name) {
+			$mail->addBCC($email, $name);
+		}
 
-        if ($replyto_address != '') {
-            $mail->addReplyTo($replyto_address, $replyto_name);
-        }
+		if ($replyto_address != '') {
+			$mail->addReplyTo($replyto_address, $replyto_name);
+		}
 
-        $mail->Subject = $subject;
-        $mail->Body    = $body;
+		$mail->Subject = $subject;
+		$mail->Body	= $body;
 
-        if (!$mail->send()) {
-            throw new \Exception('Mailer Error: ' . $mail->ErrorInfo);
-        } else {
-            return true;
-        }
-    }
+		if (!$mail->send()) {
+			throw new \Exception('Mailer Error: ' . $mail->ErrorInfo);
+		} else {
+			return true;
+		}
+	}
 }

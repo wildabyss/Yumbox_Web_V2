@@ -71,17 +71,17 @@
 				location.reload();
 			} else if (mapInfo.currentGeo.lat == 'undefined' || mapInfo.currentGeo.lng == 'undefined'){
 				// FIXME: why doens't getCurrentPosition not go to error callback when failed???
-                                mapInfo.currentGeo = {
-                                        lat: '<?php echo $location["latitude"]?>',
-                                        lng: '<?php echo $location["longitude"]?>'
-                               	};
+								mapInfo.currentGeo = {
+										lat: '<?php echo $location["latitude"]?>',
+										lng: '<?php echo $location["longitude"]?>'
+							   	};
 
-                                // save to cookie
-                                Cookies.set('latitude', mapInfo.currentGeo.lat);
-                                Cookies.set('longitude', mapInfo.currentGeo.lng);
+								// save to cookie
+								Cookies.set('latitude', mapInfo.currentGeo.lat);
+								Cookies.set('longitude', mapInfo.currentGeo.lng);
 
-                                // reload
-                                location.reload();
+								// reload
+								location.reload();
 			}
 		</script>
 	

@@ -85,6 +85,6 @@
 		map.setCenter(new google.maps.LatLng(mapInfo.currentGeo.lat, mapInfo.currentGeo.lng));
 		
 		printMarkers();
-    }
+	}
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=<?php echo $this->config->item('map_api_key')?>&callback=initMap" async defer></script>

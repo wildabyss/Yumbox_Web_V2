@@ -4,7 +4,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Food_model extends CI_Model {
 	// food status
 	public static $INACTIVE_FOOD = 0;
-    public static $ACTIVE_FOOD = 1;
+	public static $ACTIVE_FOOD = 1;
 	
 	// pickup method
 	public static $PICKUP_ANYTIME = 0;
@@ -20,14 +20,14 @@ class Food_model extends CI_Model {
 	 * Fetch also its total number of orders and its aggregate rating
 	 *
 	 * @param $filters:
-	 *    is_rush		=> bool
-	 *    category_ids   => array
-	 *    food_ids		=> array
-	 *    can_deliver   => bool
-	 *    vendor_id     => int
-	 *    min_rating	=> int
-	 *    min_price     => float
-	 *    max_price     => float
+	 *	is_rush		=> bool
+	 *	category_ids   => array
+	 *	food_ids		=> array
+	 *	can_deliver   => bool
+	 *	vendor_id	 => int
+	 *	min_rating	=> int
+	 *	min_price	 => float
+	 *	max_price	 => float
 	 */
 	public function getActiveFoodsAndVendorAndOrdersAndRatingAndPictures($limit, array $filters){
 		

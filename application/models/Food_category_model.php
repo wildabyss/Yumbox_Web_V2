@@ -20,12 +20,12 @@ class Food_category_model extends CI_Model {
 	 * Fetch all categories that have associations with the provided categories
 	 *
 	 * @param $filters:
-	 *    is_rush		=> bool
-	 *    can_deliver   => bool
-	 *    vendor_id     => int
-	 *    min_rating	=> int
-	 *    min_price     => float
-	 *    max_price     => float
+	 *	is_rush		=> bool
+	 *	can_deliver   => bool
+	 *	vendor_id	 => int
+	 *	min_rating	=> int
+	 *	min_price	 => float
+	 *	max_price	 => float
 	 */
 	public function getAllActiveRelatedCategories(array $category_ids, $limit, array $filters){
 		// sort through filters
@@ -107,12 +107,12 @@ class Food_category_model extends CI_Model {
 	 * Fetch all active categories
 	 *
 	 * @param $filters:
-	 *    is_rush		=> bool
-	 *    can_deliver   => bool
-	 *    vendor_id     => int
-	 *    min_rating	=> int
-	 *    min_price     => float
-	 *    max_price     => float
+	 *	is_rush		=> bool
+	 *	can_deliver   => bool
+	 *	vendor_id	 => int
+	 *	min_rating	=> int
+	 *	min_price	 => float
+	 *	max_price	 => float
 	 */
 	public function getAllActiveCategories($limit, array $filters){
 		// sort through filters
