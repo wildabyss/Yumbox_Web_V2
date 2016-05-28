@@ -96,6 +96,7 @@ class Mail_server {
 	/**
 	 * Immediately send an email with the specified recipient and body
 	 * To be used from the queue or sendFromWebsite method
+	 * @return true on success, error on failure
 	 */
 	public function send($from_email, $from_name, $replyto_address, $replyto_name, array $recipients, array $cc, array $bcc, $subject, $body)
 	{
@@ -130,7 +131,7 @@ class Mail_server {
 		$mail->Body	= $body;
 
 		if (!$mail->send()) {
-			throw new \Exception('Mailer Error: ' . $mail->ErrorInfo);
+			return $mail->ErrorInfo;
 		} else {
 			return true;
 		}

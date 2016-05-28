@@ -8,6 +8,10 @@ class Email_model extends CI_Model
 	const RECIPIENT_CC = 1;
 	const RECIPIENT_BCC = 2;
 
+	/**
+	 * Add email to mailing queue
+	 * @return true on success, error on failure
+	 */
 	public function addEmailToQueue($from_email, $from_name, $replyto_address, $replyto_name, array $recipients, array $cc, array $bcc, $subject, $body)
 	{
 		$this->db->trans_start();
@@ -25,7 +29,7 @@ class Email_model extends CI_Model
 				$body,
 			))
 		) {
-			throw new Exception($this->db->error);
+			return $this->db->error;
 		}
 
 		$mail_id = $this->db->insert_id();
@@ -56,12 +60,19 @@ class Email_model extends CI_Model
 			VALUES
 				' . implode(', ', array_fill(0, count($recipients) + count($cc) + count($bcc), '(?, ?, ?, ?)')), $mail_recipients)
 		) {
-			throw new Exception($this->db->error);
+			return $this->db->error;
 		}
 
 		$this->db->trans_complete();
+		
+		return true;
 	}
 
+	
+	/**
+	 * Get the highest priority email from the mailing queue
+	 * @return $mail object, false if no email on queue
+	 */
 	public function getEmailFromQueue()
 	{
 		$query = $this->db->query('
@@ -108,10 +119,10 @@ class Email_model extends CI_Model
 		}
 	}
 
+	
 	/**
 	 * Flag email as sent
-	 * @return true on success
-	 * @throw Exception
+	 * @return true on success, error on failure
 	 */
 	public function flagEmailSent($mail_id)
 	{
@@ -120,16 +131,16 @@ class Email_model extends CI_Model
 			WHERE
 				id = ?', array($mail_id))
 		) {
-			throw new Exception($this->db->error);
+			return $this->db->error;
 		}
 
 		return true;
 	}
 
+	
 	/**
 	 * Increment the tries column of mail_queue
-	 * @return true on success
-	 * @throw Exception
+	 * @return true on success, error on failure
 	 */
 	public function incrementEmailTries($mail_id)
 	{
@@ -140,7 +151,7 @@ class Email_model extends CI_Model
 			WHERE
 				id = ?', array($mail_id))
 		) {
-			throw new Exception($this->db->error);
+			return $this->db->error;
 		}
 
 		return true;
