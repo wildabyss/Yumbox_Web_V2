@@ -120,7 +120,7 @@ class Profile extends Yumbox_Controller {
 			return;
 		}
 		
-		// get current user id and new name
+		// get current user and data
 		$user_id = $this->login_util->getUserId();
 		$email = $this->input->post("value");
 		
@@ -135,6 +135,32 @@ class Profile extends Yumbox_Controller {
 		// success
 		$json_arr["success"] = "1";
 		echo json_encode($json_arr);
+	}
+	
+	
+	public function change_address(){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current user and data
+		$user_id = $this->login_util->getUserId();
+		$values = $this->input->post("value");
+		$address = isset($values["address"])?$values["address"]:false;
+		$city = isset($values["city"])?$values["city"]:false;
+		$province = isset($values["province"])?$values["province"]:false;
+		$country = isset($values["country"])?$values["country"]:false;
+		$postal_code = isset($values["postal_code"])?$values["postal_code"]:false;
+		
+		// modify address
+		
 	}
 
 	
