@@ -1259,6 +1259,11 @@ div.about_text h1 {
   font-size: inherit;
 }
 
+#profile_intro .editable-address span {
+  display: inline-block;
+  width: 100px;
+}
+
 #profile_intro .pic_wrapper {
   width: 200px;
   overflow-y: auto;

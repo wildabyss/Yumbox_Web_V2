@@ -49,8 +49,18 @@ $(function(){
                 $(element).empty();
                 return; 
             }
-            var html = $('<div>').text(value.city).html() + ', ' + $('<div>').text(value.street).html() + ' st., bld. ' + $('<div>').text(value.building).html();
-            $(element).html(html); 
+			
+			var line1 = "";
+			if (value.address != "") line1 += value.address + "\n";
+			var line2 = "";
+			if (value.city != "") line2 += value.city + ", ";
+			if (value.province != "") line2 += value.province + ", ";
+			if (value.country != "") line2 += value.province;
+			if (line2 != "") line2 += "\n";
+			var line3 = "";
+			if (value.postal_code) line3 += value.postal_code + "\n";
+			
+            $(element).text(line1+line2+line3); 
         },
         
         /**
@@ -114,9 +124,11 @@ $(function(){
            if(!value) {
              return;
            }
+           this.$input.filter('[name="address"]').val(value.address);
            this.$input.filter('[name="city"]').val(value.city);
-           this.$input.filter('[name="street"]').val(value.street);
-           this.$input.filter('[name="building"]').val(value.building);
+           this.$input.filter('[name="province"]').val(value.province);
+		   this.$input.filter('[name="country"]').val(value.country);
+           this.$input.filter('[name="postal_code"]').val(value.postal_code);
        },       
        
        /**
@@ -126,9 +138,11 @@ $(function(){
        **/          
        input2value: function() { 
            return {
+              address: this.$input.filter('[name="address"]').val(), 
               city: this.$input.filter('[name="city"]').val(), 
-              street: this.$input.filter('[name="street"]').val(), 
-              building: this.$input.filter('[name="building"]').val()
+              province: this.$input.filter('[name="province"]').val(),
+			  country: this.$input.filter('[name="country"]').val(), 
+              postal_code: this.$input.filter('[name="postal_code"]').val()
            };
        },        
        
@@ -138,7 +152,7 @@ $(function(){
         @method activate() 
        **/        
        activate: function() {
-            this.$input.filter('[name="city"]').focus();
+            this.$input.filter('[name="address"]').focus();
        },  
        
        /**
@@ -156,9 +170,11 @@ $(function(){
     });
 
     Address.defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults, {
-        tpl: '<div class="editable-address"><label><span>City: </span><input type="text" name="city" class="input-small"></label></div>'+
-             '<div class="editable-address"><label><span>Street: </span><input type="text" name="street" class="input-small"></label></div>'+
-             '<div class="editable-address"><label><span>Building: </span><input type="text" name="building" class="input-mini"></label></div>',
+        tpl: '<div class="editable-address"><label><span>Address: </span><input type="text" name="address" class="input-small"></label></div>'+
+             '<div class="editable-address"><label><span>City: </span><input type="text" name="city" class="input-small"></label></div>'+
+             '<div class="editable-address"><label><span>Province: </span><input type="text" name="province" class="input-small"></label></div>'+
+			 '<div class="editable-address"><label><span>Country: </span><input type="text" name="country" class="input-small"></label></div>'+
+             '<div class="editable-address"><label><span>Postal Code: </span><input type="text" name="postal_code" class="input-small"></label></div>',
              
         inputclass: ''
     });

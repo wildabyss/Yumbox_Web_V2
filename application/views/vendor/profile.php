@@ -22,13 +22,7 @@
 		<p><a id="edit_user_email" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->email)?></a></p>
 		
 		<h3>ADDRESS</h3>
-		<p><a id="edit_user_addr" data-type="address" data-onblur="ignore">
-			<?php if ($user->address != ""):?>
-			<?php echo prevent_xss($user->address)?><br/>
-			<?php echo prevent_xss($user->city)?>, <?php echo prevent_xss($user->province)?>, <?php echo prevent_xss($user->country)?><br/>
-			<?php echo prevent_xss($user->postal_code)?>
-			<?php endif?>
-		</a></p>
+		<p><a id="edit_user_addr" data-type="address" data-onblur="ignore"></a></p>
 		<?php endif?>
 		
 		<?php if (!$is_my_profile && $user->descr != "" || $is_my_profile):?>
@@ -112,9 +106,11 @@
 		$("#edit_user_addr").editable({
 			url:		"/vendor/profile/change_address",
 			value:		{
-				 city: "Moscow", 
-            street: "Lenina", 
-            building: "12"
+				address:		"<?php echo ($user->address)?>",
+				city: 			"<?php echo ($user->city)?>", 
+				province:		"<?php echo ($user->province)?>", 
+				country:		"<?php echo ($user->country)?>", 
+				postal_code:	"<?php echo ($user->postal_code)?>", 
 			},
 			send:		"always",
 			params:		csrfData,
@@ -130,15 +126,6 @@
 					errorMessage(respArr["error"]);
 					return respArr["error"];
 				}
-			},
-			display: function(value){
-				if (!value){
-					$(this).empty();
-					return;
-				}
-				var html = '<b>' + $('<div>').text(value.city).html() + '</b>, ' + $('<div>').text(value.street).html() + ' st., bld. ' + $('<div>').text(value.building).html();
-				$(this).html(html); 
-				//$(this).html(value.address+"<br/>"+value.city+", "+value.province+", "+value.country+"<br/>"+value.postal_code);
 			}
 		});
 		

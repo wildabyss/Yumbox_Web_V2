@@ -247,4 +247,9 @@ class User_model extends CI_Model {
 		
 		return true;
 	}
+	
+	
+	public function modifyAddress($user_id, $address, $city, $province, $country, $postal_code){
+		
+	}
 }
