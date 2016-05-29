@@ -148,7 +148,7 @@
 		});
 
 		$("#search").keydown(function(e){
-			if (e.which == 13){
+			if (e.which == $.ui.keyCode.ENTER){
 				e.preventDefault();
 				$("#filter_form").submit();
 			}
@@ -169,6 +169,11 @@
 		});
 		
 		// location dialog
+		var submit_location = function(){
+			$("#input_location").attr("name", "location");
+			$("#input_location").appendTo($("#filter_form"));
+			$("#filter_form").submit();
+		}
 		$("#location_dialog").dialog({
 			autoOpen: false,
 			modal: true,
@@ -179,12 +184,8 @@
 					icons: {
 						primary: "ui-icon-check"
 					},
-					'class': 'ui-button-dialog',
-					click: function(){
-						$("#input_location").attr("name", "location");
-						$("#input_location").appendTo($("#filter_form"));
-						$('#filter_form').submit();
-					}
+					'class':	'ui-button-dialog',
+					click:		submit_location
 				},
 				{
 					icons: {
@@ -196,7 +197,11 @@
 					}
 				}
 			]
-		})
+		}).keydown(function(e){
+			if (e.which == $.ui.keyCode.ENTER) {
+				submit_location();
+			}
+		});
 		
 		// location button
 		$("#btn_location").button().click(function(e){
