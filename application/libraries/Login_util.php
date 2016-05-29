@@ -33,6 +33,15 @@ class Login_util {
 	
 	
 	/**
+	 * Invalidate the location cookies
+	 */
+	protected function invalidateLocation(){
+		delete_cookie("latitude");
+		delete_cookie("longitude");
+	}
+	
+	
+	/**
 	 * Return true if the user has logged in
 	 */
 	public function isUserLoggedIn()
@@ -157,6 +166,9 @@ class Login_util {
 			// successful retrieval of token
 			$_SESSION['fb_token'] = $accessToken;
 			$_SESSION['user_id'] = $user->id;
+			
+			// invalidate cached location
+			$this->invalidateLocation();
 
 			// send welcome email
 			if ($welcomeEmail) {
@@ -232,7 +244,11 @@ class Login_util {
 			// successful retrieval of token
 			$_SESSION['google_token'] = $accessToken;
 			$_SESSION['user_id'] = $user->id;
+			
+			// invalidate cached location
+			$this->invalidateLocation();
 
+			// send welcome email
 			if ($welcomeEmail) {
 				$this->sendWelcomeEmail();
 			}

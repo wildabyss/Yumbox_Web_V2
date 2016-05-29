@@ -67,7 +67,7 @@ class Search {
 				// attempt to get from user address
 				$CI =& get_instance();
 				$CI->load->model('user_model');
-				$address = $CI->user_model->getOrCreateAddress($user_id);
+				$address = $CI->user_model->getOrCreateAddress($user_id);	
 				if ($address->longitude == "" || $address->latitude == ""){
 					// use default
 					return self::$DEFAULT_COORDS;

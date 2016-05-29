@@ -266,6 +266,9 @@ class User_model extends CI_Model {
 	 * Modify address for the given user
 	 */
 	public function modifyAddress($user_id, $address, $city, $province, $country, $postal_code){
+		$this->db->trans_start();
+		
+		// save the plain-text address information
 		if (!$this->db->query('
 			update address set address=?, city=?, province=?, country=?, postal_code=?
 			where user_id = ?', array(
@@ -279,6 +282,26 @@ class User_model extends CI_Model {
 			
 			return $this->db->error();
 		}
+		
+		// geocode
+		$coords = $this->search->geocodeLocation($address.' '.$city.' '.$province.' '.$country.' '.$postal_code);
+		if ($coords === false){
+			return "cannot geocode";
+		}
+		
+		// save coordinates
+		if (!$this->db->query('
+			update address set latitude=?, longitude=?
+			where user_id = ?', array(
+				$coords["latitude"],
+				$coords["longitude"],
+				trim($user_id)
+			))){
+			
+			return $this->db->error();
+		}
+		
+		$this->db->trans_complete();
 		
 		return true;
 	}
