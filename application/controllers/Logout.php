@@ -7,7 +7,7 @@ class Logout extends Yumbox_Controller {
 	{
 		$requestUrl = $this->input->get("redirect");
 		
-		$this->session->sess_destroy();
+		$this->login_util->logout();
 		redirect($requestUrl, 'refresh');
 	}
 }

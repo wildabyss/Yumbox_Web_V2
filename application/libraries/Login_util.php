@@ -258,4 +258,16 @@ class Login_util {
 			return false;
 		}
 	}
+	
+	
+	public function logout(){
+		$CI =& get_instance();
+		$CI->load->library('session');
+		
+		// destroy session
+		$CI->session->sess_destroy();
+		
+		// invalidate cached locations
+		$this->invalidateLocation();
+	}
 }
