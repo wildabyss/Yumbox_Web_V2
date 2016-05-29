@@ -45,6 +45,15 @@ var restoreScroll = function(){
 };
 
 
+// html encode and decode, relies on jquery
+var html_encode = function(value){
+	return $('<div>').text(value).html();
+}
+var html_decode = function(value){
+	return $('<div>').html(value).text();
+}
+
+
 // Display success message at top of screen
 // Auto dissappear in 1.5 sec
 var successMessage = function(msg){

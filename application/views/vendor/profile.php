@@ -71,10 +71,14 @@
 				}
 			},
 			validate:	function(value){
-				if ($.trim(value) == ""){
+				value = $.trim(value);
+				
+				if (value == ""){
 					errorMessage("Cannot be blank");
 					return "cannot be blank";
 				}
+				
+				return {newValue: value};
 			}
 		});
 		
@@ -96,22 +100,60 @@
 				}
 			},
 			validate:	function(value){
-				if ($.trim(value) == ""){
+				value = $.trim(value);
+				
+				if (value == ""){
 					errorMessage("Cannot be blank");
 					return "cannot be blank";
 				}
+				
+				return {newValue: value};
 			}
 		});
 		
 		$("#edit_user_addr").editable({
 			url:		"/vendor/profile/change_address",
 			value:		{
-				address:		"<?php echo ($user->address)?>",
-				city: 			"<?php echo ($user->city)?>", 
-				province:		"<?php echo ($user->province)?>", 
-				country:		"<?php echo ($user->country)?>", 
-				postal_code:	"<?php echo ($user->postal_code)?>", 
+				address:		html_decode("<?php echo prevent_xss($user->address)?>"),
+				city: 			html_decode("<?php echo prevent_xss($user->city)?>"), 
+				province:		html_decode("<?php echo prevent_xss($user->province)?>"), 
+				country:		html_decode("<?php echo prevent_xss($user->country)?>"), 
+				postal_code:	html_decode("<?php echo prevent_xss($user->postal_code)?>"), 
 			},
+			send:		"always",
+			params:		csrfData,
+			error:		function(response){
+				errorMessage("Unable to process");
+			},
+			success:	function(response){
+				var respArr = $.parseJSON(response);
+				
+				if ("success" in respArr){
+					successMessage("Saved");
+				} else {
+					errorMessage(respArr["error"]);
+					return respArr["error"];
+				}
+			},
+			validate:	function(value){
+				value.address = $.trim(value.address);
+				value.city = $.trim(value.city);
+				value.province = $.trim(value.province);
+				value.country = $.trim(value.country);
+				value.postal_code = $.trim(value.postal_code);
+				
+				if (value.address == ""){
+					errorMessage("Address cannot be empty");
+					return "error";
+				}
+				
+				return {newValue: value};
+			}
+		});
+		
+		$("#edit_user_descr").editable({
+			rows: 		3,
+			url:		"/vendor/profile/change_userdescr",
 			send:		"always",
 			params:		csrfData,
 			error:		function(response){
@@ -129,12 +171,8 @@
 			}
 		});
 		
-		$("#edit_user_city").editable();
-		$("#edit_user_province").editable();
-		$("#edit_user_postal").editable();
-		
-		$("#edit_user_descr").editable({
-			rows: 3
+		$("#btn_add_new").click(function(){
+			
 		});
 		
 		<?php endif?>

@@ -237,6 +237,19 @@ class User_model extends CI_Model {
 	
 	
 	/**
+	 * Modify user description
+	 * Return true on success, error on failure
+	 */
+	public function modifyUserDescription($user_id, $descr){
+		if (!$this->db->query('update user set descr = ? where id = ?', [trim($descr), $user_id])){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
 	 * Modify user email
 	 * Return true on success, error on failure
 	 */
@@ -249,7 +262,25 @@ class User_model extends CI_Model {
 	}
 	
 	
+	/**
+	 * Modify address for the given user
+	 */
 	public function modifyAddress($user_id, $address, $city, $province, $country, $postal_code){
+		if (!$this->db->query('
+			update address set address=?, city=?, province=?, country=?, postal_code=?
+			where user_id = ?', array(
+				trim($address),
+				trim($city),
+				trim($province),
+				trim($country),
+				trim($postal_code),
+				trim($user_id)
+			))){
+			
+			return $this->db->error();
+		}
 		
+		return true;
 	}
+	
 }

@@ -104,6 +104,41 @@ class Profile extends Yumbox_Controller {
 	
 	
 	/**
+	 * AJAX method for modifying a user's description (intro)
+	 * echo json string:
+	 *   {success, error}
+	 */
+	public function change_userdescr(){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current user id and new name
+		$user_id = $this->login_util->getUserId();
+		$descr = $this->input->post("value");
+		
+		// modify username
+		$res = $this->user_model->modifyUserDescription($user_id, $descr);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
 	 * AJAX method for modifying a user's email
 	 * echo json string:
 	 *   {success, error}
@@ -138,6 +173,11 @@ class Profile extends Yumbox_Controller {
 	}
 	
 	
+	/**
+	 * AJAX method for modifying a user's address
+	 * echo json string:
+	 *   {success, error}
+	 */
 	public function change_address(){
 		// ensure we have POST request
 		if (!is_post_request())
@@ -160,7 +200,16 @@ class Profile extends Yumbox_Controller {
 		$postal_code = isset($values["postal_code"])?$values["postal_code"]:false;
 		
 		// modify address
+		$res = $this->user_model->modifyAddress($user_id, $address, $city, $province, $country, $postal_code);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
 		
+		// success
+		$json_arr["success"] = "1";
+		echo json_encode($json_arr);
 	}
 
 	

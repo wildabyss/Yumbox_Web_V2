@@ -50,17 +50,24 @@ $(function(){
                 return; 
             }
 			
-			var line1 = "";
-			if (value.address != "") line1 += value.address + "\n";
-			var line2 = "";
-			if (value.city != "") line2 += value.city + ", ";
-			if (value.province != "") line2 += value.province + ", ";
-			if (value.country != "") line2 += value.province;
-			if (line2 != "") line2 += "\n";
-			var line3 = "";
-			if (value.postal_code) line3 += value.postal_code + "\n";
+			// line 1
+			var line1 = html_encode(value.address);
 			
-            $(element).text(line1+line2+line3); 
+			// line 2
+			var line2 = html_encode(value.city);
+			if (line2 != "" && value.province != "") line2 += ", ";
+			line2 += html_encode(value.province);
+			if (line2 != "" && value.country != "") line2 += ", ";
+			line2 += html_encode(value.country);
+			
+			// line 3
+			var line3 = html_encode(value.postal_code);
+			
+			// add breaks?
+			if (line1 != "" && line2 != "") line2 = "<br/>"+line2;
+			if ((line1 != "" || line2 != "") && line3 != "") line3 = "<br/>"+line3;
+			
+            $(element).html(line1+line2+line3); 
         },
         
         /**
