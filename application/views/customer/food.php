@@ -20,7 +20,9 @@
 	<div class="tight_cluster">
 		<div class="order_info">
 			<h3 class="price">$<?php echo $food->price?></h3>
-			<button id="add_to_order">ADD ORDER &#x2795;</button>
+			<?php if ($food->is_open):?>
+			<button id="add_to_order">ADD ORDER +</button>
+			<?php endif?>
 		</div>
 		
 		<div class="order_info">

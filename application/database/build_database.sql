@@ -479,26 +479,40 @@ delimiter //
 create procedure add_order(in order_basket_id bigint unsigned, in food_id bigint unsigned, in quantity smallint unsigned)
 begin
 	declare o_id bigint unsigned;
+    declare is_open tinyint unsigned;
     
-    select o.id into o_id
+    select o.id, u.is_open
+    into o_id, is_open
     from order_item o
+    left join
+		food f
+	on f.id = o.food_id
+    left join
+		user u
+	on u.id = f.user_id
     where
 		o.food_id = food_id
         and o.order_basket_id = order_basket_id;
         
-	if (o_id is null) then
-		insert into order_item
-			(food_id, quantity, order_basket_id)
-		values
-			(food_id, quantity, order_basket_id);
-	else
-		update order_item o
-        set
-			o.quantity = o.quantity + quantity
-		where
-			o.order_basket_id = order_basket_id
-            and o.food_id = food_id;
-	end if;
+	if (is_open = 0) then
+		/* we cannot process if the kitchen is closed */
+        signal sqlstate '45000'
+			set message_text = 'kitchen is closed';
+    else
+		if (o_id is null) then
+			insert into order_item
+				(food_id, quantity, order_basket_id)
+			values
+				(food_id, quantity, order_basket_id);
+		else
+			update order_item o
+			set
+				o.quantity = o.quantity + quantity
+			where
+				o.order_basket_id = order_basket_id
+				and o.food_id = food_id;
+		end if;
+    end if;
 end//
 delimiter ;
 
