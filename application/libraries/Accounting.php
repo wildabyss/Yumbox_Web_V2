@@ -29,7 +29,7 @@ class Accounting {
 	 */
 	public function calcOpenOrderItemCosts($order_item){
 		$CI =& get_instance();
-		$CI->config->load('secret_config', TRUE);
+		$CI->config->load('config', TRUE);
 		
 		$base_cost = $order_item->quantity*$order_item->price;
 		$commission = $base_cost*$CI->config->item('take_rate');
@@ -52,7 +52,7 @@ class Accounting {
 	public function calcOpenBasketCosts($open_basket_id){
 		$CI =& get_instance();
 		$CI->load->model('order_basket_model');
-		$CI->config->load('secret_config', TRUE);
+		$CI->config->load('config', TRUE);
 		
 		$base_cost = $CI->order_basket_model->getBaseCostInBasket($open_basket_id);
 		if ($base_cost === false){
@@ -76,7 +76,7 @@ class Accounting {
 	 */
 	public function getCurrentRates(){
 		$CI =& get_instance();
-		$CI->config->load('secret_config', TRUE);
+		$CI->config->load('config', TRUE);
 		
 		return array(
 			"take_rate"		=> $CI->config->item("take_rate"),

@@ -518,6 +518,13 @@ $config['proxy_ips'] = '';
 
 
 /**
+ * Images directories under /public for user uploaded data
+ */
+$config['user_pics']				= '/user_pics';
+$config['food_pics']				= '/food_pics';
+
+
+/**
  * Secret configurations
  */
 include("secret_config.php");

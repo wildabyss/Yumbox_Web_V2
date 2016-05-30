@@ -55,6 +55,9 @@
 					</a>
 				</li>
 				<?php endif?>
+				<?php if (ENVIRONMENT !== 'production'):?>
+				<li style="color: red">[BETA]</li>
+				<?php endif?>
 			</ul>
 		</div>
 	</nav>

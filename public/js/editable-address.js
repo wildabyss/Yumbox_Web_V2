@@ -177,11 +177,11 @@ $(function(){
     });
 
     Address.defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults, {
-        tpl: '<div class="editable-address"><label><span>Address: </span><input type="text" name="address" class="input-small"></label></div>'+
-             '<div class="editable-address"><label><span>City: </span><input type="text" name="city" class="input-small"></label></div>'+
-             '<div class="editable-address"><label><span>Province: </span><input type="text" name="province" class="input-small"></label></div>'+
-			 '<div class="editable-address"><label><span>Country: </span><input type="text" name="country" class="input-small"></label></div>'+
-             '<div class="editable-address"><label><span>Postal Code: </span><input type="text" name="postal_code" class="input-small"></label></div>',
+        tpl: '<div class="editable-address"><span>Address: </span><input type="text" name="address" class="input-small"></div>'+
+             '<div class="editable-address"><span>City: </span><input type="text" name="city" class="input-small"></div>'+
+             '<div class="editable-address"><span>Province: </span><input type="text" name="province" class="input-small"></div>'+
+			 '<div class="editable-address"><span>Country: </span><input type="text" name="country" class="input-small"></div>'+
+             '<div class="editable-address"><span>Postal Code: </span><input type="text" name="postal_code" class="input-small"></div>',
              
         inputclass: ''
     });

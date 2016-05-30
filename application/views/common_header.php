@@ -14,6 +14,7 @@
 		<link rel="shortcut icon" href="/imgs/logo.ico" type="image/x-icon"/>
 		<link rel="stylesheet" href="/css/common.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="/css/jqueryui-editable.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="/css/jquery.tagit.css" type="text/css" media="screen" />
 		<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic|Montserrat" rel="stylesheet" type="text/css"/>
 	</head>
 	
@@ -31,6 +32,9 @@
 		
 		<!-- javascript cookie -->
 		<script src="/js/js.cookie.js"></script>
+		
+		<!-- jquery-ui tags -->
+		<script src="/js/tag-it.min.js"></script>
 		
 		<!-- global js loading -->
 		<script src="/js/global.js"></script>

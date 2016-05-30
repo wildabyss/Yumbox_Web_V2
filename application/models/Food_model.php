@@ -21,9 +21,9 @@ class Food_model extends CI_Model {
 	 *
 	 * @param $filters:
 	 *	is_rush		=> bool
+	 *	is_open		=> bool
 	 *	category_ids   => array
 	 *	food_ids		=> array
-	 *	can_deliver   => bool
 	 *	vendor_id	 => int
 	 *	min_rating	=> int
 	 *	min_price	 => float
@@ -33,9 +33,9 @@ class Food_model extends CI_Model {
 		
 		// sort through filters
 		$is_rush = isset($filters["is_rush"])?$filters["is_rush"]:false;
+		$is_open = isset($filters["is_open"])?$filters["is_open"]:true;
 		$category_ids = isset($filters["category_ids"])?$filters["category_ids"]:false;
 		$food_ids = isset($filters["food_ids"])?$filters["food_ids"]:false;
-		$can_deliver = isset($filters["can_deliver"])?$filters["can_deliver"]:false;
 		$vendor_id = isset($filters["vendor_id"])?$filters["vendor_id"]:false;
 		$min_rating = isset($filters["min_rating"])?$filters["min_rating"]:false;
 		$min_price = isset($filters["min_price"])?$filters["min_price"]:false;
@@ -61,7 +61,7 @@ class Food_model extends CI_Model {
 			where
 				f.status = ?
 				and u.status > ?
-				and u.is_open = 1';
+				and u.is_open >= ?';
 		
 		// filter out non-rush items
 		if ($is_rush){
@@ -98,13 +98,14 @@ class Food_model extends CI_Model {
 		if ($vendor_id !== false){
 			$query_str .= ' and u.id = ?';
 		}
-		$query_str .= ' group by f.id limit ?';
+		$query_str .= ' group by f.id order by f.name limit ?';
 		
 		// bindings
 		$bindings = array(
 			Food_review_model::$HIGHEST_RATING,
 			Food_model::$ACTIVE_FOOD, 
-			User_model::$INACTIVE_USER
+			User_model::$INACTIVE_USER,
+			$is_open?1:0,
 		);
 		if ($is_rush){
 			$bindings[] = Food_model::$PICKUP_ANYTIME;
@@ -138,20 +139,24 @@ class Food_model extends CI_Model {
 	public function getFoodAndVendorForFoodId($food_id){
 		$query = $this->db->query('
 			select 
-				f.id food_id, f.name as food_name, f.alternate_name, f.price, f.descr, f.ingredients, 
+				f.id food_id, f.name food_name, f.alternate_name food_alt_name, f.price food_price, f.descr, f.ingredients, 
 				f.health_benefits, f.eating_instructions, 
-				f.pickup_method, f.prep_time_hours prep_time,
+				f.pickup_method, f.prep_time_hours prep_time, f.quota,
+				p.path pic_path,
 				average_rating(f.id)/?*100 rating,
 				total_orders(f.id) total_orders,
-				u.id as user_id, u.name as user_name, u.email, u.phone, u.return_date,
+				u.id vendor_id, u.name vendor_name, u.email, u.phone, u.return_date,
 				u.is_open
 			from food f
 			left join user u
 			on u.id = f.user_id
+			left join food_picture p
+			on p.food_id = f.id
 			where
 				f.id = ?
 				and f.status = ?
-				and u.status <> ?',
+				and u.status <> ?
+			group by f.id',
 			array(
 				Food_review_model::$HIGHEST_RATING,
 				$food_id,
@@ -211,5 +216,42 @@ class Food_model extends CI_Model {
 				$food_id
 			));
 		return $query->result();
+	}
+	
+	
+	/**
+	 * Create new food
+	 * @return food_id
+	 * @throw Exception on error
+	 */
+	public function createFood($user_id, $food_name, $food_alt_name, $price){
+		if (!$this->db->query('
+			insert into food
+				(user_id, name, price, alternate_name)
+			values
+				(?,?,?,?)', array(
+				$user_id,
+				trim($food_name),
+				$price,
+				trim($food_alt_name)
+		))){
+			throw new Exception($this->db->error());
+		}
+		
+		return $this->db->insert_id();
+	}
+	
+	
+	/**
+	 * Remove the specified food
+	 * Mark its status as inactive
+	 * @return true on success, error on failure
+	 */
+	public function removeFood($food_id){
+		if (!$this->db->query('update food set status = 0 where id=?', array($food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
 	}
 }

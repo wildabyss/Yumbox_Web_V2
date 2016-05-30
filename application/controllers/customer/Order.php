@@ -23,7 +23,7 @@ class Order extends Yumbox_Controller {
 	protected function getOrdersInBasket($basket_id, $is_open_basket = false) {
 		// get vendor information
 		$vendors = $this->order_basket_model->getAllVendorsInBasket($basket_id);
-
+		
 		// get foods per vendor
 		$foods_orders = array();
 		$base_cost = 0;
@@ -186,7 +186,7 @@ class Order extends Yumbox_Controller {
 	 * AJAX method
 	 * Add order to the un-paid (open) order_basket
 	 * echo json string:
-	 *   {success, order_count, error}
+	 *   {success, order_count, enable_order, error}
 	 */
 	public function add($food_id=false){
 		// ensure we have POST request
@@ -208,6 +208,14 @@ class Order extends Yumbox_Controller {
 			return;
 		}
 
+		// fetch current unfilled orders
+		$unfilled_orders = $this->order_model->getTotalUnfilledOrdersForFood($food_id);
+		if ($unfilled_orders >= $food->quota){
+			$json_arr["error"] = "chef cannot take on more orders";
+			echo json_encode($json_arr);
+			return;
+		}
+		
 		// fetch open order basket
 		$open_basket = $this->getOpenBasket();
 		
@@ -227,8 +235,12 @@ class Order extends Yumbox_Controller {
 			return;
 		}
 		
+		// enable more orders?
+		$enable_order = ($unfilled_orders+1 < $food->quota);
+		
 		$json_arr["success"] = "1";
 		$json_arr["order_count"] = $total_items;
+		$json_arr["enable_order"] = $enable_order;
 		echo json_encode($json_arr);
 	}
 	
@@ -297,7 +309,7 @@ class Order extends Yumbox_Controller {
 	 * AJAX method
 	 * Change order quantity
 	 * echo json string:
-	 *   {success, order_count, total_cost, error}
+	 *   {success, item_quantity, order_count, total_cost, error}
 	 */
 	public function change($order_id = false, $quantity = false){
 		// ensure we have POST request
@@ -329,6 +341,9 @@ class Order extends Yumbox_Controller {
 			return;
 		}
 		
+		// fetch quantity in current order item
+		$current_order = $this->order_model->getFoodOrder($order_id);
+		
 		// fetch number of items in basket
 		$total_items = $this->order_basket_model->getTotalOrdersInBasket($open_basket->id);
 		if ($total_items === false){
@@ -351,6 +366,7 @@ class Order extends Yumbox_Controller {
 		$total_cost = $base_cost + $commission + $taxes;
 		
 		$json_arr["success"] = "1";
+		$json_arr["item_quantity"] = $current_order->quantity;
 		$json_arr["order_count"] = $total_items;
 		$json_arr["base_cost"] = $base_cost;
 		$json_arr["commission"] = $commission;

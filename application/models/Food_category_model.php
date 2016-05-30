@@ -79,7 +79,8 @@ class Food_category_model extends CI_Model {
 		}
 		$query_str .= ')) 
 			order by 
-				c.main desc, c.name asc';
+				c.main desc, c.name asc
+			limit ?';
 		
 		// add bindings
 		$bindings = array(
@@ -97,6 +98,7 @@ class Food_category_model extends CI_Model {
 			$bindings[] = $min_price;
 			$bindings[] = $max_price;
 		}
+		$bindings[] = $limit;
 		
 		// perform database query
 		$query = $this->db->query($query_str, $bindings);
@@ -154,6 +156,7 @@ class Food_category_model extends CI_Model {
 		if ($vendor_id !== false){
 			$query_str .= ' and u.id = ?';
 		}
+		$query_str .= ' order by c.name limit ?';
 	
 		// bindings
 		$bindings = array(
@@ -174,6 +177,7 @@ class Food_category_model extends CI_Model {
 		if ($vendor_id !== false){
 			$bindings[] = $vendor_id;
 		}
+		$bindings[] = $limit;
 		
 		// perform database query
 		$query = $this->db->query($query_str, $bindings);

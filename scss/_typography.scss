@@ -82,6 +82,11 @@ input {
 	border : 1px solid $darkGrey;
 }
 
+input[type="file"]{
+	position: fixed; 
+	top: -100em;
+}
+
 // centering text
 .center{
 	text-align: center;
@@ -95,6 +100,10 @@ input {
 	padding-bottom: 5px;
 	border-bottom: solid 1px $darkGrey;
 	margin: 20px 0 5px 0;
+}
+
+.absolute_parent{
+	position: relative;
 }
 
 .round_border{

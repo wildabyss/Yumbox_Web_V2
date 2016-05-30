@@ -15,6 +15,7 @@ class Order_model extends CI_Model {
 			select
 				f.id food_id, f.name, f.alternate_name, f.price, f.prep_time_hours,
 				f.user_id vendor_id, b.user_id buyer_id, b.order_date, b.id order_basket_id,
+				f.quota,
 				p.id payment_id, p.tax_rate, p.take_rate,
 				o.id order_id, o.quantity, o.is_filled, r.id refund_id,
 				fp.path
@@ -56,8 +57,38 @@ class Order_model extends CI_Model {
 			select sum(o.quantity) total
 			from order_item o
 			where
-				o.food_id = ?', array($food_id));
+				o.food_id = ?
+			group by o.food_id', array($food_id));
 				
+		// return results
+		$results = $query->result();
+		if (count($results)==0)
+			return 0;
+		else
+			return $results[0]->total;
+	}
+	
+	
+	/**
+	 * Fetch the total number of orders placed on $food_id that're unfilled
+	 * They will count toward the quota
+	 */
+	public function getTotalUnfilledOrdersForFood($food_id){
+		$query = $this->db->query('
+			select sum(o.quantity) total
+			from order_item o
+			left join
+				food f
+			on f.id = o.food_id
+			left join
+				refund r
+			on r.order_item_id = o.id
+			where
+				f.id = ?
+				and o.is_filled = 0
+				and r.id is null
+			group by f.id', array($food_id));
+		
 		// return results
 		$results = $query->result();
 		if (count($results)==0)
@@ -72,6 +103,35 @@ class Order_model extends CI_Model {
 	 * @return true on success, error on failure
 	 */
 	public function changeOrderQuantity($order_id, $basket_id, $quantity){
+		// get current order_item
+		$current_order = $this->getFoodOrder($order_id);
+		
+		// get current quantity and quota
+		$query = $this->db->query('
+			select sum(o.quantity) total
+			from order_item o
+			left join
+				refund r
+			on r.order_item_id = o.id
+			where
+				o.food_id = ?
+				and o.id <> ?
+				and o.is_filled = 0
+				and r.id is null
+			group by o.food_id', array($current_order->food_id, $order_id));
+		$results = $query->result();
+		$other_orders = 0;
+		if (count($results)==0)
+			$other_orders = 0;
+		else
+			$other_orders = $results[0]->total;
+		
+		// assess whether we can make the quantity change
+		if ($other_orders + $quantity > $current_order->quota){
+			return "chef cannot take on more orders";
+		}
+		
+		// make the db change
 		if (!$this->db->query('
 			update order_item 
 			set

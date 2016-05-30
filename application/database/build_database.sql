@@ -9,12 +9,10 @@ drop table if exists user;
 create table user
 (
 	id int unsigned not null auto_increment,
-    user_type tinyint unsigned not null, 	# 0=consumer, 1=vendor
-    status tinyint unsigned not null,	# 0=inactive, 1=active, 2=licensed
+    status tinyint unsigned not null default 1,	# 0=inactive, 1=active, 2=licensed
     date_joined datetime not null,
     name varchar(255) not null,
     email varchar(255) not null,
-    max_unfilled_orders mediumint unsigned not null default 10,
     is_open tinyint(1) not null default 0,
     can_deliver tinyint(1) not null default 0,
     
@@ -40,8 +38,6 @@ create table user
     
     primary key (id),
     index fb_id_index (fb_id),
-    index user_type_index (user_type),
-    index status_user_index (status),
     index return_date_user_index (return_date)
 ) engine = InnoDB;
 
@@ -90,10 +86,10 @@ create table address
     user_id int unsigned not null,
     
     address varchar(255),
-    city varchar(10),
-    province varchar(10),
+    city varchar(50),
+    province varchar(50),
     postal_code varchar(10),
-    country varchar(10),
+    country varchar(50),
     
     # geocoded location from above address
     latitude float,
@@ -124,10 +120,11 @@ drop table if exists food;
 create table food
 (
 	id bigint unsigned not null auto_increment,
-    status tinyint unsigned not null,		# 0=inactive, 1=active
+    status tinyint unsigned not null default 1,		# 0=inactive, 1=active
     user_id int unsigned not null,
     name varchar(255) not null,
     price decimal(5,2) unsigned not null,
+    quota smallint unsigned not null default 1,
     
     /* food preparation */
     pickup_method tinyint(2) not null default 0,		# 0=any time the food is ready after prep_time_hours, # 1=limit pickup to times as specified in user table
@@ -377,7 +374,7 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 
 drop procedure if exists add_user;
 delimiter //
-create procedure add_user(in user_type tinyint unsigned, in name varchar(255), in email varchar(255),
+create procedure add_user(in name varchar(255), in email varchar(255),
 	in fb_id varchar(25), in google_id varchar(25))
 begin
 	declare id int unsigned;
@@ -389,8 +386,8 @@ begin
 			u.fb_id = fb_id;
             
 		if (id is null) then
-			insert into user (user_type, status, date_joined, name, email, fb_id)
-            values (user_type, 1, now(), name, email, fb_id);
+			insert into user (status, date_joined, name, email, fb_id)
+            values (1, now(), name, email, fb_id);
 		end if;
     elseif (google_id is not null) then
 		select u.id into id
@@ -399,8 +396,8 @@ begin
 			u.google_id = google_id;
             
 		if (id is null) then
-			insert into user (user_type, status, date_joined, name, email, google_id)
-            values (user_type, 1, now(), name, email, google_id);
+			insert into user (status, date_joined, name, email, google_id)
+            values (1, now(), name, email, google_id);
 		end if;
     end if;
     
@@ -480,7 +477,10 @@ create procedure add_order(in order_basket_id bigint unsigned, in food_id bigint
 begin
 	declare o_id bigint unsigned;
     declare is_open tinyint unsigned;
+    declare current_quantity smallint unsigned;
+    declare quota smallint unsigned;
     
+    /* Find out if kitchen is closed */
     select o.id, u.is_open
     into o_id, is_open
     from order_item o
@@ -494,10 +494,30 @@ begin
 		o.food_id = food_id
         and o.order_basket_id = order_basket_id;
         
+	/* Find out quantity and quota */
+    select sum(o.quantity), f.quota
+    into current_quantity, quota
+    from order_item o
+    left join
+		food f
+	on f.id = o.food_id
+    left join
+		refund r
+	on r.order_item_id = o.id
+    where
+		f.id = food_id
+        and o.is_filled = 0
+        and r.id is null
+	group by f.id;
+        
 	if (is_open = 0) then
 		/* we cannot process if the kitchen is closed */
         signal sqlstate '45000'
 			set message_text = 'kitchen is closed';
+	elseif (quantity+current_quantity > quota) then
+		/* we cannot process more orders than quota */
+        signal sqlstate '45000'
+			set message_text = 'orders cannot be larger than quota';
     else
 		if (o_id is null) then
 			insert into order_item
@@ -561,6 +581,32 @@ begin
 	else
 		signal sqlstate '45000'
 			set message_text = 'stripe refund exists';
+	end if;
+end//
+delimiter ;
+
+
+drop procedure if exists add_user_picture;
+delimiter //
+create procedure add_user_picture(in user_id int, in path varchar(255))
+begin
+	declare p_id bigint unsigned;
+    
+    select p.id into p_id
+    from user_picture p
+    where
+		p.user_id = user_id;
+        
+	if (p_id is null) then
+		insert into user_picture
+			(user_id, path)
+		values
+			(user_id, path);
+	else
+		update user_picture
+        set path = path
+        where
+			user_id = user_id;
 	end if;
 end//
 delimiter ;

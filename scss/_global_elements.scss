@@ -292,11 +292,59 @@ nav{
 }
 
 
+// remove button (little X on the top-left)
+
+.btn_remove{
+	cursor: pointer;
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: 0;
+	width: 20px !important;
+	height: 20px !important;
+	
+	span{
+		padding: 0 !important;
+		font-size: 1.3rem !important;
+	}
+}
+
+
+// editable picture (profile or food)
+
+.editable_pic{
+	cursor: pointer;
+	
+	.btn_update_picture{
+		float: left;
+		margin: 5px 0 0 5px;
+		font-size: 1.4rem;
+		border: solid 1px black;
+		padding: 2px;
+		border-radius: 5px;
+		background-color: $grey;
+		opacity: 0.5;
+	}
+}
+
+
 // x-editable override
+
 .ui-state-error{
 	display: none !important;
 }
 
+.editable-inline{
+	//width: 100% !important;
+}
+
+.editable-input-wrap{
+	display: flex;
+}
+
+.editable-input{
+	flex: 1;
+}
 
 
 // jquery-ui overrides

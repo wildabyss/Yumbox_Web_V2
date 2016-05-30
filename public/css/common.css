@@ -245,6 +245,11 @@ input {
   border: 1px solid #b5b3ac;
 }
 
+input[type="file"] {
+  position: fixed;
+  top: -100em;
+}
+
 .center {
   text-align: center;
 }
@@ -257,6 +262,10 @@ input {
   padding-bottom: 5px;
   border-bottom: solid 1px #b5b3ac;
   margin: 20px 0 5px 0;
+}
+
+.absolute_parent {
+  position: relative;
 }
 
 .round_border {
@@ -540,8 +549,46 @@ nav ul#mobile_user_menu a.logo {
   background-color: #ed7a5d;
 }
 
+.btn_remove {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.btn_remove span {
+  padding: 0 !important;
+  font-size: 1.3rem !important;
+}
+
+.editable_pic {
+  cursor: pointer;
+}
+
+.editable_pic .btn_update_picture {
+  float: left;
+  margin: 5px 0 0 5px;
+  font-size: 1.4rem;
+  border: solid 1px black;
+  padding: 2px;
+  border-radius: 5px;
+  background-color: #e3e0d8;
+  opacity: 0.5;
+}
+
 .ui-state-error {
   display: none !important;
+}
+
+.editable-input-wrap {
+  display: flex;
+}
+
+.editable-input {
+  flex: 1;
 }
 
 .ui-button-text {
@@ -937,7 +984,6 @@ div.about_text h1 {
 #menu_listing .food_list_parent {
   max-width: calc(276px*4);
   margin: 0 auto;
-  overflow: auto;
 }
 
 #menu_listing .food_list_parent h2 {
@@ -953,7 +999,7 @@ div.about_text h1 {
   flex-wrap: wrap;
 }
 
-#menu_listing ul.food_list li {
+#menu_listing ul.food_list li.food_item {
   display: block;
   list-style: none;
   text-align: left;
@@ -969,7 +1015,7 @@ div.about_text h1 {
   background-repeat: no-repeat;
   background-size: cover;
   background-image: url("/imgs/image-not-available.gif");
-  border: solid 1px #251F1E;
+  border: solid 1px #b5b3ac;
 }
 
 #menu_listing ul.food_list h3 {
@@ -1019,17 +1065,51 @@ div.about_text h1 {
   margin-top: 10px;
 }
 
-#menu_listing ul.food_list .editable_li {
-  cursor: pointer;
+#menu_listing ul.food_list #new_food_li {
+  display: none;
 }
 
 #menu_listing ul.food_list #btn_add_new {
-  border: solid 1px #e3e0d8;
+  width: 100%;
 }
 
 #menu_listing ul.food_list #btn_add_new h3 {
   display: block;
   margin: 10px;
+}
+
+#menu_listing ul.food_list .new_food h3 {
+  margin: 0;
+}
+
+#menu_listing ul.food_list .new_food #new_food_name {
+  width: 150px;
+}
+
+#menu_listing ul.food_list .new_food #new_food_price {
+  width: 40px;
+}
+
+#menu_listing ul.food_list .new_food #new_alt_name {
+  width: 100%;
+}
+
+#menu_listing ul.food_list .new_food input {
+  margin-bottom: 5px;
+}
+
+#menu_listing ul.food_list .new_food_buttons_wrapper {
+  position: relative;
+}
+
+#menu_listing ul.food_list .new_food_buttons_wrapper .new_food_buttons {
+  left: auto;
+  right: 0;
+  margin-top: 5px;
+}
+
+#menu_listing #dialog-confirm {
+  display: none;
 }
 
 #menu_map .map_wrapper {
@@ -1255,8 +1335,30 @@ div.about_text h1 {
   flex-direction: row;
 }
 
+#profile_intro .editable-container.editable-inline {
+  width: 100%;
+  max-width: 600px;
+}
+
 #profile_intro input {
   font-size: inherit;
+}
+
+#profile_intro .editable-input {
+  width: 100%;
+}
+
+#profile_intro .editable-input input {
+  width: 100%;
+}
+
+#profile_intro .editable-input textarea {
+  width: 100%;
+}
+
+#profile_intro .editable-address {
+  display: flex;
+  margin-bottom: 5px;
 }
 
 #profile_intro .editable-address span {
@@ -1266,7 +1368,6 @@ div.about_text h1 {
 
 #profile_intro .pic_wrapper {
   width: 200px;
-  overflow-y: auto;
 }
 
 #profile_intro .pic_wrapper #profile_pic {
@@ -1277,7 +1378,7 @@ div.about_text h1 {
   background-repeat: no-repeat;
   background-size: cover;
   background-image: url("/imgs/profile.svg");
-  border: solid 1px #251F1E;
+  border: solid 1px #b5b3ac;
 }
 
 #profile_intro .pic_wrapper #followers {
@@ -1398,10 +1499,12 @@ div.about_text h1 {
 #basket_view .vendor_section .order_item .received {
   flex: 1;
   color: #006622;
+  line-height: 29px;
 }
 
 #basket_view .vendor_section .order_item .price_descr {
   flex: 1;
+  line-height: 29px;
 }
 
 #basket_view .vendor_section .order_item .price_descr .child {
@@ -1420,21 +1523,6 @@ div.about_text h1 {
 #basket_view .vendor_section .order_item .price_descr input {
   font-size: 1.5rem;
   width: 20px;
-}
-
-#basket_view .vendor_section .order_item .btn_remove {
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin: 0;
-  width: 20px;
-  height: 20px;
-}
-
-#basket_view .vendor_section .order_item .btn_remove span {
-  padding: 0;
-  font-size: 1.3rem;
 }
 
 #basket_view .vendor_section .order_item .btn_cancel_order {
@@ -1548,5 +1636,9 @@ div.about_text h1 {
   }
   #basket_view .vendor_section .order_item .received {
     text-align: left;
+    margin-top: 10px;
+  }
+  #basket_view .vendor_section .order_item .price_descr {
+    margin-top: 10px;
   }
 }

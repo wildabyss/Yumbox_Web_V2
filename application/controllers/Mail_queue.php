@@ -19,8 +19,8 @@ class Mail_queue extends CI_Controller
 
 		// if specified as -1, load the default release number
 		if ($count === -1) {
-			$this->config->load('secret_config', TRUE);
-			$count = (int)$this->config->item('queue_send_per_exe', 'secret_config');
+			$this->config->load('config', TRUE);
+			$count = (int)$this->config->item('queue_send_per_exe');
 		}
 
 		for ($i=0; $i<$count; $i++) {

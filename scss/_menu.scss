@@ -168,7 +168,6 @@
 	.food_list_parent{
 		max-width: calc(276px*4);
 		margin: 0 auto;
-		overflow: auto;
 		
 		h2{
 			margin-left: 20px;
@@ -183,7 +182,7 @@
 		flex-direction: row;
 		flex-wrap: wrap;
 		
-		li{
+		li.food_item{
 			display: block;
 			list-style: none;
 			text-align: left;
@@ -201,7 +200,7 @@
 			background-repeat: no-repeat;
 			background-size: cover;
 			background-image: url('/imgs/image-not-available.gif');
-			border: solid 1px $almostBlack;
+			border: solid 1px $darkGrey;
 		}
 		
 		h3{
@@ -249,17 +248,57 @@
 			margin-top: 10px;
 		}
 		
-		.editable_li{
-			cursor: pointer;
+		
+		// below are for adding new food
+		
+		#new_food_li{
+			display: none;
 		}
 		
 		#btn_add_new{
-			border: solid 1px $grey;
+			width: 100%;
 			h3{
 				display: block;
 				margin: 10px;
 			}
 		}
+
+		.new_food{
+			h3{
+				margin: 0;
+			}
+			
+			#new_food_name{
+				width: 150px;
+			}
+			
+			#new_food_price{
+				width: 40px;
+			}
+			
+			#new_alt_name{
+				width: 100%;
+			}
+			
+			input{
+				margin-bottom: 5px;
+			}
+		}
+		
+		.new_food_buttons_wrapper{
+			position: relative;
+			
+			.new_food_buttons{
+				left: auto;
+				right: 0;
+				margin-top: 5px;
+			}
+		}
+		
+	}
+	
+	#dialog-confirm{
+		display: none;
 	}
 }
 

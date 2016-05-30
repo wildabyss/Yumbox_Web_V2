@@ -13,17 +13,17 @@ class Login_util {
 		$user = $CI->user_model->getUserForUserId($user_id);
 
 		$mustache = new Mustache_Engine();
-		$CI->config->load('secret_config', TRUE);
+		$CI->config->load('config', TRUE);
 
 		//TODO: Do we really want to load email templates according to current language?
 		$CI->lang->load('email');
 		$subject = $mustache->render($CI->lang->line('sign_up_subject'), array(
 			'user' => $user,
-			'base_url' => $CI->config->item('base_url', 'secret_config'),
+			'base_url' => $CI->config->item('base_url'),
 		));
 		$body = $mustache->render($CI->lang->line('sign_up_body'), array(
 			'user' => $user,
-			'base_url' => $CI->config->item('base_url', 'secret_config'),
+			'base_url' => $CI->config->item('base_url'),
 		));
 
 		// Sending email to customer
@@ -141,20 +141,23 @@ class Login_util {
 			$user = $response->getGraphUser();
 			$fbId = $user['id'];
 			$name = $user['name'];
-			$email = $user['email'];
+			if (isset($user['email']))
+				$email = $user['email'];
+			else
+				$email = "";
 
 			$welcomeEmail = false;
 
 			// fetch user object from the database
 			if ($CI->user_model->getUserForFacebookId($fbId) === false){
 				// If it doesn't exist in the db, add the user
-				if ($CI->user_model->addUser(User_model::$CUSTOMER, $name, $email, $fbId) !== true){
+				if ($CI->user_model->addUser($name, $email, $fbId) !== true){
 					$error = "Internal server error";
 					throw new Exception($error);
 				}
 				
 				// send welcome email at the end
-				$welcomeEmail = true;
+				if ($email != "") $welcomeEmail = true;
 			}
 			
 			// user object
@@ -219,20 +222,23 @@ class Login_util {
 			$user = $googleService->people->get("me");
 			$googleId = $user->id;
 			$name = $user->displayName;
-			$email = $user->emails[0]['value'];
+			if (count($user->emails)>0)
+				$email = $user->emails[0]['value'];
+			else
+				$email = "";
 
 			$welcomeEmail = false;
 
 			// fetch user object from the database
 			if ($CI->user_model->getUserForGoogleId($googleId) === false){
 				// If it doesn't exist in the db, add the user
-				if ($CI->user_model->addUser(User_model::$CUSTOMER, $name, $email, NULL, $googleId) !== true){
+				if ($CI->user_model->addUser($name, $email, NULL, $googleId) !== true){
 					$error = "Internal server error";
 					throw new Exception($error);
 				}
-				else {
-					$welcomeEmail = true;
-				}
+				
+				// send welcome email at the end
+				if ($email != "") $welcomeEmail = true;
 			}
 			
 			// user object
