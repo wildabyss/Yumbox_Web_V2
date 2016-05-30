@@ -151,7 +151,7 @@ class Login_util {
 			// fetch user object from the database
 			if ($CI->user_model->getUserForFacebookId($fbId) === false){
 				// If it doesn't exist in the db, add the user
-				if ($CI->user_model->addUser(User_model::$CUSTOMER, $name, $email, $fbId) !== true){
+				if ($CI->user_model->addUser($name, $email, $fbId) !== true){
 					$error = "Internal server error";
 					throw new Exception($error);
 				}
@@ -232,7 +232,7 @@ class Login_util {
 			// fetch user object from the database
 			if ($CI->user_model->getUserForGoogleId($googleId) === false){
 				// If it doesn't exist in the db, add the user
-				if ($CI->user_model->addUser(User_model::$CUSTOMER, $name, $email, NULL, $googleId) !== true){
+				if ($CI->user_model->addUser($name, $email, NULL, $googleId) !== true){
 					$error = "Internal server error";
 					throw new Exception($error);
 				}

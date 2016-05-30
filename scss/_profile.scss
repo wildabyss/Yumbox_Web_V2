@@ -2,11 +2,30 @@
 	display: flex;
 	flex-direction: row;
 	
+	.editable-container.editable-inline{
+		width: 100%;
+		max-width: 600px;
+	}
+	
 	input{
 		font-size: inherit;
 	}
-	
+
+	.editable-input{
+		width: 100%;
+		
+		input{
+			width: 100%;
+		}
+		textarea{
+			width: 100%;
+		}
+	}
+
 	.editable-address{
+		display: flex;
+		margin-bottom: 5px;
+		
 		span{
 			display: inline-block;
 			width: 100px;
@@ -15,7 +34,6 @@
 	
 	.pic_wrapper{
 		width: 200px;
-		overflow-y: auto;
 		
 		#profile_pic{
 			display: block;
@@ -26,21 +44,7 @@
 			background-repeat: no-repeat;
 			background-size: cover;
 			background-image: url('/imgs/profile.svg');
-			border: solid 1px $almostBlack;
-		}
-		#profile_pic.editable{
-			cursor: pointer;
-			
-			.btn_update_picture{
-				float: left;
-				margin: 5px 0 0 5px;
-				font-size: 1.4rem;
-				border: solid 1px black;
-				padding: 2px;
-				border-radius: 5px;
-				background-color: $grey;
-				opacity: 0.5;
-			}
+			border: solid 1px $darkGrey;
 		}
 		
 		#followers{

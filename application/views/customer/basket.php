@@ -31,7 +31,7 @@
 			</div>
 			
 			<?php foreach ($foods_orders[$vendor->id] as $food_order):?>
-			<div class="order_item" id="order_item_<?php echo $food_order->order_id?>">
+			<div class="order_item absolute_parent" id="order_item_<?php echo $food_order->order_id?>">
 				<?php if ($is_open_basket):?>
 				<button class="btn_remove" order_id="<?php echo $food_order->order_id?>">X</button>
 				<?php endif?>
@@ -53,13 +53,13 @@
 					</div>
 				</div>
 				<h3 class="received right-align">
-				<?php if ($food_order->is_filled == Order_model::$IS_FILLED_DELIVERED):?>
-				<span>Delivered &#x2713;</span>
-				<?php elseif ($food_order->refund_id != ""):?>
-				<span class="canceled">Canceled &#x274c;</span>
-				<?php elseif (!$is_open_basket):?>
-				<button class="btn_cancel_order" order_id="<?php echo $food_order->order_id?>">Cancel &#x274c;</button>
-				<?php endif?>
+					<?php if ($food_order->is_filled == Order_model::$IS_FILLED_DELIVERED):?>
+					<span>Delivered &#x2713;</span>
+					<?php elseif ($food_order->refund_id != ""):?>
+					<span class="canceled">Canceled &#x274c;</span>
+					<?php elseif (!$is_open_basket):?>
+					<button class="btn_cancel_order" order_id="<?php echo $food_order->order_id?>">Cancel &#x274c;</button>
+					<?php endif?>
 				</h3>
 				<div class="price_descr right-align">
 					<?php if ($is_open_basket):?>

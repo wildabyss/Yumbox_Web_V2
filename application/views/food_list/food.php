@@ -1,8 +1,8 @@
 <section id="food_detail">
 	<h1 class="title center"><?php echo prevent_xss(strtoupper($food->food_name))?>
-		<?php if ($food->alternate_name != ""):?> | <?php echo prevent_xss($food->alternate_name)?><?php endif?>
+		<?php if ($food->food_alt_name != ""):?> | <?php echo prevent_xss($food->food_alt_name)?><?php endif?>
 	</h1>
-	<h3 class="center"><a href="/vendor/profile/id/<?php echo $food->user_id?>"><?php echo prevent_xss($food->user_name)?></a></h3>
+	<h3 class="center"><a href="/vendor/profile/id/<?php echo $food->vendor_id?>"><?php echo prevent_xss($food->vendor_name)?></a></h3>
 	<ul id="food_detail_gallery">
 		<?php if (count($food_pictures)==0):?>
 			<li>
@@ -19,7 +19,7 @@
 	
 	<div class="tight_cluster">
 		<div class="order_info">
-			<h3 class="price">$<?php echo $food->price?></h3>
+			<h3 class="price">$<?php echo $food->food_price?></h3>
 			<button id="add_to_order" <?php if (!$enable_order):?>disabled<?php endif?>>ADD ORDER +</button>
 		</div>
 		
@@ -97,13 +97,13 @@
 			<?php foreach ($reviews as $review):?>
 				<li>
 					<?php if ($user_pictures[$review->user_id]!==false):?>
-					<a class="profile_pic" style="background-image:url('<?php echo $user_pictures[$review->user_id]?>')"></a>
+					<a class="profile_pic" style="background-image:url('<?php echo $user_pictures[$review->vendor_id]?>')"></a>
 					<?php else:?>
 					<a class="profile_pic"></a>
 					<?php endif?>
 					
 					<div class="review_info">
-						<span><?php echo prevent_xss($review->user_name)?></span>
+						<span><?php echo prevent_xss($review->vendor_name)?></span>
 						<p>&hearts; <?php echo $review->rating?>%</p>
 						<?php if ($review->review != ""):?>
 						<p>"<?php echo prevent_xss($review->review)?>"</p>

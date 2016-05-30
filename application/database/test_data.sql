@@ -1,13 +1,13 @@
-insert into user (user_type, status, date_joined, name, email, descr, is_open)
-	values (1, 2, now(), 'James Kitchen', 'wildabyss@gmail.com', 
+insert into user (status, date_joined, name, email, descr, is_open)
+	values (1, now(), 'James Kitchen', 'wildabyss@gmail.com', 
     'Luck is the last dying wish of those who wanna believe that winning can happen by accident, sweat on the other hand is for those who know it''s a choice, so decide now because destiny waits for no man. And when your time comes and a thousand different voices are trying to tell you you''re not ready for it, listen instead for that lone voice in decent the one that says you are ready, you are prepared, it’s all up to you now.',
     true);
-insert into user (user_type, status, date_joined, name, email, is_open)
-	values (1, 2, now(), 'Chef Xu', 'mag@mag.com', true);
-insert into user (user_type, status, date_joined, name, email, is_open)
-	values (1, 2, now(), 'Indian Bistro', 'indian@food.com', false);
-insert into user (user_type, status, date_joined, name, email, is_open, descr)
-	values (1, 2, now(), 'Cocoral', 'ch@food.com', true,
+insert into user (status, date_joined, name, email, is_open)
+	values (1, now(), 'Chef Xu', 'mag@mag.com', true);
+insert into user (status, date_joined, name, email, is_open)
+	values (1, now(), 'Indian Bistro', 'indian@food.com', false);
+insert into user (status, date_joined, name, email, is_open, descr)
+	values (1, now(), 'Cocoral', 'ch@food.com', true,
     'Architect by education, chef by experience.');
     
 insert into address (is_primary, user_id, address, city, province, postal_code, country, latitude, longitude)

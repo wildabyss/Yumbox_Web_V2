@@ -4,6 +4,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Profile extends Yumbox_Controller {
 	public static $MAX_RESULTS = 50;
 
+	
+	/**
+	 * GET method that displays the logged in user's profile page by default
+	 */
+	public function index()
+	{
+		// check if the user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			// redirect to login
+			redirect('/login?redirect='.urlencode("/vendor/profile"), 'refresh');
+		}
+		
+		// fetch the user id
+		$id = $this->login_util->getUserId();
+		
+		// redirect appropriately
+		$this->id($id);
+	}
+	
+	
 	/**
 	 * GET method for displaying a user's profile
 	 */
@@ -14,7 +34,7 @@ class Profile extends Yumbox_Controller {
 			show_404();
 		}
 		$filters["vendor_id"] = $user->id;
-		$filters["is_rush"] = false;
+		$filters["is_open"] = 0;
 		
 		// is this my profile?
 		$my_id = $this->login_util->getUserId();
@@ -217,6 +237,11 @@ class Profile extends Yumbox_Controller {
 	}
 	
 	
+	/**
+	 * AJAX method for modifying a user's display picture
+	 * echo json string:
+	 *   {success, filepath, error}
+	 */
 	public function change_displaypic(){
 		// ensure we have POST request
 		if (!is_post_request())
@@ -281,23 +306,95 @@ class Profile extends Yumbox_Controller {
 		$json_arr["filepath"] = $new_path;
 		echo json_encode($json_arr);
 	}
-
+	
 	
 	/**
-	 * GET method that displays the logged in user's profile page by default
+	 * AJAX method for creating a new dish
+	 * echo json string:
+	 *   {success, li_display, error}
 	 */
-	public function index()
-	{
-		// check if the user has logged in
+	public function new_food(){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// check if user has logged in
 		if (!$this->login_util->isUserLoggedIn()){
-			// redirect to login
-			redirect('/login?redirect='.urlencode("/vendor/profile"), 'refresh');
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
 		}
 		
-		// fetch the user id
-		$id = $this->login_util->getUserId();
+		// get current user and data
+		$user_id = $this->login_util->getUserId();
+		$food_name = $this->input->post("name");
+		$food_alt_name = $this->input->post("alt_name");
+		$food_price = $this->input->post("price");
 		
-		// redirect appropriately
-		$this->id($id);
+		// create new food
+		$food_id = false;
+		try {
+			$food_id = $this->food_model->createFood($user_id, $food_name, $food_alt_name, $food_price);
+		} catch (Exception $e){
+			$json_arr["error"] = $e->getMessage();
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get food info
+		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
+		// show predicted pickup time
+		$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
+		$food->prep_time = prep_time_for_display($pickup_time);
+		
+		// get new element output
+		$food_data["food"] = $food;
+		$food_data["is_my_profile"] = true;
+		$food_item_display = $this->load->view("food_list/food_list_item", $food_data, true);
+		
+		// success
+		$json_arr["success"] = "1";
+		$json_arr["li_display"] = $food_item_display;
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
+	 * AJAX method for removing a dish
+	 * echo json string:
+	 *   {success, error}
+	 */
+	public function remove_food($food_id=false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current user and data
+		$user_id = $this->login_util->getUserId();
+		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
+		if ($food === false || $food->vendor_id != $user_id){
+			$json_arr["error"] = "incorrect dish specified";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// remove food
+		$res = $this->food_model->removeFood($food_id);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
+		echo json_encode($json_arr);
 	}
 }

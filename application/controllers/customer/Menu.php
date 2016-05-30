@@ -51,7 +51,7 @@ class Menu extends Yumbox_Controller {
 	 * If $category provided, assume that $foods is grouped by category->id, otherwise assume that $foods
 	 * is a flat array of food objects
 	 */
-	 protected function displayFoodListing($foods, $category=false){
+	 protected function displayFoodListing($foods, $is_rush, $category=false){
 		if (count($foods)==0)
 			return "";
 		
@@ -59,6 +59,7 @@ class Menu extends Yumbox_Controller {
 		$list_data = array();
 		if ($category !== false)
 			$list_data["category"] = $category;
+		$list_data["is_rush"]	= $is_rush;
 		$food_list_display = $this->load->view("food_list/food_list_start", $list_data, true);
 		
 		// food list display
@@ -75,6 +76,7 @@ class Menu extends Yumbox_Controller {
 			$food_list_display .= $this->load->view("food_list/food_list_item", $food_data, true);
 		}
 		
+		$list_data["show_more"] = count($foods)>=Search::$MAX_FOODS_PAGE;
 		$food_list_display .= $this->load->view("food_list/food_list_end", $list_data, true);
 		
 		return $food_list_display;
@@ -136,11 +138,14 @@ class Menu extends Yumbox_Controller {
 		$food_list_display = "";
 		if ($show_by_categories){
 			foreach ($categories as $category){
-				$food_list_display .= $this->displayFoodListing($foods[$category->id], $category);
+				$food_list_display .= $this->displayFoodListing($foods[$category->id], $is_rush, $category);
 			}
 		} else {
-			$food_list_display .= $this->displayFoodListing($foods);
+			$food_list_display .= $this->displayFoodListing($foods, $is_rush);
 		}
+		
+		// show more categories?
+		$show_more = count($categories) >= Search::$MAX_CATEGORIES_PAGE;
 		
 		// bind to data
 		$filter_data = $this->dataForMenuFilter($is_rush, $view!=self::$MAP_VIEW, $search_query, $location,
@@ -148,6 +153,7 @@ class Menu extends Yumbox_Controller {
 		$data["foods"] = $foods;
 		$data['food_list_display'] = $food_list_display;
 		$data['empty_string'] = $this->lang->line("no_result");
+		$data['show_more'] = $show_more;
 
 		// Load views
 		$this->header();
@@ -234,7 +240,7 @@ class Menu extends Yumbox_Controller {
 		// Load views
 		$this->header();
 		$this->navigation();
-		$this->load->view("customer/food", $data);
+		$this->load->view("food_list/food", $data);
 		$this->footer();
 	}
 

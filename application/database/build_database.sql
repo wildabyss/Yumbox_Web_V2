@@ -9,8 +9,7 @@ drop table if exists user;
 create table user
 (
 	id int unsigned not null auto_increment,
-    user_type tinyint unsigned not null, 	# 0=consumer, 1=vendor
-    status tinyint unsigned not null,	# 0=inactive, 1=active, 2=licensed
+    status tinyint unsigned not null default 1,	# 0=inactive, 1=active, 2=licensed
     date_joined datetime not null,
     name varchar(255) not null,
     email varchar(255) not null,
@@ -39,8 +38,6 @@ create table user
     
     primary key (id),
     index fb_id_index (fb_id),
-    index user_type_index (user_type),
-    index status_user_index (status),
     index return_date_user_index (return_date)
 ) engine = InnoDB;
 
@@ -123,7 +120,7 @@ drop table if exists food;
 create table food
 (
 	id bigint unsigned not null auto_increment,
-    status tinyint unsigned not null,		# 0=inactive, 1=active
+    status tinyint unsigned not null default 1,		# 0=inactive, 1=active
     user_id int unsigned not null,
     name varchar(255) not null,
     price decimal(5,2) unsigned not null,
@@ -377,7 +374,7 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 
 drop procedure if exists add_user;
 delimiter //
-create procedure add_user(in user_type tinyint unsigned, in name varchar(255), in email varchar(255),
+create procedure add_user(in name varchar(255), in email varchar(255),
 	in fb_id varchar(25), in google_id varchar(25))
 begin
 	declare id int unsigned;
@@ -389,8 +386,8 @@ begin
 			u.fb_id = fb_id;
             
 		if (id is null) then
-			insert into user (user_type, status, date_joined, name, email, fb_id)
-            values (user_type, 1, now(), name, email, fb_id);
+			insert into user (status, date_joined, name, email, fb_id)
+            values (1, now(), name, email, fb_id);
 		end if;
     elseif (google_id is not null) then
 		select u.id into id
@@ -399,8 +396,8 @@ begin
 			u.google_id = google_id;
             
 		if (id is null) then
-			insert into user (user_type, status, date_joined, name, email, google_id)
-            values (user_type, 1, now(), name, email, google_id);
+			insert into user (status, date_joined, name, email, google_id)
+            values (1, now(), name, email, google_id);
 		end if;
     end if;
     

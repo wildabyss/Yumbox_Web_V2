@@ -7,10 +7,6 @@ class User_model extends CI_Model {
 	public static $ACTIVE_USER = 1;
 	public static $CERTIFIED_VENDOR = 2;
 	
-	// user type
-	public static $CUSTOMER = 0;
-	public static $VENDOR = 1;
-	
 	/**
 	 * Fetch the user object
 	 * Return false if user does not exist
@@ -18,7 +14,7 @@ class User_model extends CI_Model {
 	public function getUserForUserId($user_id){
 		$query = $this->db->query('
 			select 
-				u.id, u.user_type, u.status, u.name, u.email, u.descr,
+				u.id, u.status, u.name, u.email, u.descr,
 				u.is_open, 
 				u.pickup_mon, u.pickup_tue, u.pickup_wed, u.pickup_thu, u.pickup_fri,
 				u.pickup_sat, u.pickup_sun,
@@ -30,8 +26,10 @@ class User_model extends CI_Model {
 			on
 				a.user_id = u.id
 			where
-				u.id = ?',
+				u.status > ?
+				and u.id = ?',
 			array(
+				self::$INACTIVE_USER,
 				$user_id
 			));
 		$results = $query->result();
@@ -49,7 +47,7 @@ class User_model extends CI_Model {
 	public function getUserForFacebookId($fb_id){
 		$query = $this->db->query('
 			select 
-				u.id, u.user_type, u.status, u.name, u.email,
+				u.id, u.status, u.name, u.email,
 				u.is_open, u.fb_id, u.google_id
 			from user u
 			where
@@ -72,7 +70,7 @@ class User_model extends CI_Model {
 	public function getUserForGoogleId($google_id){
 		$query = $this->db->query('
 			select 
-				u.id, u.user_type, u.status, u.name, u.email,
+				u.id, u.status, u.name, u.email,
 				u.is_open, u.fb_id, u.google_id
 			from user u
 			where
@@ -93,18 +91,18 @@ class User_model extends CI_Model {
 	 *
 	 * @return TRUE on success, error code and message on failure
 	 */
-	public function addUser($user_type, $name, $email, $fb_id=NULL, $google_id=NULL){
+	public function addUser($name, $email, $fb_id=NULL, $google_id=NULL){
 		$fb_token = $fb_id==NULL?"null":"?";
 		$google_token = $google_id==NULL?"null":"?";
 		
 		// bindings
-		$bindings = array($user_type, $name, $email);
+		$bindings = array($name, $email);
 		if ($fb_id != NULL)
 			$bindings[] = $fb_id;
 		if ($google_id != NULL)
 			$bindings[] = $google_id;
 		
-		if (!$this->db->query("call add_user(?, ?, ?, $fb_token, $google_token)", $bindings)){
+		if (!$this->db->query("call add_user(?, ?, $fb_token, $google_token)", $bindings)){
 			return $this->db->error();
 		}
 		

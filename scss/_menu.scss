@@ -168,7 +168,6 @@
 	.food_list_parent{
 		max-width: calc(276px*4);
 		margin: 0 auto;
-		overflow: auto;
 		
 		h2{
 			margin-left: 20px;
@@ -201,7 +200,7 @@
 			background-repeat: no-repeat;
 			background-size: cover;
 			background-image: url('/imgs/image-not-available.gif');
-			border: solid 1px $almostBlack;
+			border: solid 1px $darkGrey;
 		}
 		
 		h3{
@@ -257,9 +256,7 @@
 		}
 		
 		#btn_add_new{
-			cursor: pointer;
-			display: block;
-			border: solid 1px $grey;
+			width: 100%;
 			h3{
 				display: block;
 				margin: 10px;
@@ -283,8 +280,8 @@
 				width: 100%;
 			}
 			
-			ul#new_food_categories{
-				font-size: 1.4rem;
+			input{
+				margin-bottom: 5px;
 			}
 		}
 		
@@ -298,6 +295,10 @@
 			}
 		}
 		
+	}
+	
+	#dialog-confirm{
+		display: none;
 	}
 }
 

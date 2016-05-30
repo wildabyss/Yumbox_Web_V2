@@ -2,7 +2,7 @@
 
 <section id="profile_intro">
 	<div class="pic_wrapper">
-		<label for="input_profile_pic" id="profile_pic" <?php if ($is_my_profile):?>class="editable"<?php endif?>
+		<label for="input_profile_pic" id="profile_pic" <?php if ($is_my_profile):?>class="editable_pic"<?php endif?>
 			<?php if ($user_picture !== false):?>style="background-image:url('<?php echo $user_picture?>')"<?php endif?>>
 			<?php if ($is_my_profile):?>
 			<div class="btn_update_picture">Edit photo</div>
@@ -11,7 +11,7 @@
 		<?php if ($is_my_profile):?>
 		<input id="input_profile_pic" type="file" accept="image/*">
 		<?php endif?>
-		<p>
+		<p style="overflow:auto">
 			<a id="followers"><?php echo $num_followers?> followers</a>
 			<?php if ($my_id !== false  && !$is_my_profile):?>
 				<a id="follow_btn">+ Follow</a>
@@ -53,6 +53,10 @@
 	<?php endif?>
 
 	<?php echo $food_list_display?>
+	
+	<div id="dialog-confirm" title="Remove dish?">
+		<p>Confirm remove this dish?</p>
+	</div>
 </section>
 
 <script>
@@ -219,6 +223,55 @@
 					}
 				});
 			}
+		});
+		
+		
+		$("#dialog-confirm").dialog({
+			autoOpen: false,
+			modal: true,
+			resizable: false,
+			dialogClass: 'explore',
+			height:140,
+			buttons:[
+				{
+					icons: {
+						primary: "ui-icon-check"
+					},
+					'class':	'ui-button-dialog',
+					click:		function(){
+						$.ajax({
+							type: 		"post",
+							url: 		"/vendor/profile/remove_food/"+$("#dialog-confirm").data('food_id'),
+							data:		csrfData,
+							success:	function(data){
+								var respArr = $.parseJSON(data);
+								if ("success" in respArr){
+									successMessage("Dish removed");
+									$parent = $("#dialog-confirm").data('parent');
+									$parent.remove();
+								} else {
+									// error
+									errorMessage(respArr["error"]);
+								}
+							},
+							error: 		function(){
+								errorMessage("Unable to process");
+							}
+						});
+						
+						$(this).dialog("close");
+					}
+				},
+				{
+					icons: {
+						primary: "ui-icon-closethick"
+					},
+					'class': 'ui-button-dialog',
+					click: function(){
+						$(this).dialog("close");
+					}
+				}
+			]
 		});
 		<?php endif?>
 	});
