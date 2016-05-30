@@ -280,6 +280,8 @@
 				success:	function(data){
 					var respArr = $.parseJSON(data);
 					if ("success" in respArr){
+						// update item quantity
+						//$(this).spinner("value", respArr["item_quantity"]);
 						
 						// update order count
 						$("#order_count").html(respArr["order_count"]);

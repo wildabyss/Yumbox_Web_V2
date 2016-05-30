@@ -20,9 +20,7 @@
 	<div class="tight_cluster">
 		<div class="order_info">
 			<h3 class="price">$<?php echo $food->price?></h3>
-			<?php if ($food->is_open):?>
-			<button id="add_to_order">ADD ORDER +</button>
-			<?php endif?>
+			<button id="add_to_order" <?php if (!$enable_order):?>disabled<?php endif?>>ADD ORDER +</button>
 		</div>
 		
 		<div class="order_info">
@@ -135,6 +133,11 @@
 						
 						// display message
 						successMessage("Dish added");
+						
+						// enable/disable further orders
+						if (!respArr["enable_order"]){
+							$("#add_to_order").button("disable");
+						}
 					} else {
 						// error
 						errorMessage(respArr["error"]);

@@ -19,7 +19,7 @@ class User_model extends CI_Model {
 		$query = $this->db->query('
 			select 
 				u.id, u.user_type, u.status, u.name, u.email, u.descr,
-				u.max_unfilled_orders, u.is_open, 
+				u.is_open, 
 				u.pickup_mon, u.pickup_tue, u.pickup_wed, u.pickup_thu, u.pickup_fri,
 				u.pickup_sat, u.pickup_sun,
 				u.fb_id, u.google_id,
@@ -50,7 +50,7 @@ class User_model extends CI_Model {
 		$query = $this->db->query('
 			select 
 				u.id, u.user_type, u.status, u.name, u.email,
-				u.max_unfilled_orders, u.is_open, u.fb_id, u.google_id
+				u.is_open, u.fb_id, u.google_id
 			from user u
 			where
 				u.fb_id = ?',
@@ -73,7 +73,7 @@ class User_model extends CI_Model {
 		$query = $this->db->query('
 			select 
 				u.id, u.user_type, u.status, u.name, u.email,
-				u.max_unfilled_orders, u.is_open, u.fb_id, u.google_id
+				u.is_open, u.fb_id, u.google_id
 			from user u
 			where
 				u.google_id = ?',
@@ -303,6 +303,20 @@ class User_model extends CI_Model {
 		
 		$this->db->trans_complete();
 		
+		return true;
+	}
+	
+	
+	/**
+	 * Modify the display picture of the user
+	 * @return true on sucess, error on failure
+	 */
+	public function modifyUserPicture($user_id, $pic_path){
+		// associate with new file
+		if (!$this->db->query("call add_user_picture(?, ?)", array($user_id, $pic_path))){
+			return $this->db->error();
+		}
+
 		return true;
 	}
 	

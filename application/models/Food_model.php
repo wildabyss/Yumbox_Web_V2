@@ -140,7 +140,7 @@ class Food_model extends CI_Model {
 			select 
 				f.id food_id, f.name as food_name, f.alternate_name, f.price, f.descr, f.ingredients, 
 				f.health_benefits, f.eating_instructions, 
-				f.pickup_method, f.prep_time_hours prep_time,
+				f.pickup_method, f.prep_time_hours prep_time, f.quota,
 				average_rating(f.id)/?*100 rating,
 				total_orders(f.id) total_orders,
 				u.id as user_id, u.name as user_name, u.email, u.phone, u.return_date,

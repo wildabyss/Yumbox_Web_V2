@@ -183,7 +183,7 @@
 		flex-direction: row;
 		flex-wrap: wrap;
 		
-		li{
+		li.food_item{
 			display: block;
 			list-style: none;
 			text-align: left;
@@ -249,17 +249,55 @@
 			margin-top: 10px;
 		}
 		
-		.editable_li{
-			cursor: pointer;
+		
+		// below are for adding new food
+		
+		#new_food_li{
+			display: none;
 		}
 		
 		#btn_add_new{
+			cursor: pointer;
+			display: block;
 			border: solid 1px $grey;
 			h3{
 				display: block;
 				margin: 10px;
 			}
 		}
+
+		.new_food{
+			h3{
+				margin: 0;
+			}
+			
+			#new_food_name{
+				width: 150px;
+			}
+			
+			#new_food_price{
+				width: 40px;
+			}
+			
+			#new_alt_name{
+				width: 100%;
+			}
+			
+			ul#new_food_categories{
+				font-size: 1.4rem;
+			}
+		}
+		
+		.new_food_buttons_wrapper{
+			position: relative;
+			
+			.new_food_buttons{
+				left: auto;
+				right: 0;
+				margin-top: 5px;
+			}
+		}
+		
 	}
 }
 

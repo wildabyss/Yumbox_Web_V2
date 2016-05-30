@@ -200,6 +200,10 @@ class Menu extends Yumbox_Controller {
 		$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
 		$food->prep_time = prep_time_for_display($pickup_time);
 		
+		// can orders be placed?
+		$unfilled_orders = $this->order_model->getTotalUnfilledOrdersForFood($food_id);
+		$enable_order = ($food->quota>$unfilled_orders && $food->is_open);
+		
 		// get food pictures
 		$food_pictures = $this->food_model->getFoodPicturesForFoodId($food_id);
 		// for now, grab only one picture
@@ -225,6 +229,7 @@ class Menu extends Yumbox_Controller {
 		$data['reviews'] = $reviews;
 		$data['user_pictures'] = $user_pictures;
 		$data['current_user'] = $current_user;
+		$data['enable_order'] = $enable_order;
 		
 		// Load views
 		$this->header();

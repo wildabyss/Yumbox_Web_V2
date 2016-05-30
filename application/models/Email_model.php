@@ -147,7 +147,7 @@ class Email_model extends CI_Model
 		if (!$this->db->query('
 			UPDATE mail_queue SET
 				tries = tries + 1,
-				try_date = NOW(),
+				try_date = NOW()
 			WHERE
 				id = ?', array($mail_id))
 		) {

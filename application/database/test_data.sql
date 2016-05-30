@@ -17,8 +17,8 @@ insert into address (is_primary, user_id, address, city, province, postal_code, 
 insert into address (is_primary, user_id, address, city, province, postal_code, country, latitude, longitude)
 	values (1, 3, '25 Mutual St', 'Toronto', 'Ontario', 'M5B2K1', 'Canada', 43.6543, -79.3743);
     
-insert into food (status, user_id, name, price, descr, ingredients, health_benefits, pickup_method)
-	values (1, 1, 'Adrienne Burger', 12.99, 'Juicy burger with everything dressed', '', '', 1);
+insert into food (status, user_id, name, price, descr, ingredients, health_benefits, pickup_method, quota)
+	values (1, 1, 'Adrienne Burger', 12.99, 'Juicy burger with everything dressed', '', '', 1, 5);
 insert into food (status, user_id, name, price, descr, ingredients, health_benefits, eating_instructions)
 	values (1, 1, 'Kung Pao Chicken', 15.99, 'Spicy chicken with spicy nuts', 'Nuts, chicken', 'Good for your soul. Good for the environment. It''s even good for the chicken!',
 	'Dump water into the food container. Heat for 50 min, add ample sugar and salt. Mix with terrazine, and you''re good to go!');
@@ -32,8 +32,8 @@ insert into food (status, user_id, name, price, descr, ingredients)
 	values (1, 3, 'Vegetable soup', 3.99, 'Vegetables in a cup of soup', 'Carrots, brocolli');
 insert into food (status, user_id, name, price, descr, ingredients)
 	values (1, 2, 'Scrambled eggs', 5.99, 'Very scrambled eggs', 'Huevos');
-insert into food (status, user_id, name, price, prep_time_hours, descr)
-	values (1, 1, 'Summer Delight', 5.99, 24, 'A delicious cake');
+insert into food (status, user_id, name, price, prep_time_hours, descr, quota)
+	values (1, 1, 'Summer Delight', 5.99, 24, 'A delicious cake', 3);
 insert into food (status, user_id, name, price, descr)
 	values (1, 1, 'Porky Belly', 5.99, 'A rich meaty dish with the power to overwhelm your gastric senses. Get ready to dish out money.');
 insert into food (status, user_id, name, alternate_name, prep_time_hours, price, descr)
@@ -62,14 +62,6 @@ insert into food_picture (food_id, path) values (3, '/food_pics/apple_green.jpg'
 insert into food_picture (food_id, path) values (5, '/food_pics/IMG_0209.jpg');
 insert into food_picture (food_id, path) values (8, '/food_pics/photo-1456014673271-90b7fddf2eea.jpeg');
 insert into food_picture (food_id, path) values (9, '/food_pics/yuan_f0d64856588e05e49b7cc348d15d327b.jpg');
-
-insert into order_basket (order_date, user_id) values (now(), 1);
-insert into order_item (food_id, quantity, order_basket_id) values (1, 1, 1);
-insert into order_item (food_id, quantity, order_basket_id) values (2, 1, 1);
-
-insert into order_basket (order_date, user_id) values (now(), 2);
-insert into order_item (food_id, quantity, order_basket_id) values (2, 5, 1);
-insert into order_item (food_id, quantity, order_basket_id) values (3, 2, 1);
 
 insert into food_review (food_id, user_id, rating, review) values (1, 1, 5, 'An excellent source of protein and fat');
 insert into food_review (food_id, user_id, rating, review) values (2, 1, 3, 'A classic Chinese dish that is both spicy and hot. Love the crazy about of nuts. So nutty!');

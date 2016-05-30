@@ -14,7 +14,6 @@ create table user
     date_joined datetime not null,
     name varchar(255) not null,
     email varchar(255) not null,
-    max_unfilled_orders mediumint unsigned not null default 10,
     is_open tinyint(1) not null default 0,
     can_deliver tinyint(1) not null default 0,
     
@@ -90,10 +89,10 @@ create table address
     user_id int unsigned not null,
     
     address varchar(255),
-    city varchar(10),
-    province varchar(10),
+    city varchar(50),
+    province varchar(50),
     postal_code varchar(10),
-    country varchar(10),
+    country varchar(50),
     
     # geocoded location from above address
     latitude float,
@@ -128,6 +127,7 @@ create table food
     user_id int unsigned not null,
     name varchar(255) not null,
     price decimal(5,2) unsigned not null,
+    quota smallint unsigned not null default 1,
     
     /* food preparation */
     pickup_method tinyint(2) not null default 0,		# 0=any time the food is ready after prep_time_hours, # 1=limit pickup to times as specified in user table
@@ -480,7 +480,10 @@ create procedure add_order(in order_basket_id bigint unsigned, in food_id bigint
 begin
 	declare o_id bigint unsigned;
     declare is_open tinyint unsigned;
+    declare current_quantity smallint unsigned;
+    declare quota smallint unsigned;
     
+    /* Find out if kitchen is closed */
     select o.id, u.is_open
     into o_id, is_open
     from order_item o
@@ -494,10 +497,30 @@ begin
 		o.food_id = food_id
         and o.order_basket_id = order_basket_id;
         
+	/* Find out quantity and quota */
+    select sum(o.quantity), f.quota
+    into current_quantity, quota
+    from order_item o
+    left join
+		food f
+	on f.id = o.food_id
+    left join
+		refund r
+	on r.order_item_id = o.id
+    where
+		f.id = food_id
+        and o.is_filled = 0
+        and r.id is null
+	group by f.id;
+        
 	if (is_open = 0) then
 		/* we cannot process if the kitchen is closed */
         signal sqlstate '45000'
 			set message_text = 'kitchen is closed';
+	elseif (quantity+current_quantity > quota) then
+		/* we cannot process more orders than quota */
+        signal sqlstate '45000'
+			set message_text = 'orders cannot be larger than quota';
     else
 		if (o_id is null) then
 			insert into order_item
@@ -561,6 +584,32 @@ begin
 	else
 		signal sqlstate '45000'
 			set message_text = 'stripe refund exists';
+	end if;
+end//
+delimiter ;
+
+
+drop procedure if exists add_user_picture;
+delimiter //
+create procedure add_user_picture(in user_id int, in path varchar(255))
+begin
+	declare p_id bigint unsigned;
+    
+    select p.id into p_id
+    from user_picture p
+    where
+		p.user_id = user_id;
+        
+	if (p_id is null) then
+		insert into user_picture
+			(user_id, path)
+		values
+			(user_id, path);
+	else
+		update user_picture
+        set path = path
+        where
+			user_id = user_id;
 	end if;
 end//
 delimiter ;

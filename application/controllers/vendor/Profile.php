@@ -52,9 +52,13 @@ class Profile extends Yumbox_Controller {
 		// get followers
 		$num_followers = $this->user_follow_model->getNumberOfActiveFollowersForUser($user_id);
 		
+		// get user picture
+		$user_picture = $this->user_model->getUserPicture($user_id);
+		
 		// bind data
 		$data['is_my_profile'] = $myprofile;
 		$data['user'] = $user;
+		$data['user_picture'] = $user_picture;
 		$data['foods'] = $foods;
 		$data['food_list_display'] = $food_list_display;
 		$data['my_id'] = $my_id;
@@ -211,17 +215,83 @@ class Profile extends Yumbox_Controller {
 		$json_arr["success"] = "1";
 		echo json_encode($json_arr);
 	}
+	
+	
+	public function change_displaypic(){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current user and data
+		$user_id = $this->login_util->getUserId();
+		
+		// check if directory exists
+		$upload_dir = $_SERVER['DOCUMENT_ROOT'].$this->config->item('user_pics');
+		if (!file_exists($upload_dir)){
+			mkdir($upload_dir);
+		}
+		
+		// file upload class
+		$params['upload_path']          = $upload_dir;
+		$params['allowed_types']        = 'jpeg|jpg|png';
+		$params['max_size']             = 10000;
+		$params['file_name']			= $user_id."_".time();
+		$params['overwrite']			= true;
+		$this->load->library('upload', $params);
+
+		// upload photo
+		if (!$this->upload->do_upload('photo')){
+			// error
+			$json_arr["error"] = $this->upload->display_errors('','');
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get new file name
+		$new_name = $this->upload->data('file_name');
+
+		// get old file path
+		$old_path = $this->user_model->getUserPicture($user_id);
+		if ($old_path !== false){
+			// remove physically
+			@unlink($_SERVER['DOCUMENT_ROOT'].$old_path);
+		}
+		
+		// associate new photo in db
+		$new_path = $this->config->item('user_pics')."/".$new_name;
+		$res = $this->user_model->modifyUserPicture($user_id, $new_path);
+		if ($res === false){
+			// remove the new file
+			delete_files($this->upload->data('full_path'));
+			
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
+		$json_arr["filepath"] = $new_path;
+		echo json_encode($json_arr);
+	}
 
 	
 	/**
 	 * GET method that displays the logged in user's profile page by default
 	 */
 	public function index()
-	{		
+	{
 		// check if the user has logged in
 		if (!$this->login_util->isUserLoggedIn()){
 			// redirect to login
-			redirect('/login', 'refresh');
+			redirect('/login?redirect='.urlencode("/vendor/profile"), 'refresh');
 		}
 		
 		// fetch the user id

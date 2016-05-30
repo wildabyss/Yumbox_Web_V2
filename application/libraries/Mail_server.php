@@ -10,7 +10,7 @@ class Mail_server {
 		$mail = new PHPMailer();
 
 		$CI =& get_instance();
-		$CI->config->load('secret_config', TRUE);
+		$CI->config->load('config', TRUE);
 
 		// Enable verbose debug output
 		//$mail->SMTPDebug = 3;
@@ -19,24 +19,24 @@ class Mail_server {
 		$mail->isSMTP();
 
 		// Specify main and backup SMTP servers
-		$mail->Host = $CI->config->item('smtp_host', 'secret_config');
+		$mail->Host = $CI->config->item('smtp_host');
 
 		// TCP port to connect to (587)
-		$mail->Port = $CI->config->item('smtp_port', 'secret_config');
+		$mail->Port = $CI->config->item('smtp_port');
 
 		// Enable SMTP authentication, 0 / 1
-		if ($CI->config->item('smtp_authentication', 'secret_config') == '1') {
+		if ($CI->config->item('smtp_authentication') == '1') {
 			$mail->SMTPAuth = true;
 		}
 
 		// SMTP username
-		$mail->Username = $CI->config->item('smtp_username', 'secret_config');
+		$mail->Username = $CI->config->item('smtp_username');
 
 		// SMTP password
-		$mail->Password = $CI->config->item('smtp_password', 'secret_config');
+		$mail->Password = $CI->config->item('smtp_password');
 
 		// Enable TLS encryption (optional), `` / `ssl` / `tls` are accepted
-		$smtp_security = $CI->config->item('smtp_security', 'secret_config');
+		$smtp_security = $CI->config->item('smtp_security');
 		if ($smtp_security != '') {
 			$mail->SMTPSecure = $smtp_security;
 		}
@@ -53,14 +53,14 @@ class Mail_server {
 	 */
 	public function sendFromWebsite($recipient_email, $recipient_name, $subject, $body) {
 		$CI =& get_instance();
-		$CI->config->load('secret_config', TRUE);
+		$CI->config->load('config', TRUE);
 
-		$from_email = $CI->config->item('website_email_address', 'secret_config');
-		$from_name = $CI->config->item('website_email_name', 'secret_config');
-		$replyto_address = $CI->config->item('website_replyto_address', 'secret_config');
-		$replyto_name = $CI->config->item('website_replyto_name', 'secret_config');
+		$from_email = $CI->config->item('website_email_address');
+		$from_name = $CI->config->item('website_email_name');
+		$replyto_address = $CI->config->item('website_replyto_address');
+		$replyto_name = $CI->config->item('website_replyto_name');
 
-		if ($CI->config->item('queue_mail', 'secret_config') === true) {
+		if ($CI->config->item('queue_mail') === true) {
 			// Queue the mail to the mail server
 			$CI->email_model->addEmailToQueue(
 				$from_email,
@@ -103,7 +103,7 @@ class Mail_server {
 		$mail = $this->createConnection();
 
 		$CI =& get_instance();
-		$CI->config->load('secret_config', TRUE);
+		$CI->config->load('config', TRUE);
 
 		$mail->setFrom($from_email, $from_name);
 

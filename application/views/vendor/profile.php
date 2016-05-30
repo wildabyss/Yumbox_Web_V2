@@ -1,7 +1,16 @@
 <script src="/js/editable-address.js"></script>
+
 <section id="profile_intro">
 	<div class="pic_wrapper">
-		<a id="profile_pic"></a>
+		<label for="input_profile_pic" id="profile_pic" <?php if ($is_my_profile):?>class="editable"<?php endif?>
+			<?php if ($user_picture !== false):?>style="background-image:url('<?php echo $user_picture?>')"<?php endif?>>
+			<?php if ($is_my_profile):?>
+			<div class="btn_update_picture">Edit photo</div>
+			<?php endif?>
+		</label>
+		<?php if ($is_my_profile):?>
+		<input id="input_profile_pic" type="file" accept="image/*">
+		<?php endif?>
 		<p>
 			<a id="followers"><?php echo $num_followers?> followers</a>
 			<?php if ($my_id !== false  && !$is_my_profile):?>
@@ -47,10 +56,6 @@
 </section>
 
 <script>
-	$("#btn_add_new").click(function(e){
-		
-	});
-
 	$(document).ready(function(){
 		<?php if ($is_my_profile):?>
 		$("#edit_user_name").editable({
@@ -171,10 +176,50 @@
 			}
 		});
 		
-		$("#btn_add_new").click(function(){
+		$("#input_profile_pic").change(function(){
+			var file = this.files[0];
+			var size = file.size;
+			var type = file.type;
 			
+			if (size > 10000000){
+				errorMessage("Must be less than 10MB");
+			} else if (type.indexOf("image/") != 0){
+				errorMessage("Only an image is allowed");
+			} else {
+				// make formData to be submitted
+				var formData = new FormData();
+				formData.append('photo', file);
+				$.each(csrfData, function(index, value){
+					formData.append(index, value);
+				});
+				
+				statusMessageOn("Uploading, please wait...");
+				
+				$.ajax({
+					url:			'/vendor/profile/change_displaypic',
+					data:			formData,
+					type:			'post',
+					processData:	false,
+					contentType:	false,
+					error:		function(response){
+						errorMessage("Unable to process");
+					},
+					success:		function(response){
+						var respArr = $.parseJSON(response);
+				
+						if ("success" in respArr){
+							successMessage("Saved");
+							
+							// change picture
+							$("#profile_pic").css("background-image", "url("+respArr["filepath"]+")");
+						} else {
+							errorMessage(respArr["error"]);
+							return respArr["error"];
+						}
+					}
+				});
+			}
 		});
-		
 		<?php endif?>
 	});
 </script>

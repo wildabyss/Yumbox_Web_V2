@@ -1,4 +1,4 @@
-<li>
+<li class="food_item">
 	<a class="food_pic" href="/menu/item/<?php echo $food->food_id?>"
 		<?php if ($food->pic_path != ''):?>
 		style="background-image: url('<?php echo $food->pic_path?>')"

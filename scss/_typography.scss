@@ -82,6 +82,11 @@ input {
 	border : 1px solid $darkGrey;
 }
 
+input[type="file"]{
+	position: fixed; 
+	top: -100em;
+}
+
 // centering text
 .center{
 	text-align: center;

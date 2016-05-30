@@ -13,17 +13,17 @@ class Login_util {
 		$user = $CI->user_model->getUserForUserId($user_id);
 
 		$mustache = new Mustache_Engine();
-		$CI->config->load('secret_config', TRUE);
+		$CI->config->load('config', TRUE);
 
 		//TODO: Do we really want to load email templates according to current language?
 		$CI->lang->load('email');
 		$subject = $mustache->render($CI->lang->line('sign_up_subject'), array(
 			'user' => $user,
-			'base_url' => $CI->config->item('base_url', 'secret_config'),
+			'base_url' => $CI->config->item('base_url'),
 		));
 		$body = $mustache->render($CI->lang->line('sign_up_body'), array(
 			'user' => $user,
-			'base_url' => $CI->config->item('base_url', 'secret_config'),
+			'base_url' => $CI->config->item('base_url'),
 		));
 
 		// Sending email to customer
@@ -141,7 +141,10 @@ class Login_util {
 			$user = $response->getGraphUser();
 			$fbId = $user['id'];
 			$name = $user['name'];
-			$email = $user['email'];
+			if (isset($user['email']))
+				$email = $user['email'];
+			else
+				$email = "";
 
 			$welcomeEmail = false;
 
@@ -154,7 +157,7 @@ class Login_util {
 				}
 				
 				// send welcome email at the end
-				$welcomeEmail = true;
+				if ($email != "") $welcomeEmail = true;
 			}
 			
 			// user object
@@ -219,7 +222,10 @@ class Login_util {
 			$user = $googleService->people->get("me");
 			$googleId = $user->id;
 			$name = $user->displayName;
-			$email = $user->emails[0]['value'];
+			if (count($user->emails)>0)
+				$email = $user->emails[0]['value'];
+			else
+				$email = "";
 
 			$welcomeEmail = false;
 
@@ -230,9 +236,9 @@ class Login_util {
 					$error = "Internal server error";
 					throw new Exception($error);
 				}
-				else {
-					$welcomeEmail = true;
-				}
+				
+				// send welcome email at the end
+				if ($email != "") $welcomeEmail = true;
 			}
 			
 			// user object

@@ -245,6 +245,11 @@ input {
   border: 1px solid #b5b3ac;
 }
 
+input[type="file"] {
+  position: fixed;
+  top: -100em;
+}
+
 .center {
   text-align: center;
 }
@@ -953,7 +958,7 @@ div.about_text h1 {
   flex-wrap: wrap;
 }
 
-#menu_listing ul.food_list li {
+#menu_listing ul.food_list li.food_item {
   display: block;
   list-style: none;
   text-align: left;
@@ -1019,17 +1024,49 @@ div.about_text h1 {
   margin-top: 10px;
 }
 
-#menu_listing ul.food_list .editable_li {
-  cursor: pointer;
+#menu_listing ul.food_list #new_food_li {
+  display: none;
 }
 
 #menu_listing ul.food_list #btn_add_new {
+  cursor: pointer;
+  display: block;
   border: solid 1px #e3e0d8;
 }
 
 #menu_listing ul.food_list #btn_add_new h3 {
   display: block;
   margin: 10px;
+}
+
+#menu_listing ul.food_list .new_food h3 {
+  margin: 0;
+}
+
+#menu_listing ul.food_list .new_food #new_food_name {
+  width: 150px;
+}
+
+#menu_listing ul.food_list .new_food #new_food_price {
+  width: 40px;
+}
+
+#menu_listing ul.food_list .new_food #new_alt_name {
+  width: 100%;
+}
+
+#menu_listing ul.food_list .new_food ul#new_food_categories {
+  font-size: 1.4rem;
+}
+
+#menu_listing ul.food_list .new_food_buttons_wrapper {
+  position: relative;
+}
+
+#menu_listing ul.food_list .new_food_buttons_wrapper .new_food_buttons {
+  left: auto;
+  right: 0;
+  margin-top: 5px;
 }
 
 #menu_map .map_wrapper {
@@ -1278,6 +1315,21 @@ div.about_text h1 {
   background-size: cover;
   background-image: url("/imgs/profile.svg");
   border: solid 1px #251F1E;
+}
+
+#profile_intro .pic_wrapper #profile_pic.editable {
+  cursor: pointer;
+}
+
+#profile_intro .pic_wrapper #profile_pic.editable .btn_update_picture {
+  float: left;
+  margin: 5px 0 0 5px;
+  font-size: 1.4rem;
+  border: solid 1px black;
+  padding: 2px;
+  border-radius: 5px;
+  background-color: #e3e0d8;
+  opacity: 0.5;
 }
 
 #profile_intro .pic_wrapper #followers {

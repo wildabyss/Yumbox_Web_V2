@@ -11,11 +11,12 @@ The front-end and back-end of the server-side Yumbox application for home cookin
 
 ## Application Setup ##
 
-1. Set document root to /public
-2. Create MySQL user 'yumbox'@'localhost' and 'sphinx'@'localhost'
-3. Source /application/database/build_database.sql; modify the database name from yumbox_dev to production name if needed.
-4. Run composer on /composer.json
-5. Create /application/config/secret_config.php with the following and fill in the values:
+1. Set upload_max_filesize = 20M in php.ini
+2. Set document root to /public
+3. Create MySQL user 'yumbox'@'localhost' and 'sphinx'@'localhost'
+4. Source /application/database/build_database.sql; modify the database name from yumbox_dev to production name if needed.
+5. Run composer on /composer.json
+6. Create /application/config/secret_config.php with the following and fill in the values:
 
 ```php
 <?php
@@ -69,15 +70,15 @@ $config['featured_rush_id']		= 8;
 $config['featured_explore_id']	= 9;
 ```
 
-6. If this is the production environment, create file _prd.txt in root
-7. Make sure searchd is started as a service. Add the following into root level crontab:
+7. If this is the production environment, create file _prd.txt in root
+8. Make sure searchd is started as a service. Add the following into root level crontab:
 
 ```bash
 # Sphinx indexer
 */15 * * * * indexer --rotate --all --config {PATH_TO_ROOT}/sphinx.conf
 ```
 
-8. Recommend setting queue_mail = true in secret_config.php to enable asynchronous mail notification.
+9. Recommend setting queue_mail = true in secret_config.php to enable asynchronous mail notification.
 Add the following to the root level crontab:
 
 ```bash
