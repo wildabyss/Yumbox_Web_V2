@@ -145,6 +145,13 @@ EOT;
 			}
 		}
 		
+		// do we have results?
+		if (count($filters["food_ids"])==0){
+			return array(
+				"foods" => array(),
+				"categories" => array()
+			);
+		}
 		
 		// load model
 		$CI =& get_instance();

@@ -71,11 +71,24 @@ $config['featured_explore_id']	= 9;
 ```
 
 7. If this is the production environment, create file _prd.txt in root
-8. Make sure searchd is started as a service. Add the following into root level crontab:
+8.1 Symlink the sphinx configuration file:
+
+```bash
+ln -s {PATH_TO_ROOT}/sphinx.conf /etc/sphinx/sphinx.conf
+```
+
+8.2 Make sure searchd is started as a service:
+
+```bash
+service searchd start
+chkconfig searchd on
+```
+
+8.3 Add the following into root level crontab:
 
 ```bash
 # Sphinx indexer
-*/15 * * * * indexer --rotate --all --config {PATH_TO_ROOT}/sphinx.conf
+*/15 * * * * indexer --rotate --all
 ```
 
 9. Recommend setting queue_mail = true in secret_config.php to enable asynchronous mail notification.
