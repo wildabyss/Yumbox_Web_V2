@@ -1032,6 +1032,10 @@ div.about_text h1 {
   margin-bottom: 2px;
 }
 
+#menu_listing ul.food_list .toggle_food_detail {
+  cursor: pointer;
+}
+
 #menu_listing ul.food_list .food_price {
   display: block;
   float: right;
@@ -1396,6 +1400,10 @@ div.about_text h1 {
 
 #profile_intro .intro_wrapper .closed {
   color: #ed7a5d;
+}
+
+#food_modal_container {
+  display: none;
 }
 
 @media (max-width: 600px) {

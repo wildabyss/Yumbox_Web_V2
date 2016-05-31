@@ -3,19 +3,22 @@
 	<button class="btn_remove" food_id="<?php echo $food->food_id?>">X</button>
 	<?php endif?>
 	
-	<a class="food_pic" href="/menu/item/<?php echo $food->food_id?>"
+	<a class="food_pic toggle_food_detail" food_id="<?php echo $food->food_id?>"
+		<?php if (!isset($is_my_profile) || !$is_my_profile):?>href="/menu/item/<?php echo $food->food_id?>"<?php endif?>
 		<?php if ($food->pic_path != ''):?>
 		style="background-image: url('<?php echo $food->pic_path?>')"
 		<?php endif?>>
 	</a>
 	<div>
-		<a href="/menu/item/<?php echo $food->food_id?>">
+		<a class="food_name toggle_food_detail" food_id="<?php echo $food->food_id?>"
+			<?php if (!isset($is_my_profile) || !$is_my_profile):?>href="/menu/item/<?php echo $food->food_id?>"<?php endif?>>
 			<h3><?php echo prevent_xss($food->food_name)?></h3>
 		</a>
 		<a class="food_price"><h3>$<?php echo $food->food_price?></h3></a>
 		
 		<?php if ($food->food_alt_name != ""):?>
-		<a class="alt_name" href="/menu/item/<?php echo $food->food_id?>">
+		<a class="alt_name toggle_food_detail" food_id="<?php echo $food->food_id?>"
+			<?php if (!isset($is_my_profile) || !$is_my_profile):?>href="/menu/item/<?php echo $food->food_id?>"<?php endif?>>
 			<h3><?php echo prevent_xss($food->food_alt_name)?></h3>
 		</a>
 		<?php endif ?>
@@ -48,7 +51,6 @@
 
 <script>
 	<?php if (isset($is_my_profile) && $is_my_profile):?>
-	// this button(s) is created in food_list_item view
 	$(".btn_remove").button().click(function(){
 		var food_id = $(this).attr("food_id");
 		var $parent = $(this).parent();
@@ -57,6 +59,10 @@
 			.data('food_id', food_id)
 			.data('parent', $parent)
 			.dialog("open");
+	});
+	
+	$(".toggle_food_detail").click(function(){
+		
 	});
 	<?php endif?>
 </script>

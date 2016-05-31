@@ -54,10 +54,19 @@
 
 	<?php echo $food_list_display?>
 	
+	<?php if ($is_my_profile):?>
 	<div id="dialog-confirm" title="Remove dish?">
 		<p>Confirm remove this dish?</p>
 	</div>
+	<?php endif?>
 </section>
+
+<?php if ($is_my_profile):?>
+<!-- modal for editing fod -->
+<div id="food_modal_container">
+
+</div>
+<?php endif?>
 
 <script>
 	$(document).ready(function(){

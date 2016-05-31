@@ -25,7 +25,9 @@
 		
 		<div class="order_info">
 			<p class="orders"><?php echo $food->total_orders?> orders</p>
+			<?php if ($food->rating > 0):?>
 			<p class="rating"><span class="no_mobile">Average rating: </span>&hearts; <?php echo $food->rating?>%</p>
+			<?php endif?>
 			<p class="time"><span class="no_mobile">Preparation time: </span><?php echo $food->prep_time?></p>
 		</div>
 		
