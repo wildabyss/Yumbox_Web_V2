@@ -2,6 +2,7 @@ drop database if exists yumbox;
 create database yumbox default character set utf8 default collate utf8_general_ci;
 
 grant all on yumbox.* to 'yumbox'@'localhost';
+grant all on yumbox.* to 'sphinx'@'localhost';
 
 use yumbox;
 
