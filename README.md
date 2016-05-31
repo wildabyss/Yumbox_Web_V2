@@ -77,14 +77,16 @@ $config['featured_explore_id']	= 9;
 ln -s {PATH_TO_ROOT}/sphinx.conf /etc/sphinx/sphinx.conf
 ```
 
-8.2 Make sure searchd is started as a service:
+8.2 Download English dictionaries to /usr/local/share/sphinx/dicts/ from http://sphinxsearch.com/downloads/dicts/
+
+8.3 Make sure searchd is started as a service:
 
 ```bash
 service searchd start
 chkconfig searchd on
 ```
 
-8.3 Add the following into root level crontab:
+8.4 Add the following into root level crontab:
 
 ```bash
 # Sphinx indexer

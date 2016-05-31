@@ -146,7 +146,7 @@ EOT;
 		}
 		
 		// do we have results?
-		if (count($filters["food_ids"])==0){
+		if (isset($filters["food_ids"]) && count($filters["food_ids"])==0){
 			return array(
 				"foods" => array(),
 				"categories" => array()
