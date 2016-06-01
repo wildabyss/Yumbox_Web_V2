@@ -153,8 +153,21 @@ class Menu extends Yumbox_Controller {
 		$this->header();
 		$this->navigation();
 		$this->load->view("customer/menu_filter", $filter_data);
-		if ($view == self::$MAP_VIEW)
-			$this->load->view("customer/map", $data);
+		if ($view == self::$MAP_VIEW) {
+            $vendors = array();
+            foreach ($data['foods'] as $row) {
+                foreach ($row as $food) {
+                    if (!isset($vendors[$food->vendor_id])) {
+                        $vendors[$food->vendor_id] = $this->user_model->getUserForUserId($food->vendor_id);
+                        $vendors[$food->vendor_id]->foods = array();
+                    }
+                    $vendors[$food->vendor_id]->foods[$food->food_id] = $food;
+                }
+                $vendors[$food->vendor_id]->foods = array_values($vendors[$food->vendor_id]->foods);
+            }
+            $data['vendors'] = array_values($vendors);
+            $this->load->view("customer/map", $data);
+        }
 		else
 			$this->load->view("customer/menu", $data);
 		$this->footer();

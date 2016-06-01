@@ -305,6 +305,9 @@
 // menu map
 
 #menu_map{
+    max-height: 600px;
+    overflow: hidden;
+
 	.map_wrapper{
 		position: relative;
 		width: 100%;

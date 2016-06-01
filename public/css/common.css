@@ -1069,6 +1069,11 @@ div.about_text h1 {
   margin-top: 5px;
 }
 
+#menu_map {
+    max-height: 600px;
+    overflow: hidden;
+}
+
 #menu_map .map_wrapper {
   position: relative;
   width: 100%;
