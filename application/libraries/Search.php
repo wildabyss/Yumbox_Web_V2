@@ -96,6 +96,8 @@ class Search {
 	 * @param string $search_query
 	 * @param array $filters
 	 * @param bool $show_by_categories
+	 *		if true, foods will be returned per category as index
+	 * 		if false, foods will be returned with index "all"
 	 * @return [foods, categories]
 	 */
 	public function searchForFood($search_query, $filters=array(), $show_by_categories=true){
@@ -178,7 +180,7 @@ EOT;
 			}
 		} else {
 			// get all foods
-			$foods = $CI->food_model->getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_FOODS_PAGE_NO_CATEGORIES, $filters);
+			$foods["all"] = $CI->food_model->getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_FOODS_PAGE_NO_CATEGORIES, $filters);
 		}
 		
 		// array to be returned

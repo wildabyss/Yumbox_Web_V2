@@ -141,28 +141,61 @@ class Menu extends Yumbox_Controller {
 				$food_list_display .= $this->displayFoodListing($foods[$category->id], $is_rush, $category);
 			}
 		} else {
-			$food_list_display .= $this->displayFoodListing($foods, $is_rush);
+			$food_list_display .= $this->displayFoodListing($foods["all"], $is_rush);
 		}
 		
 		// show more categories?
 		$show_more = count($categories) >= Search::$MAX_CATEGORIES_PAGE;
 		
-		// bind to data
+		// bind to filter data
 		$filter_data = $this->dataForMenuFilter($is_rush, $view!=self::$MAP_VIEW, $search_query, $location,
 			$chosen_categories, $can_deliver, $price_filter, $rating_filter);
-		$data["foods"] = $foods;
-		$data['food_list_display'] = $food_list_display;
-		$data['empty_string'] = $this->lang->line("no_result");
-		$data['show_more'] = $show_more;
 
 		// Load views
 		$this->header();
 		$this->navigation();
 		$this->load->view("customer/menu_filter", $filter_data);
-		if ($view == self::$MAP_VIEW)
-			$this->load->view("customer/map", $data);
-		else
+		
+		// load map or list view
+		if ($view == self::$MAP_VIEW) {
+			// construct the foods_for_map array:
+			// [vendor_id => [user object, foods => [food objects]]]
+			$foods_for_map = array();
+			foreach ($foods as $foods_per_cat) {
+				foreach ($foods_per_cat as $food) {
+					if (!isset($foods_for_map[$food->vendor_id])) {
+						$foods_for_map[$food->vendor_id] = $this->user_model->getUserForUserId($food->vendor_id);
+						$foods_for_map[$food->vendor_id]->foods = array();
+					}
+					
+					// we keep the food_id to remove the duplicate foods in different categories
+					$foods_for_map[$food->vendor_id]->foods[$food->food_id] = $food;
+				}
+			}
+			
+			// flatten the food id indices
+			foreach ($foods_for_map as $vendor_id => $data_per_vendor){
+				$foods_for_map[$vendor_id]->foods = array_values($foods_for_map[$vendor_id]->foods);
+			}
+			
+			// bind to data
+			// flatten the vendor indices
+			$map_data['foods_for_map'] = array_values($foods_for_map);
+			$map_data['template'] = array("template"=>$this->load->view("customer/map_item", array(), true));
+			
+			// load view
+			$this->load->view("customer/map", $map_data);
+		} else {
+			// bind to data
+			$data["foods"] = $foods;
+			$data['food_list_display'] = $food_list_display;
+			$data['empty_string'] = $this->lang->line("no_result");
+			$data['show_more'] = $show_more;
+			
+			// load view
 			$this->load->view("customer/menu", $data);
+		}
+			
 		$this->footer();
 	}
 	

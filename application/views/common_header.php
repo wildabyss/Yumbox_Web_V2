@@ -45,10 +45,13 @@
 			
 			// get current location
 			var mapInfo = {};
+            var zoom = Cookies.get('zoom') ? parseInt(Cookies.get('zoom')) : 12;
+            zoom = isNaN(zoom) ? 12 : zoom;
 			// get coordinates from cookies
 			mapInfo.currentGeo = {
 				lat: Cookies.get('latitude'),
-				lng: Cookies.get('longitude')
+				lng: Cookies.get('longitude'),
+                zoom: zoom
 			}; 
 
 			if (mapInfo.currentGeo.lat === undefined || mapInfo.currentGeo.lng === undefined){
@@ -57,27 +60,31 @@
 					mapInfo.currentGeo = {
 						lat: position.coords.latitude,
 						lng: position.coords.longitude,
+                        zoom: zoom
 					};
 				}, function() {
 
 					// no location observed, use default location
 					mapInfo.currentGeo = {
 						lat: '<?php echo $location["latitude"]?>',
-						lng: '<?php echo $location["longitude"]?>'
+						lng: '<?php echo $location["longitude"]?>',
+                        zoom: zoom
 					};
 				});
 				
 				// save to cookie
 				Cookies.set('latitude', mapInfo.currentGeo.lat);
 				Cookies.set('longitude', mapInfo.currentGeo.lng);
+                Cookies.set('zoom', mapInfo.currentGeo.zoom);
 
 				// reload
 				location.reload();
 			} else if (mapInfo.currentGeo.lat == 'undefined' || mapInfo.currentGeo.lng == 'undefined'){
 				// FIXME: why doens't getCurrentPosition not go to error callback when failed???
 				mapInfo.currentGeo = {
-						lat: '<?php echo $location["latitude"]?>',
-						lng: '<?php echo $location["longitude"]?>'
+					lat: '<?php echo $location["latitude"]?>',
+					lng: '<?php echo $location["longitude"]?>',
+					zoom: zoom
 				};
 
 				// save to cookie

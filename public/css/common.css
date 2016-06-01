@@ -1117,6 +1117,48 @@ div.about_text h1 {
   display: none;
 }
 
+#menu_map {
+  max-height: 600px;
+  overflow: hidden;
+}
+
+#menu_map .kitchen-balloon ul {
+  list-style-type: none;
+  padding-left: 5px;
+}
+
+#menu_map .kitchen-balloon ul li {
+  display: flex;
+  flex-direction: row;
+}
+
+#menu_map .kitchen-balloon ul li a {
+  display: block;
+  margin: 5px;
+}
+
+#menu_map .kitchen-balloon ul li a.food-pic {
+  width: 60px;
+  height: 60px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("/imgs/image-not-available.gif");
+  border: solid 1px #b5b3ac;
+}
+
+#menu_map .kitchen-balloon ul li a.food-info {
+  flex: 1;
+}
+
+#menu_map .kitchen-balloon ul li a.food-info span {
+  display: block;
+}
+
+#menu_map .kitchen-balloon ul li a.food-info .food-name {
+  font-weight: bold;
+}
+
 #menu_map .map_wrapper {
   position: relative;
   width: 100%;
