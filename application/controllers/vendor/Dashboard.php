@@ -8,6 +8,10 @@ class Dashboard extends Yumbox_Controller {
 	 */
 	public function index()
 	{
+
+		$this->header();
+		$this->navigation();
 		$this->load->view("/vendor/dashboard");
+		$this->footer();
 	}
 }
