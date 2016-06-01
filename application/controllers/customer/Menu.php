@@ -145,7 +145,7 @@ class Menu extends Yumbox_Controller {
 		}
 		
 		// show more categories?
-		$show_more = count($categories) >= Search::$MAX_CATEGORIES_PAGE;
+		$show_more = count($categories) >= Search::$MAX_CATEGORIES_PAGE && $show_by_categories;
 		
 		// bind to filter data
 		$filter_data = $this->dataForMenuFilter($is_rush, $view!=self::$MAP_VIEW, $search_query, $location,

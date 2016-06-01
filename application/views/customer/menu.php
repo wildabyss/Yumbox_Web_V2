@@ -8,7 +8,9 @@
 	<div class="food_category_wrapper">
 		<div class="food_list_parent">
 			<h2></h2>
-			<p class="center <?php if (isset($is_rush) && $is_rush):?>rush<?php else:?>explore<?php endif?>"><button class="btn_show_more_categories">Show more categories</button></p>
+			<p class="center <?php if (isset($is_rush) && $is_rush):?>rush<?php else:?>explore<?php endif?>">
+				<button class="btn_show_more_categories">Show more categories</button>
+			</p>
 		</div>
 	</div>
 	<?php endif?>

@@ -588,10 +588,6 @@ nav ul#mobile_user_menu a.logo {
   display: flex;
 }
 
-.editable-input {
-  flex: 1;
-}
-
 .ui-button-text {
   font-size: 1.3rem;
 }
@@ -1214,27 +1210,35 @@ div.about_text h1 {
 #food_detail {
   max-width: 900px;
   margin: 0 auto;
-}
-
-#food_detail .editable-container.editable-inline {
-  width: 100%;
-  max-width: 600px;
+  /*input.input_name{
+		width: 150px;
+	}*/
 }
 
 #food_detail input {
   font-size: inherit;
+  line-height: 20px;
 }
 
-#food_detail .editable-input {
+#food_detail .editable-full .editable-container.editable-inline {
+  width: 100%;
+  max-width: 600px;
+}
+
+#food_detail .editable-full .editable-container.editable-inline .editable-input {
   width: 100%;
 }
 
-#food_detail .editable-input input {
+#food_detail .editable-full .editable-container.editable-inline .editable-input input {
   width: 100%;
 }
 
-#food_detail .editable-input textarea {
+#food_detail .editable-full .editable-container.editable-inline .editable-input textarea {
   width: 100%;
+}
+
+#food_detail input.input_price {
+  width: 70px;
 }
 
 #food_detail .tight_cluster {
@@ -1339,15 +1343,6 @@ div.about_text h1 {
 
 #food_detail .remove_button {
   color: #ed7a5d;
-}
-
-#food_detail input {
-  font-size: 1.6rem;
-}
-
-#food_detail input#input_price {
-  margin-left: 5px;
-  width: 45px;
 }
 
 @media (max-width: 900px) {

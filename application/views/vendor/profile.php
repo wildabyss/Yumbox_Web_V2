@@ -250,7 +250,7 @@
 					click:		function(){
 						$.ajax({
 							type: 		"post",
-							url: 		"/vendor/profile/remove_food/"+$("#dialog-confirm").data('food_id'),
+							url: 		"/vendor/food/remove_food/"+$("#dialog-confirm").data('food_id'),
 							data:		csrfData,
 							success:	function(data){
 								var respArr = $.parseJSON(data);

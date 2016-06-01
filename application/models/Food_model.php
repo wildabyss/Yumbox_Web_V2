@@ -254,4 +254,95 @@ class Food_model extends CI_Model {
 		
 		return true;
 	}
+	
+	
+	/**
+	 * Change the name of the food
+	 * @return true on success, error on failure
+	 */
+	public function changeName($food_id, $name){
+		if (!$this->db->query('update food set name = ? where id=?', array($name, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Change the name of the food
+	 * @return true on success, error on failure
+	 */
+	public function changeAlternateName($food_id, $alt_name){
+		if (!$this->db->query('update food set alternate_name = ? where id=?', array($alt_name, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Change the price of the food
+	 * @return true on success, error on failure
+	 */
+	public function changePrice($food_id, $price){
+		if (!$this->db->query('update food set price = ? where id=?', array($price, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Change the description
+	 * @return true on success, error on failure
+	 */
+	public function changeDescription($food_id, $descr){
+		if (!$this->db->query('update food set descr = ? where id=?', array($descr, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Change the description
+	 * @return true on success, error on failure
+	 */
+	public function changeIngredients($food_id, $ingredients){
+		if (!$this->db->query('update food set ingredients = ? where id=?', array($ingredients, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Change the description
+	 * @return true on success, error on failure
+	 */
+	public function changeHealthBenefits($food_id, $benefits){
+		if (!$this->db->query('update food set health_benefits = ? where id=?', array($benefits, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Change the description
+	 * @return true on success, error on failure
+	 */
+	public function changeEatingInstructions($food_id, $instructions){
+		if (!$this->db->query('update food set eating_instructions = ? where id=?', array($instructions, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
 }

@@ -53,7 +53,7 @@
 		$("#new_food_form").submit(function(e){
 			$.ajax({
 				type:		"post",
-				url:		"/vendor/profile/new_food",
+				url:		"/vendor/food/new_food",
 				data: 		$("#new_food_form").serialize(),
 				success:	function(response){
 					var respArr = $.parseJSON(response);

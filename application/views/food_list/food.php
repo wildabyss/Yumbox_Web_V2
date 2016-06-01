@@ -1,6 +1,7 @@
 <section id="food_detail">
-	<h1 class="title center"><?php echo prevent_xss(strtoupper($food->food_name))?>
-		<?php if ($food->food_alt_name != ""):?> | <?php echo prevent_xss($food->food_alt_name)?><?php endif?>
+	<h1 class="title center editable-full">
+		<a id="input_name" data-type="text" data-onblur="ignore"><?php echo prevent_xss(strtoupper($food->food_name))?></a>
+		<?php if ($is_my_profile || $food->food_alt_name != ""):?> | <a id="input_altname" data-type="text" data-onblur="ignore"><?php echo prevent_xss($food->food_alt_name)?></a><?php endif?>
 	</h1>
 	<h3 class="center"><a href="/vendor/profile/id/<?php echo $food->vendor_id?>"><?php echo prevent_xss($food->vendor_name)?></a></h3>
 	
@@ -56,7 +57,7 @@
 	<div class="about_dish">
 		<div class="about_dish_section">
 			<h2>Description</h2>
-			<p>
+			<p class="editable-full">
 			<?php if (!$is_my_profile):?>
 				<?php if ($food->descr == ""):?>
 				N/A
@@ -64,7 +65,7 @@
 				<?php echo prevent_xss($food->descr)?>
 				<?php endif?>
 			<?php else:?>
-				<a id="input_descr" data-type="textarea" data-rows="3" data-onblur="ignore"></a>
+				<a id="input_descr" data-type="textarea" data-rows="3" data-onblur="ignore"><?php echo prevent_xss($food->descr)?></a>
 			<?php endif?>
 			</p>
 			
@@ -77,7 +78,7 @@
 		
 		<div class="about_dish_section">
 			<h2>Ingredients</h2>
-			<p>
+			<p class="editable-full">
 			<?php if (!$is_my_profile):?>
 				<?php if ($food->ingredients == ""):?>
 				N/A
@@ -85,14 +86,14 @@
 				<?php echo prevent_xss($food->ingredients)?>
 				<?php endif?>
 			<?php else:?>
-				<a id="input_ingredients" data-type="textarea" data-rows="3" data-onblur="ignore"></a>
+				<a id="input_ingredients" data-type="textarea" data-rows="3" data-onblur="ignore"><?php echo prevent_xss($food->ingredients)?></a>
 			<?php endif?>
 			</p>
 		</div>
 		
 		<div class="about_dish_section">
 			<h2>Health Benefits</h2>
-			<p>
+			<p class="editable-full">
 			<?php if (!$is_my_profile):?>
 				<?php if ($food->health_benefits == ""):?>
 				N/A
@@ -100,14 +101,14 @@
 				<?php echo prevent_xss($food->health_benefits)?>
 				<?php endif?>
 			<?php else:?>
-				<a id="input_benefits" data-type="textarea" data-rows="3" data-onblur="ignore"></a>
+				<a id="input_benefits" data-type="textarea" data-rows="3" data-onblur="ignore"><?php echo prevent_xss($food->health_benefits)?></a>
 			<?php endif?>
 			</p>
 		</div>
 		
 		<div class="about_dish_section">
 			<h2>Eating Instructions</h2>
-			<p>
+			<p class="editable-full">
 			<?php if (!$is_my_profile):?>
 				<?php if ($food->eating_instructions == ""):?>
 				N/A
@@ -115,7 +116,7 @@
 				<?php echo prevent_xss($food->eating_instructions)?>
 				<?php endif?>
 			<?php else:?>
-				<a id="input_instructions" data-type="textarea" data-rows="3" data-onblur="ignore"></a>
+				<a id="input_instructions" data-type="textarea" data-rows="3" data-onblur="ignore"><?php echo prevent_xss($food->eating_instructions)?></a>
 			<?php endif?>
 			</p>
 		</div>
@@ -188,7 +189,7 @@
 	$("#btn_remove").button().click(function(e){
 		$.ajax({
 			type: 		"post",
-			url: 		"/vendor/profile/remove_food/<?php echo $food->food_id?>",
+			url: 		"/vendor/food/remove_food/<?php echo $food->food_id?>",
 			data:		csrfData,
 			success:	function(data){
 				var respArr = $.parseJSON(data);
@@ -207,10 +208,11 @@
 		});
 	});
 	
-	$("#input_price").editable({
-		url:		"",
+	$("#input_name").editable({
+		url:		"/vendor/food/change_name/<?php echo $food->food_id?>",
 		send:		"always",
 		params:		csrfData,
+		inputclass:	"input_name",
 		error:		function(response){
 			errorMessage("Unable to process");
 		},
@@ -223,21 +225,51 @@
 				errorMessage(respArr["error"]);
 				return respArr["error"];
 			}
+		}
+	});
+	
+	$("#input_altname").editable({
+		url:		"/vendor/food/change_altname/<?php echo $food->food_id?>",
+		send:		"always",
+		params:		csrfData,
+		inputclass:	"input_name",
+		error:		function(response){
+			errorMessage("Unable to process");
 		},
-		validate:	function(value){
-			value = $.trim(value);
+		success:	function(response){
+			var respArr = $.parseJSON(response);
 			
-			if (value == ""){
-				errorMessage("Cannot be blank");
-				return "cannot be blank";
+			if ("success" in respArr){
+				successMessage("Saved");
+			} else {
+				errorMessage(respArr["error"]);
+				return respArr["error"];
 			}
+		}
+	});
+	
+	$("#input_price").editable({
+		url:		"/vendor/food/change_price/<?php echo $food->food_id?>",
+		send:		"always",
+		params:		csrfData,
+		inputclass:	"input_price",
+		error:		function(response){
+			errorMessage("Unable to process");
+		},
+		success:	function(response){
+			var respArr = $.parseJSON(response);
 			
-			return {newValue: value};
+			if ("success" in respArr){
+				successMessage("Saved");
+			} else {
+				errorMessage(respArr["error"]);
+				return respArr["error"];
+			}
 		}
 	});
 	
 	$("#input_descr").editable({
-		url:		"",
+		url:		"/vendor/food/change_description/<?php echo $food->food_id?>",
 		send:		"always",
 		params:		csrfData,
 		error:		function(response){
@@ -252,21 +284,11 @@
 				errorMessage(respArr["error"]);
 				return respArr["error"];
 			}
-		},
-		validate:	function(value){
-			value = $.trim(value);
-			
-			if (value == ""){
-				errorMessage("Cannot be blank");
-				return "cannot be blank";
-			}
-			
-			return {newValue: value};
 		}
 	});
 	
 	$("#input_ingredients").editable({
-		url:		"",
+		url:		"/vendor/food/change_ingredients/<?php echo $food->food_id?>",
 		send:		"always",
 		params:		csrfData,
 		error:		function(response){
@@ -281,21 +303,11 @@
 				errorMessage(respArr["error"]);
 				return respArr["error"];
 			}
-		},
-		validate:	function(value){
-			value = $.trim(value);
-			
-			if (value == ""){
-				errorMessage("Cannot be blank");
-				return "cannot be blank";
-			}
-			
-			return {newValue: value};
 		}
 	});
 	
 	$("#input_benefits").editable({
-		url:		"",
+		url:		"/vendor/food/change_benefits/<?php echo $food->food_id?>",
 		send:		"always",
 		params:		csrfData,
 		error:		function(response){
@@ -310,21 +322,11 @@
 				errorMessage(respArr["error"]);
 				return respArr["error"];
 			}
-		},
-		validate:	function(value){
-			value = $.trim(value);
-			
-			if (value == ""){
-				errorMessage("Cannot be blank");
-				return "cannot be blank";
-			}
-			
-			return {newValue: value};
 		}
 	});
 	
 	$("#input_instructions").editable({
-		url:		"",
+		url:		"/vendor/food/change_instructions/<?php echo $food->food_id?>",
 		send:		"always",
 		params:		csrfData,
 		error:		function(response){
@@ -339,16 +341,6 @@
 				errorMessage(respArr["error"]);
 				return respArr["error"];
 			}
-		},
-		validate:	function(value){
-			value = $.trim(value);
-			
-			if (value == ""){
-				errorMessage("Cannot be blank");
-				return "cannot be blank";
-			}
-			
-			return {newValue: value};
 		}
 	});
 	
