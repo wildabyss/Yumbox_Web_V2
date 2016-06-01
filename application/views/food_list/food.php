@@ -3,51 +3,69 @@
 		<?php if ($food->food_alt_name != ""):?> | <?php echo prevent_xss($food->food_alt_name)?><?php endif?>
 	</h1>
 	<h3 class="center"><a href="/vendor/profile/id/<?php echo $food->vendor_id?>"><?php echo prevent_xss($food->vendor_name)?></a></h3>
-	<ul id="food_detail_gallery">
-		<?php if (count($food_pictures)==0):?>
-			<li>
-				<a class="food_pic"></a>
-			</li>
-		<?php else:?>
-			<?php foreach ($food_pictures as $picture):?>
-			<li>
-				<a class="food_pic" style="background-image:url('<?php echo $picture->path?>')"></a>
-			</li>
-			<?php endforeach?>
-		<?php endif?>
-	</ul>
+	
+	<label for="input_food_picture" class="food_pic_container <?php if ($is_my_profile):?>editable_pic<?php endif?>">
+		<a class="food_pic" <?php if ($food_picture !== false):?>style="background-image:url('<?php echo $food_picture->path?>')"<?php endif?>></a>
+		<div class="btn_update_picture">Edit photo</div>
+	</label>
+	<?php if ($is_my_profile):?>
+	<input id="input_food_picture" type="file" accept="image/*">
+	<?php endif?>
 	
 	<div class="tight_cluster">
 		<div class="order_info">
+			<?php if (!$is_my_profile):?>
+			<!-- display price and order button -->
 			<h3 class="price">$<?php echo $food->food_price?></h3>
-			<button id="add_to_order" <?php if (!$enable_order):?>disabled<?php endif?>>ADD ORDER +</button>
+			<button id="add_to_order" class="action_button" <?php if (!$enable_order):?>disabled<?php endif?>>ADD ORDER +</button>
+			<?php else:?>
+			<!-- display price and rating -->
+			<h3 class="price">$<a id="input_price" data-type="text" data-onblur="ignore"><?php echo $food->food_price?></a></h3>
+			<button id="btn_remove" class="action_button remove_button">Remove</button>
+			<?php endif?>
 		</div>
 		
 		<div class="order_info">
+			<?php if (!$is_my_profile):?>
+			<!-- display total historical orders, average rating, and prep time -->
 			<p class="orders"><?php echo $food->total_orders?> orders</p>
 			<?php if ($food->rating > 0):?>
-			<p class="rating"><span class="no_mobile">Average rating: </span>&hearts; <?php echo $food->rating?>%</p>
+			<p class="rating center"><span class="no_mobile">Average rating: </span>&hearts; <?php echo $food->rating?>%</p>
 			<?php endif?>
-			<p class="time"><span class="no_mobile">Preparation time: </span><?php echo $food->prep_time?></p>
+			<p class="time right-align"><span class="no_mobile">Preparation time: </span><?php echo $food->prep_time?></p>
+			<?php else:?>
+			<!-- display total orders and current orders -->
+			<p class="orders"><?php echo $food->total_orders?> total orders | <?php echo $unfilled_orders?> current orders</p>
+			<p class="rating right-align"><span class="no_mobile">Average rating: </span>&hearts; <?php echo $food->rating?>%</p>
+			<?php endif?>
 		</div>
 		
-		<?php if ($food->is_open):?>
+		<?php if (!$is_my_profile && $food->is_open):?>
 		<h3 class="is_open">KITCHEN OPEN</h3>
-		<?php else:?>
+		<?php elseif (!$is_my_profile):?>
 		<h3 class="is_closed">KITCHEN CLOSED</h3>
 		<?php endif?>
 	</div>
+	
+	<?php if ($is_my_profile):?>
+	<h2 class="title center">PREPARATION TIME</h2>
+	
+	<?php endif?>
 	
 	<h2 class="title center">ABOUT THE DISH</h2>
 	<div class="about_dish">
 		<div class="about_dish_section">
 			<h2>Description</h2>
 			<p>
+			<?php if (!$is_my_profile):?>
 				<?php if ($food->descr == ""):?>
 				N/A
 				<?php else:?>
 				<?php echo prevent_xss($food->descr)?>
 				<?php endif?>
+			<?php else:?>
+				<a id="input_descr" data-type="textarea" data-rows="3" data-onblur="ignore"></a>
+			<?php endif?>
 			</p>
 			
 			<div class="categories_container">
@@ -60,33 +78,45 @@
 		<div class="about_dish_section">
 			<h2>Ingredients</h2>
 			<p>
+			<?php if (!$is_my_profile):?>
 				<?php if ($food->ingredients == ""):?>
 				N/A
 				<?php else:?>
 				<?php echo prevent_xss($food->ingredients)?>
 				<?php endif?>
+			<?php else:?>
+				<a id="input_ingredients" data-type="textarea" data-rows="3" data-onblur="ignore"></a>
+			<?php endif?>
 			</p>
 		</div>
 		
 		<div class="about_dish_section">
 			<h2>Health Benefits</h2>
 			<p>
+			<?php if (!$is_my_profile):?>
 				<?php if ($food->health_benefits == ""):?>
 				N/A
 				<?php else:?>
 				<?php echo prevent_xss($food->health_benefits)?>
 				<?php endif?>
+			<?php else:?>
+				<a id="input_benefits" data-type="textarea" data-rows="3" data-onblur="ignore"></a>
+			<?php endif?>
 			</p>
 		</div>
 		
 		<div class="about_dish_section">
 			<h2>Eating Instructions</h2>
 			<p>
+			<?php if (!$is_my_profile):?>
 				<?php if ($food->eating_instructions == ""):?>
 				N/A
 				<?php else:?>
 				<?php echo prevent_xss($food->eating_instructions)?>
 				<?php endif?>
+			<?php else:?>
+				<a id="input_instructions" data-type="textarea" data-rows="3" data-onblur="ignore"></a>
+			<?php endif?>
 			</p>
 		</div>
 	</div>
@@ -105,7 +135,7 @@
 					<?php endif?>
 					
 					<div class="review_info">
-						<span><?php echo prevent_xss($review->vendor_name)?></span>
+						<span><?php echo prevent_xss($review->user_name)?></span>
 						<p>&hearts; <?php echo $review->rating?>%</p>
 						<?php if ($review->review != ""):?>
 						<p>"<?php echo prevent_xss($review->review)?>"</p>
@@ -118,38 +148,209 @@
 </section>
 
 <script>
-	$("#add_to_order")
-		.button()
-		.click(function(e){
-			<?php if ($current_user === false):?>
-			window.location.href = "/login?redirect=<?php echo urlencode($_SERVER['REQUEST_URI'])?>";
-			<?php else:?>
-			$.ajax({
-				type: 		"post",
-				url: 		"/customer/order/add/<?php echo $food->food_id?>",
-				data:		csrfData,
-				success:	function(data){
-					var respArr = $.parseJSON(data);
-					if ("success" in respArr){
-						$("#order_count").html(respArr["order_count"]);
-						
-						// display message
-						successMessage("Dish added");
-						
-						// enable/disable further orders
-						if (!respArr["enable_order"]){
-							$("#add_to_order").button("disable");
-						}
-					} else {
-						// error
-						errorMessage(respArr["error"]);
+	<?php if (!$is_my_profile):?>
+	
+	$("#add_to_order").button().click(function(e){
+		<?php if ($current_user === false):?>
+		window.location.href = "/login?redirect=<?php echo urlencode($_SERVER['REQUEST_URI'])?>";
+		<?php else:?>
+		$.ajax({
+			type: 		"post",
+			url: 		"/customer/order/add/<?php echo $food->food_id?>",
+			data:		csrfData,
+			success:	function(data){
+				var respArr = $.parseJSON(data);
+				if ("success" in respArr){
+					$("#order_count").html(respArr["order_count"]);
+					
+					// display message
+					successMessage("Dish added");
+					
+					// enable/disable further orders
+					if (!respArr["enable_order"]){
+						$("#add_to_order").button("disable");
 					}
-				},
-				error:		function(){
+				} else {
 					// error
-					errorMessage("Unable to process");
+					errorMessage(respArr["error"]);
 				}
-			});
-			<?php endif?>
+			},
+			error:		function(){
+				// error
+				errorMessage("Unable to process");
+			}
 		});
+		<?php endif?>
+	});
+	
+	<?php else:?>
+	
+	$("#btn_remove").button().click(function(e){
+		$.ajax({
+			type: 		"post",
+			url: 		"/vendor/profile/remove_food/<?php echo $food->food_id?>",
+			data:		csrfData,
+			success:	function(data){
+				var respArr = $.parseJSON(data);
+				if ("success" in respArr){
+					// display message
+					successMessage("Dish removed");
+				} else {
+					// error
+					errorMessage(respArr["error"]);
+				}
+			},
+			error:		function(){
+				// error
+				errorMessage("Unable to process");
+			}
+		});
+	});
+	
+	$("#input_price").editable({
+		url:		"",
+		send:		"always",
+		params:		csrfData,
+		error:		function(response){
+			errorMessage("Unable to process");
+		},
+		success:	function(response){
+			var respArr = $.parseJSON(response);
+			
+			if ("success" in respArr){
+				successMessage("Saved");
+			} else {
+				errorMessage(respArr["error"]);
+				return respArr["error"];
+			}
+		},
+		validate:	function(value){
+			value = $.trim(value);
+			
+			if (value == ""){
+				errorMessage("Cannot be blank");
+				return "cannot be blank";
+			}
+			
+			return {newValue: value};
+		}
+	});
+	
+	$("#input_descr").editable({
+		url:		"",
+		send:		"always",
+		params:		csrfData,
+		error:		function(response){
+			errorMessage("Unable to process");
+		},
+		success:	function(response){
+			var respArr = $.parseJSON(response);
+			
+			if ("success" in respArr){
+				successMessage("Saved");
+			} else {
+				errorMessage(respArr["error"]);
+				return respArr["error"];
+			}
+		},
+		validate:	function(value){
+			value = $.trim(value);
+			
+			if (value == ""){
+				errorMessage("Cannot be blank");
+				return "cannot be blank";
+			}
+			
+			return {newValue: value};
+		}
+	});
+	
+	$("#input_ingredients").editable({
+		url:		"",
+		send:		"always",
+		params:		csrfData,
+		error:		function(response){
+			errorMessage("Unable to process");
+		},
+		success:	function(response){
+			var respArr = $.parseJSON(response);
+			
+			if ("success" in respArr){
+				successMessage("Saved");
+			} else {
+				errorMessage(respArr["error"]);
+				return respArr["error"];
+			}
+		},
+		validate:	function(value){
+			value = $.trim(value);
+			
+			if (value == ""){
+				errorMessage("Cannot be blank");
+				return "cannot be blank";
+			}
+			
+			return {newValue: value};
+		}
+	});
+	
+	$("#input_benefits").editable({
+		url:		"",
+		send:		"always",
+		params:		csrfData,
+		error:		function(response){
+			errorMessage("Unable to process");
+		},
+		success:	function(response){
+			var respArr = $.parseJSON(response);
+			
+			if ("success" in respArr){
+				successMessage("Saved");
+			} else {
+				errorMessage(respArr["error"]);
+				return respArr["error"];
+			}
+		},
+		validate:	function(value){
+			value = $.trim(value);
+			
+			if (value == ""){
+				errorMessage("Cannot be blank");
+				return "cannot be blank";
+			}
+			
+			return {newValue: value};
+		}
+	});
+	
+	$("#input_instructions").editable({
+		url:		"",
+		send:		"always",
+		params:		csrfData,
+		error:		function(response){
+			errorMessage("Unable to process");
+		},
+		success:	function(response){
+			var respArr = $.parseJSON(response);
+			
+			if ("success" in respArr){
+				successMessage("Saved");
+			} else {
+				errorMessage(respArr["error"]);
+				return respArr["error"];
+			}
+		},
+		validate:	function(value){
+			value = $.trim(value);
+			
+			if (value == ""){
+				errorMessage("Cannot be blank");
+				return "cannot be blank";
+			}
+			
+			return {newValue: value};
+		}
+	});
+	
+	<?php endif?>
 </script>

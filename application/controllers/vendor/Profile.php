@@ -308,6 +308,9 @@ class Profile extends Yumbox_Controller {
 	}
 	
 	
+	
+	
+	
 	/**
 	 * AJAX method for creating a new dish
 	 * echo json string:

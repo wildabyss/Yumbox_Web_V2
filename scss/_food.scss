@@ -2,6 +2,26 @@
 	max-width: 900px;
 	margin: 0 auto;
 	
+	.editable-container.editable-inline{
+		width: 100%;
+		max-width: 600px;
+	}
+	
+	input{
+		font-size: inherit;
+	}
+
+	.editable-input{
+		width: 100%;
+		
+		input{
+			width: 100%;
+		}
+		textarea{
+			width: 100%;
+		}
+	}
+	
 	.tight_cluster{
 		margin: 0 auto;
 		margin-bottom: 40px;
@@ -17,7 +37,6 @@
 		
 		.price{
 			flex: 1;
-			text-align: left;
 			margin-right: 20px;
 		}
 		
@@ -27,32 +46,19 @@
 		
 		.rating{
 			flex: 1;
-			text-align: center;
 		}
 		
 		.time{
 			flex: 1;
-			text-align: right;
-		}
-		
-		#add_to_order{
-			display: block;
-			white-space:nowrap;
-			height: 32px;
-			width: 145px;
 		}
 	}
 	
-	ul#food_detail_gallery{
-		padding: 0;
-		
-		li{
-			position: relative;
-			display: block;
-			list-style: none;
-			height: 500px;
-			margin: 0 auto;
-		}
+	label.food_pic_container{
+		position: relative;
+		display: block;
+		list-style: none;
+		height: 500px;
+		margin: 0 auto;
 		
 		.food_pic{
 			display: block;
@@ -112,15 +118,30 @@
 			flex: 1;
 		}
 	}
+	
+	.action_button{
+		display: block;
+		white-space:nowrap;
+		height: 32px;
+	}
+	.remove_button{
+		color: $red;
+	}
+	
+	input{
+		font-size: 1.6rem;
+	}
+	input#input_price{
+		margin-left: 5px;
+		width: 45px;
+	}
 }
 
 @media (max-width: 900px) {
 	#food_detail{
-		ul#food_detail_gallery{
-			li{
-				height: 0;
-				padding-bottom: 56%;
-			}
+		label.food_pic_container{
+			height: 0;
+			padding-bottom: 56%;
 		}
 	}
 }
@@ -140,6 +161,11 @@
 		}
 		
 		.is_open{
+			margin-left: auto;
+			margin-right: auto;
+		}
+		
+		.is_closed{
 			margin-left: auto;
 			margin-right: auto;
 		}

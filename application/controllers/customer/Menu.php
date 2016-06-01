@@ -188,7 +188,7 @@ class Menu extends Yumbox_Controller {
 	/**
 	 * GET method for displaying a particular food item
 	 */
-	public function item($food_id=false){
+	public function item($food_id=false, $display=true){
 		// check if user has logged in
 		if ($this->login_util->isUserLoggedIn()){
 			$current_user = $this->login_util->getUserId();
@@ -202,6 +202,9 @@ class Menu extends Yumbox_Controller {
 			show_404();
 		}
 		
+		// does this food belong to the logged in user?
+		$is_my_profile = ($food->vendor_id == $current_user);
+		
 		// massage food data
 		$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
 		$food->prep_time = prep_time_for_display($pickup_time);
@@ -213,8 +216,9 @@ class Menu extends Yumbox_Controller {
 		// get food pictures
 		$food_pictures = $this->food_model->getFoodPicturesForFoodId($food_id);
 		// for now, grab only one picture
-		if (count($food_pictures>1))
-			$food_pictures = array_slice($food_pictures, 0, 1);
+		$food_picture = false;
+		if (count($food_pictures)>0)
+			$food_picture = $food_pictures[0];
 		
 		// get food categories
 		$categories = $this->food_category_model->getAllCategoriesForFood($food_id);
@@ -230,12 +234,14 @@ class Menu extends Yumbox_Controller {
 		
 		// bind to data
 		$data['food'] = $food;
-		$data['food_pictures'] = $food_pictures;
+		$data['food_picture'] = $food_picture;
 		$data['categories'] = $categories;
 		$data['reviews'] = $reviews;
 		$data['user_pictures'] = $user_pictures;
 		$data['current_user'] = $current_user;
 		$data['enable_order'] = $enable_order;
+		$data['is_my_profile'] = $is_my_profile;
+		$data['unfilled_orders'] = $unfilled_orders;
 		
 		// Load views
 		$this->header();

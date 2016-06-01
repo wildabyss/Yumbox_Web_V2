@@ -36,7 +36,7 @@
 		
 		<?php if (!$is_my_profile && $user->descr != "" || $is_my_profile):?>
 		<h3>ABOUT ME</h3>
-		<p class="edit_descr_container"><a id="edit_user_descr" data-type="textarea" data-onblur="ignore"><?php echo prevent_xss($user->descr)?></a></p>
+		<p><a id="edit_user_descr" data-type="textarea" data-onblur="ignore"><?php echo prevent_xss($user->descr)?></a></p>
 		<?php endif?>
 	</div>
 </section>

@@ -557,6 +557,7 @@ nav ul#mobile_user_menu a.logo {
   margin: 0;
   width: 20px !important;
   height: 20px !important;
+  color: #ed7a5d;
 }
 
 .btn_remove span {
@@ -1173,6 +1174,27 @@ div.about_text h1 {
   margin: 0 auto;
 }
 
+#food_detail .editable-container.editable-inline {
+  width: 100%;
+  max-width: 600px;
+}
+
+#food_detail input {
+  font-size: inherit;
+}
+
+#food_detail .editable-input {
+  width: 100%;
+}
+
+#food_detail .editable-input input {
+  width: 100%;
+}
+
+#food_detail .editable-input textarea {
+  width: 100%;
+}
+
 #food_detail .tight_cluster {
   margin: 0 auto;
   margin-bottom: 40px;
@@ -1189,7 +1211,6 @@ div.about_text h1 {
 
 #food_detail .order_info .price {
   flex: 1;
-  text-align: left;
   margin-right: 20px;
 }
 
@@ -1199,26 +1220,13 @@ div.about_text h1 {
 
 #food_detail .order_info .rating {
   flex: 1;
-  text-align: center;
 }
 
 #food_detail .order_info .time {
   flex: 1;
-  text-align: right;
 }
 
-#food_detail .order_info #add_to_order {
-  display: block;
-  white-space: nowrap;
-  height: 32px;
-  width: 145px;
-}
-
-#food_detail ul#food_detail_gallery {
-  padding: 0;
-}
-
-#food_detail ul#food_detail_gallery li {
+#food_detail label.food_pic_container {
   position: relative;
   display: block;
   list-style: none;
@@ -1226,7 +1234,7 @@ div.about_text h1 {
   margin: 0 auto;
 }
 
-#food_detail ul#food_detail_gallery .food_pic {
+#food_detail label.food_pic_container .food_pic {
   display: block;
   position: absolute;
   height: 100%;
@@ -1281,8 +1289,27 @@ div.about_text h1 {
   flex: 1;
 }
 
+#food_detail .action_button {
+  display: block;
+  white-space: nowrap;
+  height: 32px;
+}
+
+#food_detail .remove_button {
+  color: #ed7a5d;
+}
+
+#food_detail input {
+  font-size: 1.6rem;
+}
+
+#food_detail input#input_price {
+  margin-left: 5px;
+  width: 45px;
+}
+
 @media (max-width: 900px) {
-  #food_detail ul#food_detail_gallery li {
+  #food_detail label.food_pic_container {
     height: 0;
     padding-bottom: 56%;
   }
@@ -1296,6 +1323,10 @@ div.about_text h1 {
     display: none;
   }
   #food_detail .is_open {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #food_detail .is_closed {
     margin-left: auto;
     margin-right: auto;
   }

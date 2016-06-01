@@ -62,7 +62,15 @@
 	});
 	
 	$(".toggle_food_detail").click(function(){
+		var food_id = $(this).attr("food_id");
 		
+		
+		
+		$("#food_modal_container").dialog({
+			autoOpen: true,
+			modal: true,
+			resizable: false
+		});
 	});
 	<?php endif?>
 </script>
