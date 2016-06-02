@@ -10,7 +10,6 @@ class Search {
 	
 	// location based search radius
 	public static $SEARCH_RADIUS = 25;		// 25KM radius for search results
-	public static $EARTH_RADIUS = 6371;
 	
 	// maximum number of results per pagination
 	public static $MAX_CATEGORIES_PAGE = 5;
@@ -36,7 +35,7 @@ class Search {
 		// decipher response
 		$output_arr = json_decode($output);
 		if ($output_arr !== false && $output_arr != NULL){
-			if (isset($output_arr->error_message))
+			if (isset($output_arr->error_message) || count($output_arr->results)==0)
 				return false;
 			else{
 				$latitude = $output_arr->results[0]->geometry->location->lat;
@@ -95,6 +94,13 @@ class Search {
 	 *
 	 * @param string $search_query
 	 * @param array $filters
+	 *		is_rush		=> bool
+	 *		is_open		=> bool
+	 *		category_ids   => array
+	 *		min_rating	=> int
+	 *		min_price	 => float
+	 *		max_price	 => float
+	 *		location	=> {latitude, longitude}
 	 * @param bool $show_by_categories
 	 *		if true, foods will be returned per category as index
 	 * 		if false, foods will be returned with index "all"

@@ -7,7 +7,7 @@
 			<a href="/menu/item/{{food_id}}" class="food-info">
 				<span class="food-name">{{food_name}}</span>
 				<span class="food-price">${{food_price}}</span>
-				<span class="food-rating">&hearts; {{rating}}</span>
+				<span class="food-rating">&hearts; {{rating}}%</span>
 				<span class="food-prep-time">{{prep_time}}</span>
 			</a>
 		</li>

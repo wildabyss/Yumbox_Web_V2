@@ -12,8 +12,8 @@ insert into user (status, date_joined, name, email, is_open, descr)
     
 insert into address (is_primary, user_id, address, city, province, postal_code, country, latitude, longitude)
 	values (1, 1, '80 Western Battery Rd', 'Toronto', 'Ontario', 'M6K3S1', 'Canada', 43.6396, -79.4146);
-insert into address (is_primary, user_id, address, city, province, postal_code, country)
-	values (1, 2, '33 Harbour Square', 'Toronto', 'Ontario', 'M5J 2G2', 'Canada');
+insert into address (is_primary, user_id, address, city, province, postal_code, country, latitude, longitude)
+	values (1, 2, '33 Harbour Square', 'Toronto', 'Ontario', 'M5J 2G2', 'Canada', 43.640636, -79.377629);
 insert into address (is_primary, user_id, address, city, province, postal_code, country, latitude, longitude)
 	values (1, 3, '25 Mutual St', 'Toronto', 'Ontario', 'M5B2K1', 'Canada', 43.6543, -79.3743);
     

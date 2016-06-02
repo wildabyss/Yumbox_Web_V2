@@ -21,20 +21,20 @@ class Food_category_model extends CI_Model {
 	 *
 	 * @param $filters:
 	 *	is_rush		=> bool
-	 *	can_deliver   => bool
 	 *	vendor_id	 => int
 	 *	min_rating	=> int
 	 *	min_price	 => float
 	 *	max_price	 => float
+	 *  location	=> {latitude, longitude}
 	 */
 	public function getAllActiveRelatedCategories(array $category_ids, $limit, array $filters){
 		// sort through filters
 		$is_rush = isset($filters["is_rush"])?$filters["is_rush"]:false;
-		$can_deliver = isset($filters["can_deliver"])?$filters["can_deliver"]:false;
 		$vendor_id = isset($filters["vendor_id"])?$filters["vendor_id"]:false;
 		$min_rating = isset($filters["min_rating"])?$filters["min_rating"]:false;
 		$min_price = isset($filters["min_price"])?$filters["min_price"]:false;
 		$max_price = isset($filters["max_price"])?$filters["max_price"]:false;
+		$location = isset($filters["location"])?filters["location"]:false;
 		
 		// base query
 		$query_str = '
@@ -49,6 +49,8 @@ class Food_category_model extends CI_Model {
 				on a.food_id = f.id
 				left join user u
 				on u.id = f.user_id
+				left join address ad
+				on ad.user_id = f.user_id
 				where
 					f.status = ? 
 					and u.status > ?
@@ -66,7 +68,6 @@ class Food_category_model extends CI_Model {
 		if ($min_price !== false){
 			$query_str .= ' and f.price >= ? and f.price <= ?';
 		}
-		
 		// filter categories	
 		$query_str .= ' and a.food_category_id in (';
 		$counter = 0;
@@ -77,6 +78,12 @@ class Food_category_model extends CI_Model {
 			
 			$counter++;
 		}
+		// filter locations
+		if ($location !== false){
+			$query_str .= ' and ad.longitude is not null and ad.latitude is not null
+				and distance_btw_coords(ad.latitude, ad.longitude, ?, ?) <= ?';
+		}
+		// end search query
 		$query_str .= ')) 
 			order by 
 				c.main desc, c.name asc
@@ -98,6 +105,11 @@ class Food_category_model extends CI_Model {
 			$bindings[] = $min_price;
 			$bindings[] = $max_price;
 		}
+		if ($location !== false){
+			$bindings[] = $location["latitude"];
+			$bindings[] = $location["longitude"];
+			$bindings[] = Search::$SEARCH_RADIUS;
+		}
 		$bindings[] = $limit;
 		
 		// perform database query
@@ -110,20 +122,20 @@ class Food_category_model extends CI_Model {
 	 *
 	 * @param $filters:
 	 *	is_rush		=> bool
-	 *	can_deliver   => bool
 	 *	vendor_id	 => int
 	 *	min_rating	=> int
 	 *	min_price	 => float
 	 *	max_price	 => float
+	 *  location	=> {latitude, longitude}
 	 */
 	public function getAllActiveCategories($limit, array $filters){
 		// sort through filters
 		$is_rush = isset($filters["is_rush"])?$filters["is_rush"]:false;
-		$can_deliver = isset($filters["can_deliver"])?$filters["can_deliver"]:false;
 		$vendor_id = isset($filters["vendor_id"])?$filters["vendor_id"]:false;
 		$min_rating = isset($filters["min_rating"])?$filters["min_rating"]:false;
 		$min_price = isset($filters["min_price"])?$filters["min_price"]:false;
 		$max_price = isset($filters["max_price"])?$filters["max_price"]:false;
+		$location = isset($filters["location"])?$filters["location"]:false;
 		
 		// base query string
 		$query_str = '
@@ -135,6 +147,8 @@ class Food_category_model extends CI_Model {
 			on f.id = a.food_id
 			left join user u
 			on u.id = f.user_id
+			left join address ad
+			on ad.user_id = f.user_id
 			where
 				f.status = ?
 				and u.status > ?
@@ -156,6 +170,11 @@ class Food_category_model extends CI_Model {
 		if ($vendor_id !== false){
 			$query_str .= ' and u.id = ?';
 		}
+		// filter locations
+		if ($location !== false){
+			$query_str .= ' and ad.longitude is not null and ad.latitude is not null
+				and distance_btw_coords(ad.latitude, ad.longitude, ?, ?) <= ?';
+		}
 		$query_str .= ' order by c.name limit ?';
 	
 		// bindings
@@ -176,6 +195,11 @@ class Food_category_model extends CI_Model {
 		}
 		if ($vendor_id !== false){
 			$bindings[] = $vendor_id;
+		}
+		if ($location !== false){
+			$bindings[] = $location["latitude"];
+			$bindings[] = $location["longitude"];
+			$bindings[] = Search::$SEARCH_RADIUS;
 		}
 		$bindings[] = $limit;
 		

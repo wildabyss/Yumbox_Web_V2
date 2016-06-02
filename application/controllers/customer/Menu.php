@@ -94,7 +94,7 @@ class Menu extends Yumbox_Controller {
 		
 		// get user inputs
 		$search_query = $this->input->get('search');
-		$location = $this->input->get('location');
+		$location_str = $this->input->get('location');
 		$chosen_categories = $this->input->get('category');
 		if ($chosen_categories==NULL)
 			$chosen_categories = array();
@@ -106,17 +106,21 @@ class Menu extends Yumbox_Controller {
 		$rating_filter = $this->input->get('rating_min')==""?0:$this->input->get('rating_min');
 	
 		// get user location
-		if ($location==""){
-			$user_id = $this->login_util->getUserId();
-			$coords = $this->search->getUserCoordinates($user_id);
-			$location = "{$coords["latitude"]}, {$coords["longitude"]}";
-		} else {
-			$coords = $this->search->geocodeLocation($location);
+		$location = false;
+		// geocode the input location string
+		if ($location_str!=""){
+			$location = $this->search->geocodeLocation($location_str);
 			
-			if ($coords !== false){
-				setcookie("latitude", $coords["latitude"]);
-				setcookie("longitude", $coords["longitude"]);
+			if ($location !== false){
+				setcookie("latitude", $location["latitude"]);
+				setcookie("longitude", $location["longitude"]);
 			}
+		}
+		// use fallback location if we cannot identify any input location
+		if ($location === false){
+			$user_id = $this->login_util->getUserId();
+			$location = $this->search->getUserCoordinates($user_id);
+			$location_str = "{$location["latitude"]}, {$location["longitude"]}";
 		}
 	
 		// search filters
@@ -148,7 +152,7 @@ class Menu extends Yumbox_Controller {
 		$show_more = count($categories) >= Search::$MAX_CATEGORIES_PAGE && $show_by_categories;
 		
 		// bind to filter data
-		$filter_data = $this->dataForMenuFilter($is_rush, $view!=self::$MAP_VIEW, $search_query, $location,
+		$filter_data = $this->dataForMenuFilter($is_rush, $view!=self::$MAP_VIEW, $search_query, $location_str,
 			$chosen_categories, $can_deliver, $price_filter, $rating_filter);
 
 		// Load views
