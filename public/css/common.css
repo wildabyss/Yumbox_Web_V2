@@ -293,22 +293,58 @@ div#global {
   }
 }
 
+.hide {
+  display: none;
+}
+
+.warning {
+  color: #ed7a5d;
+}
+
+.normal {
+  color: #95d1d1;
+}
+
 .btn {
   background: lightgrey;
   border: 0;
-  padding: 1rem 2rem;
+  padding: .5rem 2rem;
   text-transform: uppercase;
   display: block;
   margin: 1rem 0;
   cursor: pointer;
+  transition: all .2s;
 }
 
-.btn_normal {
+.btn_activated {
   background: #95d1d1;
+}
+
+.btn_deactivated {
+  background: white;
+  border: 1px solid #95d1d1;
+}
+
+.btn_deactivated:hover {
+  background: #95d1d1;
+}
+
+.btn_fade {
+  background: #dcf0f0;
 }
 
 .btn_warning {
   background: #ed7a5d;
+}
+
+.btn_sub {
+  background: #f8f8f6;
+}
+
+.btn_weak {
+  background: none;
+  color: #b5b3ac;
+  text-transform: capitalize;
 }
 
 .span_normal {
@@ -1703,43 +1739,196 @@ div.about_text h1 {
   }
 }
 
-.dshbd_profile {
+.dshbd > * {
+  margin: 0 -2px;
+}
+
+.dshbd .dshbd_profile {
   width: 20%;
   display: inline-block;
   vertical-align: top;
 }
 
-.dshbd_profile img {
+.dshbd .dshbd_profile img {
   width: 100%;
   padding-bottom: 1rem;
 }
 
-.dshbd_profile > * {
+.dshbd .dshbd_profile > * {
   padding-bottom: 2rem;
 }
 
-.dshbd_profile .dshbd_time p {
+.dshbd .dshbd_profile .dshbd_time p {
   color: #b5b3ac;
   margin-bottom: 0;
   margin-top: 0;
 }
 
-.dshbd_profile .dshbd_controller h3 {
+.dshbd .dshbd_profile .dshbd_controller h3 {
   margin: 0;
 }
 
-.dshbd_review {
+.dshbd .dshbd_review {
   margin-left: 10%;
   width: 70%;
   display: inline-block;
   vertical-align: top;
 }
 
-.dshbd_review .dshbd_review_waiting > h2 {
+.dshbd .dshbd_review > * {
+  padding-bottom: 2rem;
+}
+
+.dshbd .dshbd_review .dshbd_review_summary p {
+  margin: 5px;
+}
+
+.dshbd .dshbd_review .order {
+  padding-bottom: 3rem;
+}
+
+.dshbd .dshbd_review .dshbd_review_waiting > h3,
+.dshbd .dshbd_review .dshbd_review_finished > h3 {
   margin-bottom: 0;
 }
 
-.dshbd_review .order_name_number span {
+.dshbd .dshbd_review .order_basicInfo h3 {
+  margin: 0;
+}
+
+.dshbd .dshbd_review .order_name_number {
+  margin: 0;
+}
+
+.dshbd .dshbd_review .order_name_number p {
+  display: inline-block;
   color: #b5b3ac;
   padding-left: 2rem;
+}
+
+.dshbd .dshbd_review .order_status p {
+  margin: 0;
+}
+
+.dshbd .dshbd_review .order_status .btn_weak {
+  display: none;
+}
+
+.dshbd .dshbd_review .order_status:hover .btn_weak {
+  display: inline-block;
+}
+
+.dshbd .dshbd_review .order_deliverInfo,
+.dshbd .dshbd_review .order_status {
+  width: 50%;
+  display: inline-block;
+  vertical-align: bottom;
+  margin: 0 -1px;
+}
+
+.dshbd .dshbd_review .order_deliver {
+  margin-bottom: 10px;
+}
+
+.dshbd .dshbd_review .order_add {
+  margin-top: 0;
+}
+
+.dshbd .dshbd_review .order_status {
+  text-align: right;
+}
+
+.dshbd .dshbd_review .order_status .btn_activated,
+.dshbd .dshbd_review .order_status .btn_fade,
+.dshbd .dshbd_review .order_status .btn_sub {
+  display: inline-block;
+}
+
+.dshbd .dshbd_review .order_item > * {
+  margin: 0 -2px;
+  display: inline-block;
+  vertical-align: top;
+  padding: 0 1rem;
+}
+
+.dshbd .dshbd_review .order_item > * h3 {
+  margin: 5px 0;
+}
+
+.dshbd .dshbd_review .order_names_number {
+  width: 50%;
+}
+
+.dshbd .dshbd_review .order_requirement {
+  width: 35%;
+}
+
+.dshbd .dshbd_review .order_item_price {
+  width: 15%;
+  text-align: right;
+}
+
+.dshbd .dshbd_review .order_names {
+  display: inline-block;
+  padding-left: 1rem;
+}
+
+.dshbd .dshbd_review .order_total p {
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .dshbd .dshbd_profile,
+  .dshbd .dshbd_review {
+    width: 100%;
+  }
+  .dshbd .dshbd_profile p,
+  .dshbd .dshbd_review p {
+    margin: 5px 0;
+  }
+  .dshbd .dshbd_profile > img {
+    display: block;
+    max-width: 150px;
+    padding: 2rem;
+    margin: 0 auto;
+  }
+  .dshbd .dshbd_profile > * {
+    text-align: center;
+    padding-bottom: 1rem;
+  }
+  .dshbd .dshbd_profile h3 {
+    margin: 0;
+  }
+  .dshbd .dshbd_profile .dshbd_controller button {
+    display: block;
+    margin: 1rem auto;
+  }
+  .dshbd .dshbd_profile .dshbd_orderFilter button {
+    display: inline-block;
+  }
+  .dshbd .dshbd_review {
+    margin-left: 0;
+    padding: 0 1rem;
+  }
+  .dshbd .dshbd_review .floatLeft,
+  .dshbd .dshbd_review .floatRight {
+    float: none;
+  }
+  .dshbd .dshbd_review_summary {
+    text-align: center;
+  }
+  .dshbd .order_deliver_status .order_deliverInfo,
+  .dshbd .order_deliver_status .order_status {
+    width: 100%;
+    text-align: left;
+  }
+  .dshbd .order_names_number > h3 {
+    display: inline-block;
+    width: 5%;
+    vertical-align: top;
+  }
+  .dshbd .order_names_number .order_names {
+    width: 90%;
+    vertical-align: top;
+  }
 }

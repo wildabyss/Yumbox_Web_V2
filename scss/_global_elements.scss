@@ -17,24 +17,60 @@ div#global{
 	}
 }
 
+.hide{
+	display: none;
+}
+
 //some global class
+.warning{
+	color: $red;
+}
+
+.normal{
+	color:$blue;
+}
+
 .btn{
 	background:lightgrey;
 	border:0;
-	padding:1rem 2rem;
+	padding:.5rem 2rem;
 	text-transform: uppercase;
 	display: block;
 	margin:1rem 0;
 	cursor: pointer;
+	transition:all .2s;
 }
 
-.btn_normal{
+.btn_activated{
 	background:$blue;
+}
+
+.btn_deactivated{
+	background:white;
+	border: 1px solid $blue;
+	&:hover{
+		background:$blue;
+	}
+}
+
+.btn_fade{
+	background:lighten($blue,20%);
 }
 
 .btn_warning{
 	background:$red;
 }
+
+.btn_sub{
+	background:lighten($grey,10%);
+}
+
+.btn_weak{
+	background:none;
+	color:$darkGrey;
+	text-transform: capitalize;
+}
+
 .span_normal{
 	background-color: lighten($blue,20%);
 	padding: 0 5px;
@@ -61,6 +97,7 @@ div#global{
 .floatLeft{
 	float:left;
 }
+
 
 // IE 11 fix: must specify width for centering
 @media (min-width: $max_display_width) {
