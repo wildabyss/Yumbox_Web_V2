@@ -11,6 +11,55 @@ div#global{
 	width: 100%;
 	max-width: 1280px;
 	margin: 0 auto;
+	padding: 0 2rem;
+	@media (max-width: $mob_width) {
+		padding: 0;
+	}
+}
+
+//some global class
+.btn{
+	background:lightgrey;
+	border:0;
+	padding:1rem 2rem;
+	text-transform: uppercase;
+	display: block;
+	margin:1rem 0;
+	cursor: pointer;
+}
+
+.btn_normal{
+	background:$blue;
+}
+
+.btn_warning{
+	background:$red;
+}
+.span_normal{
+	background-color: lighten($blue,20%);
+	padding: 0 5px;
+}
+.span_warning{
+	background-color:lighten($red,20%);
+	padding: 0 5px;
+}
+
+.afterline:after{
+	content: "";
+	width:100%;
+	height:1px;
+	background-color:$almostBlack;
+	display: inline-block;
+	position: relative;
+  top: -10px;
+  visibility: visible;
+}
+
+.floatRight{
+	float:right;
+}
+.floatLeft{
+	float:left;
 }
 
 // IE 11 fix: must specify width for centering

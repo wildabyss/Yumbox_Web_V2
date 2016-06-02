@@ -1,12 +1,40 @@
 .dshbd_profile{
-	width: 25%;
+	width: 20%;
 	display: inline-block;
 	vertical-align: top;
+	img{
+		width: 100%;
+		padding-bottom: 1rem;
+	}
+	& > *{
+		padding-bottom: 2rem;
+	}
+	.dshbd_time{
+		p{
+			color:$darkGrey;
+			margin-bottom: 0;
+			margin-top: 0;
+		}
+	}
+	.dshbd_controller{
+		h3{
+			margin: 0;
+		}
+	}
 }
 
 .dshbd_review{
-	margin-left:5%;
+	margin-left:10%;
 	width: 70%;
 	display: inline-block;
 	vertical-align: top;
+	.dshbd_review_waiting{
+		> h2{
+			margin-bottom: 0;
+		}
+	}
+	.order_name_number span{
+		color:$darkGrey;
+		padding-left: 2rem;
+	}
 }

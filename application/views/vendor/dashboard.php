@@ -13,8 +13,9 @@
 		</div>
 
 		<div class="dshbd_controller">
-			<button class="btn btn_normal">OPEN KITCHEN!</button>
-			<button class="btn btn_close">CLOSE KITCHEN!</button>
+		<!-- switch showing -->
+			<button class="btn btn_normal"><h3>OPEN KITCHEN!</h3></button>
+			<button class="btn btn_warning"><h3>CLOSE KITCHEN!</h3></button>
 		</div>
 
 		<div class="dshbd_orderFilter">
@@ -27,26 +28,28 @@
 	</div><div class="dshbd_review">
 		<div class="dshbd_review_summary">
 			<h3>Hi, Jimmy. It's 13:00, Wed, May 30th. </h3>
-			<p>You have <span> 2 </span> dishes waiting,</p>
-			<p><span>28</span> quota left.</p>
-			<p>You have made <span>15</span> dishes today.</p>
+			<p>You have <span class="span_warning"> 2 </span> dishes waiting,</p>
+			<p><span class="span_normal">28</span> quota left.</p>
+			<p>You have made <span class="span_normal">15</span> dishes today.</p>
 		</div>
 
 		<div class="dshbd_review_waiting">
-			<h2>Waiting</h2>
+			<h2 class="afterline">WAITING</h2>
 			<div class="order">
 				<div class="order_user">
-					<div class="order_basicInfo">
-						<p class="order_name_number">Coral <span>Order No. 999999</span></p>
-						<p class="order_timeStamp">Ordered on 11:30am today.</p>
-						<h3 class="order_tel">647-888-9999</h3>
+					<div class="order_basicInfo clearfix">
+						<div class="floatLeft">
+							<p class="order_name_number">Coral <span>Order No. 999999</span></p>
+							<h3 class="order_tel">647-888-9999</h3>
+						</div>
+						<p class="order_timeStamp floatRight">Ordered on 11:30am today.</p>
 					</div>
-					<div class="order_deliver_status">
-						<div class="order_deliverInfo">
+					<div class="order_deliver_status afterline clearfix">
+						<div class="order_deliverInfo floatLeft">
 							<p class="order_deliver">Deliver/Pick-up</p>
 							<h3 class="order_add">999 QUEEN ST. W, M5V 1A1 </h3>
 						</div>
-						<div class="order_status">
+						<div class="order_status floatRight">
 							<p class="warning">Haven't deliver yet.</p>
 							<p class="display">Waiting for pick-up.</p>
 							<button class="btn_cancel">cancel the change</button><button class="btn btn_std">SEND</button>
@@ -54,7 +57,7 @@
 					</div>
 				</div>
 
-				<div class="order_dishes">
+				<div class="order_dishes afterline">
 					<div class="order_item ">
 						<div>
 							<h3 class="order_item_name">Best steak in the town</h3>
@@ -105,13 +108,13 @@
 					<p class="order_total_price">Total Price <span>$25($5 delivery fee)</span></p>
 				</div>
 			</div>
-			<button class="btn_print"><h3>Print order</h3></button>
+			<button class="btn_print btn"><h3>Print order</h3></button>
 		</div>
 
 		<div class="dshbd_review_finished">
-			<h2>Finished</h2>
+			<h2 class="afterline">FINISHED</h2>
 			<div class="order">
-				<div class="order_user">
+				<div class="order_user afterline">
 					<div class="order_basicInfo">
 						<p class="order_name_number">Coral <span>Order No. 999999</span></p>
 						<p class="order_timeStamp">Ordered on 11:30am today.</p>
@@ -130,7 +133,7 @@
 					</div>
 				</div>
 
-				<div class="order_dishes">
+				<div class="order_dishes afterline">
 					<div class="order_item ">
 						<div>
 							<h3 class="order_item_name">Best steak in the town</h3>
@@ -181,7 +184,7 @@
 					<p class="order_total_price">Total Price <span>$25($5 delivery fee)</span></p>
 				</div>
 			</div>
-			<button class="btn_print"><h3>Print order</h3></button>
+			<button class="btn_print btn"><h3>Print order</h3></button>
 		</div>
 
 

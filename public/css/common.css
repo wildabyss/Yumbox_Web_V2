@@ -284,6 +284,60 @@ div#global {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
+  padding: 0 2rem;
+}
+
+@media (max-width: 400px) {
+  .innerContainer {
+    padding: 0;
+  }
+}
+
+.btn {
+  background: lightgrey;
+  border: 0;
+  padding: 1rem 2rem;
+  text-transform: uppercase;
+  display: block;
+  margin: 1rem 0;
+  cursor: pointer;
+}
+
+.btn_normal {
+  background: #95d1d1;
+}
+
+.btn_warning {
+  background: #ed7a5d;
+}
+
+.span_normal {
+  background-color: #dcf0f0;
+  padding: 0 5px;
+}
+
+.span_warning {
+  background-color: #f7c5b9;
+  padding: 0 5px;
+}
+
+.afterline:after {
+  content: "";
+  width: 100%;
+  height: 1px;
+  background-color: #251F1E;
+  display: inline-block;
+  position: relative;
+  top: -10px;
+  visibility: visible;
+}
+
+.floatRight {
+  float: right;
+}
+
+.floatLeft {
+  float: left;
 }
 
 @media (min-width: 1440px) {
@@ -1650,14 +1704,42 @@ div.about_text h1 {
 }
 
 .dshbd_profile {
-  width: 25%;
+  width: 20%;
   display: inline-block;
   vertical-align: top;
 }
 
+.dshbd_profile img {
+  width: 100%;
+  padding-bottom: 1rem;
+}
+
+.dshbd_profile > * {
+  padding-bottom: 2rem;
+}
+
+.dshbd_profile .dshbd_time p {
+  color: #b5b3ac;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.dshbd_profile .dshbd_controller h3 {
+  margin: 0;
+}
+
 .dshbd_review {
-  margin-left: 5%;
+  margin-left: 10%;
   width: 70%;
   display: inline-block;
   vertical-align: top;
+}
+
+.dshbd_review .dshbd_review_waiting > h2 {
+  margin-bottom: 0;
+}
+
+.dshbd_review .order_name_number span {
+  color: #b5b3ac;
+  padding-left: 2rem;
 }
