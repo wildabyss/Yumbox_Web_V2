@@ -6,7 +6,7 @@ class Food extends Yumbox_Controller {
 	/**
 	 * AJAX method for creating a new dish
 	 * echo json string:
-	 *   {success, li_display, error}
+	 *   {success, li_display, food_id, error}
 	 */
 	public function new_food(){
 		// ensure we have POST request
@@ -49,6 +49,7 @@ class Food extends Yumbox_Controller {
 		
 		// success
 		$json_arr["success"] = "1";
+		$json_arr["food_id"] = $food_id;
 		$json_arr["li_display"] = $food_item_display;
 		echo json_encode($json_arr);
 	}
@@ -387,6 +388,176 @@ class Food extends Yumbox_Controller {
 		
 		// success
 		$json_arr["success"] = "1";
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
+	 * AJAX method for tagging a food with category
+	 * echo json string:
+	 *   {success, error}
+	 */
+	public function add_category($food_id=false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current user and data
+		$user_id = $this->login_util->getUserId();
+		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
+		if ($food === false || $food->vendor_id != $user_id){
+			$json_arr["error"] = "incorrect dish specified";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// add to db
+		$category_name = trim($this->input->post("category_name"));
+		if ($category_name == ""){
+			$json_arr["error"] = "category cannot be blank";
+			echo json_encode($json_arr);
+			return;
+		}
+		$res = $this->food_category_model->addCategoryForFood($food_id, $category_name);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
+	 * AJAX method for removing a category tag from food
+	 * echo json string:
+	 *   {success, error}
+	 */
+	public function remove_category($food_id=false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current user and data
+		$user_id = $this->login_util->getUserId();
+		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
+		if ($food === false || $food->vendor_id != $user_id){
+			$json_arr["error"] = "incorrect dish specified";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// add to db
+		$category_name = trim($this->input->post("category_name"));
+		if ($category_name == ""){
+			$json_arr["error"] = "category cannot be blank";
+			echo json_encode($json_arr);
+			return;
+		}
+		$res = $this->food_category_model->removeCategoryForFood($food_id, $category_name);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
+	 * AJAX method for modifying a user's display picture
+	 * echo json string:
+	 *   {success, filepath, error}
+	 */
+	public function change_foodpic($food_id=false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current user and data
+		$user_id = $this->login_util->getUserId();
+		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
+		if ($food === false || $food->vendor_id != $user_id){
+			$json_arr["error"] = "incorrect dish specified";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// check if directory exists
+		$upload_dir = $_SERVER['DOCUMENT_ROOT'].$this->config->item('food_pics');
+		if (!file_exists($upload_dir)){
+			mkdir($upload_dir);
+		}
+		
+		// file upload class
+		$params['upload_path']          = $upload_dir;
+		$params['allowed_types']        = 'jpeg|jpg|png';
+		$params['max_size']             = 10000;
+		$params['file_name']			= $food_id."_".time();
+		$params['overwrite']			= true;
+		$this->load->library('upload', $params);
+
+		// upload photo
+		if (!$this->upload->do_upload('photo')){
+			// error
+			$json_arr["error"] = $this->upload->display_errors('','');
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get new file name
+		$new_name = $this->upload->data('file_name');
+
+		// get old file path
+		$res = $this->food_model->getFoodPicturesForFoodId($food_id);
+		if (count($res)>0){
+			$old_path = $res[0]->path;
+			// remove physically
+			@unlink($_SERVER['DOCUMENT_ROOT'].$old_path);
+		}
+		
+		// associate new photo in db
+		$new_path = $this->config->item('food_pics')."/".$new_name;
+		$res = $this->food_model->modifyFoodPicture($food_id, $new_path);
+		if ($res === false){
+			// remove the new file
+			delete_files($this->upload->data('full_path'));
+			
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
+		$json_arr["filepath"] = $new_path;
 		echo json_encode($json_arr);
 	}
 }

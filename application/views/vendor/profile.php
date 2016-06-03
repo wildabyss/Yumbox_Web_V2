@@ -53,20 +53,7 @@
 	<?php endif?>
 
 	<?php echo $food_list_display?>
-	
-	<?php if ($is_my_profile):?>
-	<div id="dialog-confirm" title="Remove dish?">
-		<p>Confirm remove this dish?</p>
-	</div>
-	<?php endif?>
 </section>
-
-<?php if ($is_my_profile):?>
-<!-- modal for editing fod -->
-<div id="food_modal_container">
-
-</div>
-<?php endif?>
 
 <script>
 	$(document).ready(function(){
@@ -232,55 +219,6 @@
 					}
 				});
 			}
-		});
-		
-		
-		$("#dialog-confirm").dialog({
-			autoOpen: false,
-			modal: true,
-			resizable: false,
-			dialogClass: 'explore',
-			height:140,
-			buttons:[
-				{
-					icons: {
-						primary: "ui-icon-check"
-					},
-					'class':	'ui-button-dialog',
-					click:		function(){
-						$.ajax({
-							type: 		"post",
-							url: 		"/vendor/food/remove_food/"+$("#dialog-confirm").data('food_id'),
-							data:		csrfData,
-							success:	function(data){
-								var respArr = $.parseJSON(data);
-								if ("success" in respArr){
-									successMessage("Dish removed");
-									$parent = $("#dialog-confirm").data('parent');
-									$parent.remove();
-								} else {
-									// error
-									errorMessage(respArr["error"]);
-								}
-							},
-							error: 		function(){
-								errorMessage("Unable to process");
-							}
-						});
-						
-						$(this).dialog("close");
-					}
-				},
-				{
-					icons: {
-						primary: "ui-icon-closethick"
-					},
-					'class': 'ui-button-dialog',
-					click: function(){
-						$(this).dialog("close");
-					}
-				}
-			]
 		});
 		<?php endif?>
 	});

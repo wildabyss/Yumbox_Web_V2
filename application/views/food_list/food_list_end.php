@@ -62,15 +62,17 @@
 						successMessage("Saved");
 
 						// add to list
-						$(respArr["li_display"]).insertBefore("#new_food_li");
+						$(respArr["li_display"]).insertBefore("#new_food_li").children(".toggle_food_detail").first().click();
+						
+						// remove no food info
+						$("#no_food_info").hide();
 						
 						// reset form
 						$("#new_food_li").hide();
 						$("#btn_add_new_parent").show();
 						reset_form();
 						
-						// remove no food info
-						$("#no_food_info").hide();
+						// display the modal for further edit
 					} else {
 						errorMessage(respArr["error"]);
 						return respArr["error"];

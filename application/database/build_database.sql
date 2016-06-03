@@ -625,10 +625,36 @@ begin
 		values
 			(user_id, path);
 	else
-		update user_picture
-        set path = path
+		update user_picture p
+        set p.path = path
         where
-			user_id = user_id;
+			p.user_id = user_id;
+	end if;
+end//
+delimiter ;
+
+
+drop procedure if exists add_food_picture;
+delimiter //
+create procedure add_food_picture(in food_id bigint, in path varchar(255))
+begin
+	declare p_id bigint unsigned;
+    
+    select p.id into p_id
+    from food_picture p
+    where
+		p.food_id = food_id;
+        
+	if (p_id is null) then
+		insert into food_picture
+			(food_id, path)
+		values
+			(food_id, path);
+	else
+		update food_picture f
+        set f.path = path
+        where
+			f.food_id = food_id;
 	end if;
 end//
 delimiter ;

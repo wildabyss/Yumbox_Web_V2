@@ -608,6 +608,14 @@ nav ul#mobile_user_menu a.logo {
   background-color: #95d1d1;
 }
 
+.ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text {
+  padding: inherit;
+}
+
+.ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
+  padding: inherit;
+}
+
 .rush .ui-state-default {
   border-color: #F5BDA3;
 }
@@ -906,10 +914,10 @@ div.about_text h1 {
   flex-direction: row;
 }
 
-#menu_filter .search_container input#search {
+#menu_filter .search_container input[type="search"] {
   margin: 0;
   flex: 1;
-  height: 30px;
+  height: 26px;
   padding-right: 28px;
   background-image: url("/imgs/search.svg");
   background-size: 25px 25px;
@@ -1210,9 +1218,6 @@ div.about_text h1 {
 #food_detail {
   max-width: 900px;
   margin: 0 auto;
-  /*input.input_name{
-		width: 150px;
-	}*/
 }
 
 #food_detail input {
@@ -1239,6 +1244,10 @@ div.about_text h1 {
 
 #food_detail input.input_price {
   width: 70px;
+}
+
+#food_detail ul#input_category {
+  font-size: 1.4rem;
 }
 
 #food_detail .tight_cluster {

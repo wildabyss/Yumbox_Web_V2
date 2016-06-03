@@ -359,6 +359,13 @@ nav{
 	background-color: $defaultWidgetColor;
 }
 
+.ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text{
+	padding: inherit;
+}
+.ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text{
+	padding: inherit;
+}
+
 .rush{
 	.ui-state-default{
 		border-color: $rush_selected;

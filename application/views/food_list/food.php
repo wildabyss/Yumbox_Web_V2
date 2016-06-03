@@ -5,12 +5,12 @@
 	</h1>
 	<h3 class="center"><a href="/vendor/profile/id/<?php echo $food->vendor_id?>"><?php echo prevent_xss($food->vendor_name)?></a></h3>
 	
-	<label for="input_food_picture" class="food_pic_container <?php if ($is_my_profile):?>editable_pic<?php endif?>">
-		<a class="food_pic" <?php if ($food_picture !== false):?>style="background-image:url('<?php echo $food_picture->path?>')"<?php endif?>></a>
+	<label for="input_food_pic" class="food_pic_container <?php if ($is_my_profile):?>editable_pic<?php endif?>">
+		<a class="food_pic" food_id="<?php echo $food->food_id?>" <?php if ($food_picture !== false):?>style="background-image:url('<?php echo $food_picture->path?>')"<?php endif?>></a>
 		<div class="btn_update_picture">Edit photo</div>
 	</label>
 	<?php if ($is_my_profile):?>
-	<input id="input_food_picture" type="file" accept="image/*">
+	<input id="input_food_pic" type="file" accept="image/*">
 	<?php endif?>
 	
 	<div class="tight_cluster">
@@ -22,7 +22,7 @@
 			<?php else:?>
 			<!-- display price and rating -->
 			<h3 class="price">$<a id="input_price" data-type="text" data-onblur="ignore"><?php echo $food->food_price?></a></h3>
-			<button id="btn_remove" class="action_button remove_button">Remove</button>
+			<button class="btn_remove_food" class="action_button remove_button">Remove</button>
 			<?php endif?>
 		</div>
 		
@@ -69,12 +69,25 @@
 			<?php endif?>
 			</p>
 			
+			<?php if (!$is_my_profile):?>
 			<div class="categories_container">
-			<?php foreach ($categories as $category):?>
+				<?php foreach ($categories as $category):?>
 				<a class="category_tag"><?php echo prevent_xss(ucfirst($category->name))?></a>
-			<?php endforeach?>
+				<?php endforeach?>
 			</div>
+			<?php endif?>
 		</div>
+		
+		<?php if ($is_my_profile):?>
+		<div class="about_dish_section">
+			<h2>Categories</h2>
+			<ul id="input_category" class="explore">
+				<?php foreach ($categories as $category):?>
+				<li><?php echo prevent_xss(ucfirst($category->name))?></li>
+				<?php endforeach?>
+			</ul>
+		</div>
+		<?php endif?>
 		
 		<div class="about_dish_section">
 			<h2>Ingredients</h2>
@@ -186,32 +199,122 @@
 	
 	<?php else:?>
 	
-	$("#btn_remove").button().click(function(e){
-		$.ajax({
-			type: 		"post",
-			url: 		"/vendor/food/remove_food/<?php echo $food->food_id?>",
-			data:		csrfData,
-			success:	function(data){
-				var respArr = $.parseJSON(data);
-				if ("success" in respArr){
-					// display message
-					successMessage("Dish removed");
-				} else {
-					// error
-					errorMessage(respArr["error"]);
+	$(".btn_remove_food").button().click(function(e){
+		$('<div class="dialog-confirm-food" title="Delete dish?"/>')
+			.prependTo("#global")
+			.html("<p>You sure you want to delete this dish?</p>")
+			.dialog({
+				autoOpen: true,
+				modal: true,
+				resizable: false,
+				dialogClass: 'explore',
+				close:	function(){
+					$(".dialog-confirm-food").dialog("destroy").remove();
+				},
+				buttons:[
+					{
+						icons: {
+							primary: "ui-icon-check"
+						},
+						'class':	'ui-button-dialog',
+						click:		function(){
+							$.ajax({
+								type: 		"post",
+								url: 		"/vendor/food/remove_food/<?php echo $food->food_id?>",
+								data:		csrfData,
+								success:	function(data){
+									var respArr = $.parseJSON(data);
+									if ("success" in respArr){
+										successMessage("Dish removed");
+										
+										// check if we're in a modal
+										var $modal = $(".food_modal_container");
+										
+										if ($modal.length){
+											// remove modal
+											$modal.remove();
+											// remove the list element
+											$("li.food_item[food_id=<?php echo $food->food_id?>]").remove();
+										} else {
+											// redirect
+											window.location.href = "/vendor/profile";
+										}
+									} else {
+										// error
+										errorMessage(respArr["error"]);
+									}
+								},
+								error: 		function(){
+									errorMessage("Unable to process");
+								}
+							});
+							
+							$(this).dialog("close");
+						}
+					},
+					{
+						icons: {
+							primary: "ui-icon-closethick"
+						},
+						'class': 'ui-button-dialog',
+						click: function(){
+							$(this).dialog("close");
+						}
+					}
+				]
+			});
+	});
+	
+	$("#input_food_pic").change(function(){
+		var file = this.files[0];
+		var size = file.size;
+		var type = file.type;
+		
+		if (size > 10000000){
+			errorMessage("Must be less than 10MB");
+		} else if (type.indexOf("image/") != 0){
+			errorMessage("Only an image is allowed");
+		} else {
+			// make formData to be submitted
+			var formData = new FormData();
+			formData.append('photo', file);
+			$.each(csrfData, function(index, value){
+				formData.append(index, value);
+			});
+			
+			statusMessageOn("Uploading, please wait...");
+			
+			$.ajax({
+				url:			'/vendor/food/change_foodpic/<?php echo $food->food_id?>',
+				data:			formData,
+				type:			'post',
+				processData:	false,
+				contentType:	false,
+				error:		function(response){
+					errorMessage("Unable to process");
+				},
+				success:		function(response){
+					var respArr = $.parseJSON(response);
+			
+					if ("success" in respArr){
+						successMessage("Saved");
+						
+						// change picture
+						$('.food_pic[food_id="<?php echo $food->food_id?>"]').css("background-image", "url("+respArr["filepath"]+")");
+					} else {
+						errorMessage(respArr["error"]);
+						return respArr["error"];
+					}
 				}
-			},
-			error:		function(){
-				// error
-				errorMessage("Unable to process");
-			}
-		});
+			});
+		}
 	});
 	
 	$("#input_name").editable({
 		url:		"/vendor/food/change_name/<?php echo $food->food_id?>",
 		send:		"always",
 		params:		csrfData,
+		placeholder:"Food name",
 		inputclass:	"input_name",
 		error:		function(response){
 			errorMessage("Unable to process");
@@ -232,6 +335,8 @@
 		url:		"/vendor/food/change_altname/<?php echo $food->food_id?>",
 		send:		"always",
 		params:		csrfData,
+		emptytext:	"Ethnic name",
+		clear:		true,
 		inputclass:	"input_name",
 		error:		function(response){
 			errorMessage("Unable to process");
@@ -340,6 +445,75 @@
 			} else {
 				errorMessage(respArr["error"]);
 				return respArr["error"];
+			}
+		}
+	});
+	
+	$("#input_category").tagit({
+		placeholderText:	"tag",
+		removeConfirmation:	true,
+		caseSensitive:		false,
+		singleField:		true,
+		beforeTagAdded:		function(event, ui){
+			// clone dictionary
+			var inputs = $.extend({}, csrfData);
+			inputs["category_name"] = ui.tagLabel;
+			
+			var tagSuccess = true;
+			
+			$.ajax({
+				url:			'/vendor/food/add_category/<?php echo $food->food_id?>',
+				data:			inputs,
+				type:			'post',
+				error:		function(response){
+					errorMessage("Unable to process");
+					tagSuccess = false;
+				},
+				success:		function(response){
+					var respArr = $.parseJSON(response);
+			
+					if ("success" in respArr){
+						successMessage("Tag saved");
+					} else {
+						errorMessage(respArr["error"]);
+						tagSuccess = false;
+					}
+				}
+			});
+			
+			if (!tagSuccess) {
+				return false;
+			}
+		},
+		beforeTagRemoved:	function(event, ui){
+			// clone dictionary
+			var inputs = $.extend({}, csrfData);
+			inputs["category_name"] = ui.tagLabel;
+			
+			var tagSuccess = true;
+			
+			$.ajax({
+				url:			'/vendor/food/remove_category/<?php echo $food->food_id?>',
+				data:			inputs,
+				type:			'post',
+				error:		function(response){
+					errorMessage("Unable to process");
+					tagSuccess = false;
+				},
+				success:		function(response){
+					var respArr = $.parseJSON(response);
+			
+					if ("success" in respArr){
+						successMessage("Tag removed");
+					} else {
+						errorMessage(respArr["error"]);
+						tagSuccess = false;
+					}
+				}
+			});
+			
+			if (!tagSuccess) {
+				return false;
 			}
 		}
 	});

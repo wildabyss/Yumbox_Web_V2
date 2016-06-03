@@ -132,6 +132,10 @@ class Menu extends Yumbox_Controller {
 		$filters["min_price"] = $price_filter["min"];
 		$filters["max_price"] = $price_filter["max"];
 		$filters["location"] = $location;
+		// map view defaults to show all results
+		if ($view == self::$MAP_VIEW){
+			$filters["show_all"] = true;
+		}
 		$show_by_categories = count($chosen_categories)==0;
 		// perform search
 		$foods_and_cats = $this->search->searchForFood($search_query, $filters, $show_by_categories);
@@ -205,6 +209,15 @@ class Menu extends Yumbox_Controller {
 	
 	
 	/**
+	 * Default to displaying the yum explore page
+	 */
+	public function index()
+	{
+		$this->explore();
+	}
+	
+	
+	/**
 	 * GET method for displaying the yum explore page
 	 * @param $view = $LIST_VIEW or $MAP_VIEW
 	 */
@@ -224,6 +237,7 @@ class Menu extends Yumbox_Controller {
 	
 	/**
 	 * GET method for displaying a particular food item
+	 * @param bool $display if false, return the food_item view in a string
 	 */
 	public function item($food_id=false, $display=true){
 		// check if user has logged in
@@ -280,18 +294,32 @@ class Menu extends Yumbox_Controller {
 		$data['is_my_profile'] = $is_my_profile;
 		$data['unfilled_orders'] = $unfilled_orders;
 		
-		// Load views
-		$this->header();
-		$this->navigation();
-		$this->load->view("food_list/food", $data);
-		$this->footer();
+		if ($display){
+			// Load views
+			$this->header();
+			$this->navigation();
+			$this->load->view("food_list/food", $data);
+			$this->footer();
+		} else {
+			return $this->load->view("food_list/food", $data, true);
+		}
 	}
-
+	
+	
 	/**
-	 * Default to displaying the yum explore page
+	 * AJAX method for retrieving the view of a food_item
+	 * echo json string:
+	 *   {success, view}
 	 */
-	public function index()
-	{
-		$this->explore();
+	public function retrieve_item($food_id=false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		$item_view = $this->item($food_id, false);
+		
+		$json_arr["success"] = "1";
+		$json_arr["view"] = $item_view;
+		echo json_encode($json_arr);
 	}
 }

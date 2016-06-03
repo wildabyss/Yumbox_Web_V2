@@ -29,6 +29,7 @@ class Food_model extends CI_Model {
 	 *	min_price	 => float
 	 *	max_price	 => float
 	 * 	location	=> [latitude, longitude]
+	 *	show_all	=> bool
 	 */
 	public function getActiveFoodsAndVendorAndOrdersAndRatingAndPictures($limit, array $filters){
 		
@@ -42,6 +43,7 @@ class Food_model extends CI_Model {
 		$min_price = isset($filters["min_price"])?$filters["min_price"]:false;
 		$max_price = isset($filters["max_price"])?$filters["max_price"]:false;
 		$location = isset($filters["location"])?$filters["location"]:false;
+		$show_all = isset($filters["show_all"])?$filters["show_all"]:false;
 	
 		// base query
 		$query_str = '
@@ -107,7 +109,10 @@ class Food_model extends CI_Model {
 			$query_str .= ' and ad.longitude is not null and ad.latitude is not null
 				and distance_btw_coords(ad.latitude, ad.longitude, ?, ?) <= ?';
 		}
-		$query_str .= ' group by f.id order by f.name limit ?';
+		$query_str .= ' group by f.id order by f.name';
+		if (!$show_all){
+			$query_str .= ' limit ?';
+		}
 		
 		// bindings
 		$bindings = array(
@@ -135,7 +140,9 @@ class Food_model extends CI_Model {
 			$bindings[] = $location["longitude"];
 			$bindings[] = Search::$SEARCH_RADIUS;
 		}
-		$bindings[] = $limit;
+		if (!$show_all){
+			$bindings[] = $limit;
+		}
 		
 		// perform database query
 		$query = $this->db->query($query_str, $bindings);
@@ -357,6 +364,20 @@ class Food_model extends CI_Model {
 			return $this->db->error();
 		}
 		
+		return true;
+	}
+	
+	
+	/**
+	 * Modify the display picture of the user
+	 * @return true on sucess, error on failure
+	 */
+	public function modifyFoodPicture($food_id, $pic_path){
+		// associate with new file
+		if (!$this->db->query("call add_food_picture(?, ?)", array($food_id, $pic_path))){
+			return $this->db->error();
+		}
+
 		return true;
 	}
 }
