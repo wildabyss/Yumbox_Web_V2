@@ -143,7 +143,7 @@
 							// reload the list item
 							$.ajax({
 								type:		"post",
-								url:		"/customer/menu/retrieve_list_item",
+								url:		"/customer/menu/retrieve_list_item/"+food_id,
 								data: 		csrfData,
 								success:	function(response){
 									var respArr = $.parseJSON(response);
