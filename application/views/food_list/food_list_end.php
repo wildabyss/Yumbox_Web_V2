@@ -61,7 +61,7 @@
 					if ("success" in respArr){
 						successMessage("Saved");
 
-						// add to list
+						// add to list and display the modal for further editing
 						$(respArr["li_display"]).insertBefore("#new_food_li").children(".toggle_food_detail").first().click();
 						
 						// remove no food info
@@ -71,8 +71,6 @@
 						$("#new_food_li").hide();
 						$("#btn_add_new_parent").show();
 						reset_form();
-						
-						// display the modal for further edit
 					} else {
 						errorMessage(respArr["error"]);
 						return respArr["error"];

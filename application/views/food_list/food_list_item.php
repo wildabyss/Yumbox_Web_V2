@@ -137,7 +137,31 @@
 						width: w*0.9,
 						dialogClass: 'explore',
 						close: 	function(e, ui){
+							// destroy the dialog
 							$(".food_modal_container").dialog("destroy").remove();
+							
+							// reload the list item
+							$.ajax({
+								type:		"post",
+								url:		"/customer/menu/retrieve_list_item",
+								data: 		csrfData,
+								success:	function(response){
+									var respArr = $.parseJSON(response);
+								
+									if ("success" in respArr){
+										successMessage("Saved");
+
+										// replace existing list item
+										$("li.food_item[food_id="+food_id+"]").replaceWith(respArr["li_display"]);
+									} else {
+										errorMessage(respArr["error"]);
+										return respArr["error"];
+									}
+								},
+								error:		function(){
+									errorMessage("Unable to retrieve data");
+								}
+							});
 						}
 					});
 				}
