@@ -71,6 +71,9 @@
 						$("#new_food_li").hide();
 						$("#btn_add_new_parent").show();
 						reset_form();
+						
+						// display dashboard in user menu
+						$("li.menu_item_dashboard").show();
 					} else {
 						errorMessage(respArr["error"]);
 						return respArr["error"];
