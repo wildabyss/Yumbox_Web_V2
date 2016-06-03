@@ -307,7 +307,7 @@ class Menu extends Yumbox_Controller {
 	
 	
 	/**
-	 * AJAX method for retrieving the view of a food_item
+	 * AJAX method for retrieving the view of a food_item (/food_list/food.php)
 	 * echo json string:
 	 *   {success, view}
 	 */
@@ -320,6 +320,42 @@ class Menu extends Yumbox_Controller {
 		
 		$json_arr["success"] = "1";
 		$json_arr["view"] = $item_view;
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
+	 * AJAX method for retrieving the list item view of a food_item (/food_list/food_list_item.php)
+	 * echo json string:
+	 *   {success, li_display, error}
+	 */
+	public function retrieve_list_item($food_id=false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// get current logged in user
+		$user_id = $this->login_util->getUserId();
+		
+		// get food info
+		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
+		if ($food === false){
+			$json_arr["error"] = "incorrect dish specified";
+			echo json_encode($json_arr);
+			return;
+		}
+		// show predicted pickup time
+		$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
+		$food->prep_time = prep_time_for_display($pickup_time);
+		
+		// get new element output
+		$food_data["food"] = $food;
+		$food_data["is_my_profile"] = ($food->vendor_id==$user_id);
+		$food_item_display = $this->load->view("food_list/food_list_item", $food_data, true);
+		
+		// success
+		$json_arr["success"] = "1";
+		$json_arr["li_display"] = $food_item_display;
 		echo json_encode($json_arr);
 	}
 }
