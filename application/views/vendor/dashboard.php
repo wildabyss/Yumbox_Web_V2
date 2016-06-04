@@ -55,7 +55,12 @@
 						<div class="order_status">
 							<p class="warning">Haven't deliver yet.</p>
 							<p class="normal hide">Waiting for pick-up.</p>
-							<button class="btn btn_weak">cancel the change</button><button class="btn btn_activated">SEND</button>
+							<p class="normal hide">Finished.</p>
+							<button class="btn btn_weak">cancel the change</button>
+							<button class="btn btn_activated">SEND</button>
+							<button class="btn btn_fade hide">FINISH</button>
+							<button class="btn btn_sub hide">FINISHED</button>
+
 						</div>
 					</div>
 				</div>

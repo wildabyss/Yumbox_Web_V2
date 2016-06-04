@@ -131,10 +131,11 @@ div.about_text{
 	align-items: center;
 	justify-content: center;
 	
-	/*background-image: url('/imgs/cooking1.jpg');
+	background-image: url('/imgs/cooking1.jpg');
 	background-position:center;
 	background-size: cover;
-	background-repeat: no-repeat;*/
+	background-repeat: no-repeat;
+	background-attachment:fixed; 
 }
 
 #contact{
@@ -144,10 +145,12 @@ div.about_text{
 	align-items: center;
 	justify-content: center;
 	
-	background-image: url('/imgs/cooking1.jpg');
+	background-image: url('/imgs/food_1.jpeg');
 	background-position:center;
 	background-size: cover;
 	background-repeat: no-repeat;
+	background-attachment:fixed; 
+	
 }
 
 // media query
