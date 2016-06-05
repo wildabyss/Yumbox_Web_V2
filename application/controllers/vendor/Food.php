@@ -485,7 +485,7 @@ class Food extends Yumbox_Controller {
 	
 	
 	/**
-	 * AJAX method for modifying a user's display picture
+	 * AJAX method for modifying the dish's picture
 	 * echo json string:
 	 *   {success, filepath, error}
 	 */
@@ -558,6 +558,88 @@ class Food extends Yumbox_Controller {
 		// success
 		$json_arr["success"] = "1";
 		$json_arr["filepath"] = $new_path;
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
+	 * AJAX method for modifying the food pickup method
+	 * echo json string:
+	 *   {success, error}
+	 */
+	public function change_pickup_method($food_id = false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current user and data
+		$user_id = $this->login_util->getUserId();
+		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
+		if ($food === false || $food->vendor_id != $user_id){
+			$json_arr["error"] = "incorrect dish specified";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get method
+		$method = $this->input->post("method");
+		$res = $this->food_model->modifyPickupMethod($food_id, $method);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
+	 * AJAX method for modifying the food preparation time
+	 * echo json string:
+	 *   {success, error}
+	 */
+	public function change_preptime($food_id = false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current user and data
+		$user_id = $this->login_util->getUserId();
+		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
+		if ($food === false || $food->vendor_id != $user_id){
+			$json_arr["error"] = "incorrect dish specified";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get method
+		$time = $this->input->post("value");
+		$res = $this->food_model->modifyPreparationTime($food_id, $time);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
 		echo json_encode($json_arr);
 	}
 }

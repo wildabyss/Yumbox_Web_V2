@@ -370,4 +370,30 @@ class Food_model extends CI_Model {
 
 		return true;
 	}
+	
+	
+	public function modifyPickupMethod($food_id, $method){
+		if ($method != self::$PICKUP_ANYTIME && $method != self::$PICKUP_DESIGNATED){
+			return "incorrect pickup method";
+		}
+		
+		if (!$this->db->query("update food set pickup_method=? where id=?", array($method, $food_id))){
+			return $this->db->error();
+		}
+
+		return true;
+	}
+	
+	
+	public function modifyPreparationTime($food_id, $time){
+		if (!is_numeric($time) || $time<=0){
+			return "incorrect time";
+		}
+		
+		if (!$this->db->query("update food set prep_time_hours=? where id=?", array($time, $food_id))){
+			return $this->db->error();
+		}
+
+		return true;
+	}
 }

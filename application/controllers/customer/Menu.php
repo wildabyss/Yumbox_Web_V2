@@ -253,8 +253,10 @@ class Menu extends Yumbox_Controller {
 		$is_my_profile = ($food->vendor_id == $current_user);
 		
 		// massage food data
-		$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
-		$food->prep_time = prep_time_for_display($pickup_time);
+		if (!$is_my_profile){
+			$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
+			$food->prep_time = prep_time_for_display($pickup_time);
+		}
 		
 		// can orders be placed?
 		$unfilled_orders = $this->order_model->getTotalUnfilledOrdersForFood($food_id);

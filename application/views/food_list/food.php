@@ -50,7 +50,16 @@
 	
 	<?php if ($is_my_profile):?>
 	<h2 class="title center">PREPARATION TIME</h2>
-	
+	<div>
+		<p class="prep_time_container editable-full"><span class="prep_time_head">Time to prepare (hrs):</span><a id="edit_prep_time" data-type="text" data-onblur="ignore"><?php echo $food->prep_time?></a></p>
+		<p>Pickup method:</p>
+		<div id="prep_time_buttonset">
+			<input type="radio" id="radio_immediate" name="pickup_method" <?php if ($food->pickup_method==Food_model::$PICKUP_ANYTIME):?>checked<?php endif?> class="prep_time_radio" value="immediate"/>
+			<label for="radio_immediate">Immediate after prep</label>
+			<input type="radio" id="radio_regular" name="pickup_method" <?php if ($food->pickup_method==Food_model::$PICKUP_DESIGNATED):?>checked<?php endif?> class="prep_time_radio" value="regular"/>
+			<label for="radio_regular">Designated times</label>
+		</div>
+	</div>
 	<?php endif?>
 	
 	<h2 class="title center">ABOUT THE DISH</h2>
@@ -516,6 +525,71 @@
 				return false;
 			}
 		}
+	});
+	
+	$('#edit_prep_time').editable({
+		url:		"/vendor/food/change_preptime/<?php echo $food->food_id?>",
+		send:		"always",
+		params:		csrfData,
+		error:		function(response){
+			errorMessage("Unable to process");
+		},
+		success:	function(response){
+			var respArr = $.parseJSON(response);
+			
+			if ("success" in respArr){
+				successMessage("Saved");
+			} else {
+				errorMessage(respArr["error"]);
+				return respArr["error"];
+			}
+		},
+		validate:	function(value){
+			value = $.trim(value);
+			
+			if (isNaN(value) || value<=0){
+				errorMessage("Incorrect time specified");
+				return "cannot be blank";
+			}
+			
+			return {newValue: value};
+		}
+	});
+	
+	$('#prep_time_buttonset').buttonset({
+		items: "input[type=radio]"
+	});
+	
+	$('input[type=radio][name=pickup_method]').change(function(){
+		var method;
+		if (this.value == 'immediate'){
+			method = <?php echo Food_model::$PICKUP_ANYTIME?>;
+		} else {
+			method = <?php echo Food_model::$PICKUP_DESIGNATED?>;
+		}
+		
+		var inputs = $.extend({}, csrfData);
+		inputs["method"] = method;
+		
+		$.ajax({
+			url:			'/vendor/food/change_pickup_method/<?php echo $food->food_id?>',
+			data:			inputs,
+			type:			'post',
+			error:		function(response){
+				errorMessage("Unable to process");
+				tagSuccess = false;
+			},
+			success:		function(response){
+				var respArr = $.parseJSON(response);
+		
+				if ("success" in respArr){
+					successMessage("Pickup method changed");
+				} else {
+					errorMessage(respArr["error"]);
+					tagSuccess = false;
+				}
+			}
+		});
 	});
 	
 	<?php endif?>

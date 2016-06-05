@@ -21,9 +21,9 @@
 	<div class="intro_wrapper">
 		<h1 class="title editable-full"><a id="edit_user_name" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->name)?></a></h1>
 		<?php if (!$user->is_open):?>
-		<h3 class="is_closed btn_kitchen_open">KITCHEN CLOSED</h3>
+		<h3 class="is_closed btn_kitchen_open <?php if ($is_my_profile):?>my_profile<?php endif?>">KITCHEN CLOSED</h3>
 		<?php else:?>
-		<h3 class="is_open btn_kitchen_open">KITCHEN OPEN</h3>
+		<h3 class="is_open btn_kitchen_open <?php if ($is_my_profile):?>my_profile<?php endif?>">KITCHEN OPEN</h3>
 		<?php endif?>
 		
 		<?php if ($is_my_profile):?>
@@ -293,7 +293,7 @@
 			
 					if ("success" in respArr){
 						if (set_open){
-							successMessage("Kitchen is now open!");
+							successMessage("Kitchen is now open! Ready to take orders.");
 							$(".btn_kitchen_open").removeClass("is_closed").addClass("is_open").text("KITCHEN OPEN");
 						} else {
 							successMessage("Kitchen is now closed!");
@@ -335,7 +335,7 @@
 			});
 		}
 
-		$("input[name=pickup_weekday]").change(function(){
+		$("input[type=checkbox][name=pickup_weekday]").change(function(){
 			var weekday = $(this).attr("weekday");
 			var default_time;
 			

@@ -67,6 +67,15 @@
 		}
 	}
 	
+	.prep_time_container{
+		display: flex;
+		
+		span.prep_time_head{
+			display: inline-block;
+			margin-right: 5px;
+		}
+	}
+	
 	.about_dish{
 		overflow: auto;
 		display: flex;

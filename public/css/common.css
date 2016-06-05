@@ -1397,6 +1397,15 @@ div.about_text h1 {
   background-image: url("/imgs/image-not-available.gif");
 }
 
+#food_detail .prep_time_container {
+  display: flex;
+}
+
+#food_detail .prep_time_container span.prep_time_head {
+  display: inline-block;
+  margin-right: 5px;
+}
+
 #food_detail .about_dish {
   overflow: auto;
   display: flex;
@@ -1526,11 +1535,11 @@ div.about_text h1 {
   width: 100px;
 }
 
-#profile_intro .btn_kitchen_open {
+#profile_intro .btn_kitchen_open.my_profile {
   cursor: pointer;
 }
 
-#profile_intro .btn_kitchen_open:hover {
+#profile_intro .btn_kitchen_open.my_profile:hover {
   color: white;
 }
 

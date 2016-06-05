@@ -157,6 +157,11 @@ class Profile extends Yumbox_Controller {
 			$filters["is_open"] = false;
 			$filters["show_all"] = true;
 			$foods = $this->food_model->getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_RESULTS, $filters);
+			if (count($foods)==0){
+				$json_arr["error"] = "add at least one dish before opening your kitchen";
+				echo json_encode($json_arr);
+				return;
+			}
 			foreach ($foods as $food){
 				$categories = $this->food_category_model->getAllCategoriesForFood($food->food_id);
 				if (count($categories)==0){
@@ -398,6 +403,12 @@ class Profile extends Yumbox_Controller {
 	}
 	
 	
+	/**
+	 * AJAX method for modifying a user's regular pickup time
+	 * Expects weekday and time as post inputs
+	 * echo json string:
+	 *   {success, error}
+	 */
 	public function change_pickuptime(){
 		// ensure we have POST request
 		if (!is_post_request())
