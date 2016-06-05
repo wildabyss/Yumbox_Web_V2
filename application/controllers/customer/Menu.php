@@ -245,7 +245,7 @@ class Menu extends Yumbox_Controller {
 		
 		// get food data
 		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
-		if ($food === false){
+		if ($food === false || $food->food_status == Food_model::$INACTIVE_FOOD || $food->vendor_status == User_model::$INACTIVE_USER){
 			show_404();
 		}
 		
@@ -335,7 +335,7 @@ class Menu extends Yumbox_Controller {
 		
 		// get food info
 		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
-		if ($food === false){
+		if ($food === false || $food->food_status == Food_model::$INACTIVE_FOOD || $food->vendor_status == User_model::$INACTIVE_USER){
 			$json_arr["error"] = "incorrect dish specified";
 			echo json_encode($json_arr);
 			return;

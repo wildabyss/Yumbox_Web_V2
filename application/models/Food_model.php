@@ -160,14 +160,14 @@ class Food_model extends CI_Model {
 	public function getFoodAndVendorForFoodId($food_id){
 		$query = $this->db->query('
 			select 
-				f.id food_id, f.name food_name, f.alternate_name food_alt_name, f.price food_price, f.descr, f.ingredients, 
+				f.id food_id, f.status food_status, f.name food_name, f.alternate_name food_alt_name, f.price food_price, f.descr, f.ingredients, 
 				f.health_benefits, f.eating_instructions, 
 				f.pickup_method, f.prep_time_hours prep_time, f.quota,
 				p.path pic_path,
 				average_rating(f.id)/?*100 rating,
 				total_orders(f.id) total_orders,
 				u.id vendor_id, u.name vendor_name, u.email, u.phone, u.return_date,
-				u.is_open
+				u.is_open, u.status vendor_status
 			from food f
 			left join user u
 			on u.id = f.user_id
@@ -175,14 +175,10 @@ class Food_model extends CI_Model {
 			on p.food_id = f.id
 			where
 				f.id = ?
-				and f.status = ?
-				and u.status <> ?
 			group by f.id',
 			array(
 				Food_review_model::$HIGHEST_RATING,
-				$food_id,
-				self::$ACTIVE_FOOD,
-				User_model::$INACTIVE_USER
+				$food_id
 			));
 		$results = $query->result();
 		
@@ -207,14 +203,8 @@ class Food_model extends CI_Model {
 			left join user u
 			on u.id = f.user_id
 			where
-				f.id = ?
-				and f.status = ?
-				and u.status <> ?',
-			array(
-				$food_id,
-				self::$ACTIVE_FOOD,
-				User_model::$INACTIVE_USER
-			));
+				f.id = ?',
+			array($food_id));
 		$results = $query->result();
 		
 		if (count($results) == 0)
