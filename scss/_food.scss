@@ -6,24 +6,6 @@
 		font-size: inherit;
 		line-height: 20px;
 	}
-
-	.editable-full{
-		.editable-container.editable-inline{
-			width: 100%;
-			max-width: 600px;
-			
-			.editable-input{
-				width: 100%;
-				
-				input{
-					width: 100%;
-				}
-				textarea{
-					width: 100%;
-				}
-			}
-		}
-	}
 	
 	input.input_price{
 		width: 70px;

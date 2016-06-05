@@ -34,17 +34,46 @@ class Profile extends Yumbox_Controller {
 			show_404();
 		}
 		$filters["vendor_id"] = $user->id;
-		$filters["is_open"] = 0;
+		$filters["is_open"] = false;
 		
 		// is this my profile?
 		$my_id = $this->login_util->getUserId();
-		
 		if ($my_id !== false && $my_id == $user_id){
 			// my profile
 			$myprofile = true;
 		} else {
 			$myprofile = false;
 		}
+		
+		// massage regular pickup times
+		$user->pickup_mon = array(
+			"enable" => ($user->pickup_mon != "00:00:00"),
+			"time" => $user->pickup_mon
+		);
+		$user->pickup_tue = array(
+			"enable" => ($user->pickup_tue != "00:00:00"),
+			"time" => $user->pickup_tue
+		);
+		$user->pickup_wed = array(
+			"enable" => ($user->pickup_wed != "00:00:00"),
+			"time" => $user->pickup_wed
+		);
+		$user->pickup_thu = array(
+			"enable" => ($user->pickup_thu != "00:00:00"),
+			"time" => $user->pickup_thu
+		);
+		$user->pickup_fri = array(
+			"enable" => ($user->pickup_fri != "00:00:00"),
+			"time" => $user->pickup_fri
+		);
+		$user->pickup_sat = array(
+			"enable" => ($user->pickup_sat != "00:00:00"),
+			"time" => $user->pickup_sat
+		);
+		$user->pickup_sun = array(
+			"enable" => ($user->pickup_sun != "00:00:00"),
+			"time" => $user->pickup_sun
+		);
 		
 		// get food data for display
 		$food_list_display = $this->load->view("food_list/food_list_start", [], true);
@@ -89,6 +118,67 @@ class Profile extends Yumbox_Controller {
 		$this->navigation();
 		$this->load->view("vendor/profile", $data);
 		$this->footer();
+	}
+	
+	
+	/**
+	 * AJAX method for opening or closing the user's kitchen
+	 * echo json string:
+	 *   {success, error}
+	 */
+	public function open_kitchen($bool_open=false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// get current user
+		$user_id = $this->login_util->getUserId();
+		
+		if ($bool_open){
+			
+			// check valid email
+			$user = $this->user_model->getUserForUserId($user_id);
+			if ($user->email==""){
+				$json_arr["error"] = "must have valid email before opening kitchen";
+				echo json_encode($json_arr);
+				return;
+			}
+			
+			// get address
+			$address = $this->user_model->getOrCreateAddress($user_id);
+			if ($address->latitude == "" || $address->longitude == ""){
+				$json_arr["error"] = "must have valid address before opening the kitchen";
+				echo json_encode($json_arr);
+				return;
+			}
+			
+			// get all foods and check for categories
+			$filters["vendor_id"] = $user->id;
+			$filters["is_open"] = false;
+			$filters["show_all"] = true;
+			$foods = $this->food_model->getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_RESULTS, $filters);
+			foreach ($foods as $food){
+				$categories = $this->food_category_model->getAllCategoriesForFood($food->food_id);
+				if (count($categories)==0){
+					$json_arr["error"] = "please tag all dishes with at least one category";
+					echo json_encode($json_arr);
+					return;
+				}
+			}
+		}
+		
+		
+		// set kitchen to status
+		$res = $this->user_model->setKitchenStatus($user_id, $bool_open);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
+		echo json_encode($json_arr);
 	}
 	
 	
@@ -304,6 +394,36 @@ class Profile extends Yumbox_Controller {
 		// success
 		$json_arr["success"] = "1";
 		$json_arr["filepath"] = $new_path;
+		echo json_encode($json_arr);
+	}
+	
+	
+	public function change_pickuptime(){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current user and data
+		$user_id = $this->login_util->getUserId();
+		
+		$weekday = $this->input->post("weekday");
+		$time = $this->input->post("time");
+		$res = $this->user_model->setPickupTime($user_id, $weekday, $time);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
 		echo json_encode($json_arr);
 	}
 }

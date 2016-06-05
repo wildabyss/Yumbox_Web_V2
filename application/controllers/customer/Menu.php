@@ -5,10 +5,6 @@ class Menu extends Yumbox_Controller {
 	public static $LIST_VIEW = "list";
 	public static $MAP_VIEW = "map";
 	
-	// maximum results to show per fetch
-	public static $MAX_RESULTS_FOODS = 5;
-	public static $MAX_RESULTS_CATEGORIES = 4;
-	
 	/**
 	 * Get the data required for the menu filter component for the view
 	 * @return an array of data to be passed to view
@@ -76,7 +72,7 @@ class Menu extends Yumbox_Controller {
 			$food_list_display .= $this->load->view("food_list/food_list_item", $food_data, true);
 		}
 		
-		$list_data["show_more"] = count($foods)>=Search::$MAX_FOODS_PAGE;
+		//$list_data["show_more"] = count($foods)>=Search::$MAX_FOODS_PAGE;
 		$food_list_display .= $this->load->view("food_list/food_list_end", $list_data, true);
 		
 		return $food_list_display;
@@ -153,7 +149,7 @@ class Menu extends Yumbox_Controller {
 		}
 		
 		// show more categories?
-		$show_more = count($categories) >= Search::$MAX_CATEGORIES_PAGE && $show_by_categories;
+		//$show_more = count($categories) >= Search::$MAX_CATEGORIES_PAGE && $show_by_categories;
 		
 		// bind to filter data
 		$filter_data = $this->dataForMenuFilter($is_rush, $view!=self::$MAP_VIEW, $search_query, $location_str,
@@ -198,7 +194,7 @@ class Menu extends Yumbox_Controller {
 			$data["foods"] = $foods;
 			$data['food_list_display'] = $food_list_display;
 			$data['empty_string'] = $this->lang->line("no_result");
-			$data['show_more'] = $show_more;
+			//$data['show_more'] = $show_more;
 			
 			// load view
 			$this->load->view("customer/menu", $data);
@@ -348,9 +344,13 @@ class Menu extends Yumbox_Controller {
 		$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
 		$food->prep_time = prep_time_for_display($pickup_time);
 		
+		// get food categories
+		$categories[$food_id] = $this->food_category_model->getAllCategoriesForFood($food_id);
+		
 		// get new element output
 		$food_data["food"] = $food;
 		$food_data["is_my_profile"] = ($food->vendor_id==$user_id);
+		$food_data["categories"] = $categories;
 		$food_item_display = $this->load->view("food_list/food_list_item", $food_data, true);
 		
 		// success

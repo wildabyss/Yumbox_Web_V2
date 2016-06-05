@@ -119,7 +119,7 @@ class Food_model extends CI_Model {
 			Food_review_model::$HIGHEST_RATING,
 			Food_model::$ACTIVE_FOOD, 
 			User_model::$INACTIVE_USER,
-			$is_open?1:0,
+			$is_open,
 		);
 		if ($is_rush){
 			$bindings[] = Food_model::$PICKUP_ANYTIME;

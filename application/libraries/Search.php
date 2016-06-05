@@ -170,6 +170,9 @@ EOT;
 		$foods = array();
 		$categories = array();
 		
+		// FIXME: for MVP, show all without pagination
+		$filters["show_all"] = true;
+		
 		// find all categories
 		if (isset($filters["category_ids"]) && count($filters["category_ids"])>0){
 			$categories = $CI->food_category_model->getAllActiveRelatedCategories($filters["category_ids"], self::$MAX_CATEGORIES_PAGE, $filters);

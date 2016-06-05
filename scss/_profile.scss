@@ -2,24 +2,8 @@
 	display: flex;
 	flex-direction: row;
 	
-	.editable-container.editable-inline{
-		width: 100%;
-		max-width: 600px;
-	}
-	
 	input{
 		font-size: inherit;
-	}
-
-	.editable-input{
-		width: 100%;
-		
-		input{
-			width: 100%;
-		}
-		textarea{
-			width: 100%;
-		}
 	}
 
 	.editable-address{
@@ -29,6 +13,33 @@
 		span{
 			display: inline-block;
 			width: 100px;
+		}
+	}
+	
+	.btn_kitchen_open{
+		cursor: pointer;
+	}
+	.btn_kitchen_open:hover{
+		color: white;
+	}
+	
+	#pickup_buttonset{
+		font-size: 1.4rem;
+		overflow: auto;
+		/*display: flex;
+		flex-direction: row;*/
+		
+		.pickup_item{
+			float: left;
+			width: 265px;
+			margin-bottom: 5px;
+			
+			label{
+				.ui-button-text{
+					width: 90px;
+				}
+				margin-right: 5px;
+			}
 		}
 	}
 	
@@ -97,11 +108,7 @@
 			}
 		}
 		
-		.is_open{
-			margin-left: auto;
-			margin-right: auto;
-		}
-		.is_closed{
+		.btn_kitchen_open{
 			margin-left: auto;
 			margin-right: auto;
 		}

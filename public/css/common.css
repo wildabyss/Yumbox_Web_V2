@@ -684,6 +684,23 @@ nav ul#mobile_user_menu a.logo {
   display: flex;
 }
 
+.editable-full .editable-container.editable-inline {
+  width: 100%;
+  max-width: 600px;
+}
+
+.editable-full .editable-container.editable-inline .editable-input {
+  width: 100%;
+}
+
+.editable-full .editable-container.editable-inline .editable-input input {
+  width: 100%;
+}
+
+.editable-full .editable-container.editable-inline .editable-input textarea {
+  width: 100%;
+}
+
 .ui-button-text {
   font-size: 1.3rem;
 }
@@ -1321,23 +1338,6 @@ div.about_text h1 {
   line-height: 20px;
 }
 
-#food_detail .editable-full .editable-container.editable-inline {
-  width: 100%;
-  max-width: 600px;
-}
-
-#food_detail .editable-full .editable-container.editable-inline .editable-input {
-  width: 100%;
-}
-
-#food_detail .editable-full .editable-container.editable-inline .editable-input input {
-  width: 100%;
-}
-
-#food_detail .editable-full .editable-container.editable-inline .editable-input textarea {
-  width: 100%;
-}
-
 #food_detail input.input_price {
   width: 70px;
 }
@@ -1512,25 +1512,8 @@ div.about_text h1 {
   flex-direction: row;
 }
 
-#profile_intro .editable-container.editable-inline {
-  width: 100%;
-  max-width: 600px;
-}
-
 #profile_intro input {
   font-size: inherit;
-}
-
-#profile_intro .editable-input {
-  width: 100%;
-}
-
-#profile_intro .editable-input input {
-  width: 100%;
-}
-
-#profile_intro .editable-input textarea {
-  width: 100%;
 }
 
 #profile_intro .editable-address {
@@ -1541,6 +1524,35 @@ div.about_text h1 {
 #profile_intro .editable-address span {
   display: inline-block;
   width: 100px;
+}
+
+#profile_intro .btn_kitchen_open {
+  cursor: pointer;
+}
+
+#profile_intro .btn_kitchen_open:hover {
+  color: white;
+}
+
+#profile_intro #pickup_buttonset {
+  font-size: 1.4rem;
+  overflow: auto;
+  /*display: flex;
+		flex-direction: row;*/
+}
+
+#profile_intro #pickup_buttonset .pickup_item {
+  float: left;
+  width: 265px;
+  margin-bottom: 5px;
+}
+
+#profile_intro #pickup_buttonset .pickup_item label {
+  margin-right: 5px;
+}
+
+#profile_intro #pickup_buttonset .pickup_item label .ui-button-text {
+  width: 90px;
 }
 
 #profile_intro .pic_wrapper {
@@ -1601,11 +1613,7 @@ div.about_text h1 {
   #profile_intro .intro_wrapper h3 {
     text-align: center;
   }
-  #profile_intro .is_open {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  #profile_intro .is_closed {
+  #profile_intro .btn_kitchen_open {
     margin-left: auto;
     margin-right: auto;
   }
