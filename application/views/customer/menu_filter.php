@@ -145,7 +145,7 @@
 			filter_button_click(e, true);
 		});
 
-		$("#search").keydown(function(e){
+		$("input[type=search]").keydown(function(e){
 			if (e.which == $.ui.keyCode.ENTER){
 				e.preventDefault();
 				$("#filter_form").submit();
