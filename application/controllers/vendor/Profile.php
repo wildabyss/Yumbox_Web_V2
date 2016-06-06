@@ -103,6 +103,94 @@ class Profile extends Yumbox_Controller {
 		
 		// get user picture
 		$user_picture = $this->user_model->getUserPicture($user_id);
+
+		//Loading Stripe's managed account data if user is viewing its own page and the id field is populated
+		if ($myprofile) {
+			if (!empty($user->stripe_managed_account_id)) {
+				$stripe_private_key = $this->config->item("stripe_secret_key");
+				\Stripe\Stripe::setApiKey($stripe_private_key);
+				$account = \Stripe\Account::retrieve($user->stripe_managed_account_id);
+
+				// Handy variables to store properties temporary
+				$external_account = null;
+				if (count($account->external_accounts->data) > 0) {
+					$external_account = $account->external_accounts->data[0];
+				}
+				$legal_entity = $account->legal_entity;
+
+				// Check and see if the managed account's legal entity is verified
+				$representer_verification = true;
+				foreach ($account->verification->fields_needed as $fn) {
+					if (strrpos($fn, 'legal_entity.', -strlen($fn)) !== false) {
+						$representer_verification = false;
+						break;
+					}
+				}
+
+				// From hierarchical object to flat array
+				$data['stripe_account'] = array(
+					'country' => $account->country,
+					'email' => $account->email,
+
+					"day" => $legal_entity ? $legal_entity->dob->day : '',
+					"month" => $legal_entity ? $legal_entity->dob->month : '',
+					"year" => $legal_entity ? $legal_entity->dob->year : '',
+					"first_name" => $legal_entity ? $legal_entity->first_name : '',
+					"last_name" => $legal_entity ? $legal_entity->last_name : '',
+					"type" => $legal_entity ? $legal_entity->type : '',
+					"address_country" => $legal_entity ? $legal_entity->address->country : '',
+					"state" => $legal_entity ? $legal_entity->address->state : '',
+					"city" => $legal_entity ? $legal_entity->address->city : '',
+					"line_1" => $legal_entity ? $legal_entity->address->line1 : '',
+					"line_2" => $legal_entity ? $legal_entity->address->line2 : '',
+					"postal_code" => $legal_entity ? $legal_entity->address->postal_code : '',
+
+					'bank_country' => $external_account ? $external_account->country : '',
+					'currency' => $external_account ? $external_account->currency : '',
+					'account_holder_type' => $external_account ? $external_account->account_holder_type : '',
+					'routing_number' => $external_account ? $external_account->routing_number : '',
+					'account_holder_name' => $external_account ? $external_account->account_holder_name : '',
+
+					'charges_enabled' => $account->charges_enabled,
+					'transfers_enabled' => $account->transfers_enabled,
+					'representer_verification' => !$representer_verification ? 'rejected' : 'verified',
+					'bank_account_verification' => in_array('external_account', $account->verification->fields_needed) ? 'rejected' : 'verified',
+				);
+			}
+			else {
+				// Since user has got no managed account, just load the default values
+				$this->config->load('stripe_config');
+				$config = $this->config->item('stripe');
+				$data['stripe_account'] = array(
+					'country' => $config['default_country'],
+					'email' => $user->email,
+
+					"day" => '',
+					"month" => '',
+					"year" => '',
+					"first_name" => '',
+					"last_name" => '',
+					"type" => $config['default_account_type'],
+					"address_country" => $config['default_country'],
+					"state" => $config['default_state'],
+					"city" => $config['default_city'],
+					"line_1" => '',
+					"line_2" => '',
+					"postal_code" => '',
+
+					'bank_country' => $config['default_country'],
+					'currency' => $config['default_currency'],
+					'account_holder_type' => $config['default_account_holder_type'],
+					'routing_number' => '',
+					'account_holder_name' => $user->name,
+
+					'charges_enabled' => false,
+					'transfers_enabled' => false,
+					'representer_verification' => 'uninitialized',
+					'bank_account_verification' => 'uninitialized',
+				);
+			}
+		}
 		
 		// bind data
 		$data['is_my_profile'] = $myprofile;
@@ -433,6 +521,115 @@ class Profile extends Yumbox_Controller {
 			return;
 		}
 		
+		// success
+		$json_arr["success"] = "1";
+		echo json_encode($json_arr);
+	}
+
+
+	/**
+	 * AJAX method for modifying a user's Stripe managed account
+	 * echo json string:
+	 *   {success, error}
+	 */
+	public function stripe_account() {
+		// ensure we have POST request
+		if (!is_post_request()) {
+			show_404();
+		}
+
+		// Checking if user is logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+
+		// Getting current user id and user record
+		$user_id = $this->login_util->getUserId();
+		$user = $this->user_model->getUserForUserId($user_id);
+
+		$stripe_private_key = $this->config->item("stripe_secret_key");
+		\Stripe\Stripe::setApiKey($stripe_private_key);
+
+		// Populating a hierarchical array from request parameters
+		$account_info = array(
+			"managed" => true,
+			"country" => $this->input->post("country"),
+			"email" => $this->input->post("email"),
+			"legal_entity" => array(
+				"dob" => array(
+					"day" => $this->input->post("day"),
+					"month" => $this->input->post("month"),
+					"year" => $this->input->post("year"),
+				),
+				"first_name" => $this->input->post("first_name"),
+				"last_name" => $this->input->post("last_name"),
+				"type" => $this->input->post("type"), // individual or company
+				"address" => array(
+					"country" => $this->input->post("address_country"),
+					"state" => $this->input->post("state"),
+					"city" => $this->input->post("city"),
+					"line1" => $this->input->post("line_1"),
+					"line2" => $this->input->post("line_2"),
+					"postal_code" => $this->input->post("postal_code"),
+				),
+				"personal_id_number" => $this->input->post("pii_token_id"),
+			),
+			"tos_acceptance" => array(
+				"date" => time(),
+				"ip" => $_SERVER['REMOTE_ADDR'],
+			),
+			"external_account" => $this->input->post("bank_account_token_id"),
+		);
+
+		// Does user have a managed account already?
+		if (!empty($user->stripe_managed_account_id)) {
+			// Since user has a managed account, we need to update it
+			try {
+				$account = \Stripe\Account::retrieve($user->stripe_managed_account_id);
+				$account->email = $account_info['email'];
+
+				$account->legal_entity->first_name = $account_info['legal_entity']['first_name'];
+				$account->legal_entity->last_name = $account_info['legal_entity']['last_name'];
+				$account->legal_entity->type = $account_info['legal_entity']['type'];
+				$account->legal_entity->dob = $account_info['legal_entity']['dob'];
+				$account->legal_entity->address = $account_info['legal_entity']['address'];
+
+				if (in_array('legal_entity.personal_id_number', $account->verification->fields_needed)) {
+					$account->legal_entity->personal_id_number = $account_info['legal_entity']['personal_id_number'];
+				}
+
+				$account->tos_acceptance = $account_info['tos_acceptance'];
+				$account->external_account = $account_info['external_account'];
+				$account->save();
+			}
+			catch (\Exception $ex) {
+				$json_arr["error"] = $ex->getMessage();
+				echo json_encode($json_arr);
+				return;
+			}
+		}
+		else {
+			// User has got no managed account, let's create one for him / her
+			try {
+				$account = \Stripe\Account::create($account_info);
+			}
+			catch (\Exception $ex) {
+				$json_arr["error"] = $ex->getMessage();
+				echo json_encode($json_arr);
+				return;
+			}
+
+			// Update Stripe managed account id
+			$res = $this->user_model->modifyStripeId($user_id, $account->id);
+			if ($res !== true){
+				$json_arr["error"] = $res;
+				echo json_encode($json_arr);
+				return;
+			}
+		}
+
 		// success
 		$json_arr["success"] = "1";
 		echo json_encode($json_arr);

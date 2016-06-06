@@ -16,7 +16,23 @@
 			width: 100px;
 		}
 	}
-	
+
+    .editable-stripe-account {
+        display: flex;
+        margin-bottom: 5px;
+
+        span {
+            display: inline-block;
+            min-width: 150px;
+        }
+        span.birthday {
+            min-width: 55px;
+            text-align: right;
+            padding-right: 3px;
+            padding-left: 3px;
+        }
+    }
+
 	.btn_kitchen_open.my_profile{
 		cursor: pointer;
 	}

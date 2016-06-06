@@ -1,4 +1,39 @@
 <script src="/js/editable-address.js"></script>
+<script src="/js/editable-stripe-account.js"></script>
+
+<style>
+#representer_verification.verification_uninitialized, #bank_account_verification.verification_uninitialized {
+}
+#representer_verification.verification_rejected, #bank_account_verification.verification_rejected {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background-color: red;
+	border: 1px solid black;
+}
+#representer_verification.verification_verified, #bank_account_verification.verification_verified {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background-color: green;
+	border: 1px solid black;
+}
+
+#charges.enabled, #transfers.enabled {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background-color: green;
+	border: 1px solid black;
+}
+#charges.disabled, #transfers.disabled {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background-color: red;
+	border: 1px solid black;
+}
+</style>
 
 <section id="profile_intro">
 	<div class="pic_wrapper">
@@ -32,6 +67,12 @@
 		
 		<h3>ADDRESS</h3>
 		<p class="editable-full"><a id="edit_user_addr" data-type="address" data-onblur="ignore"></a></p>
+
+		<h3>FINANCIAL INFORMATION
+			<span id="charges" class="<?php echo $stripe_account['charges_enabled'] ? 'enabled' : 'disabled'?>"></span>
+			<span id="transfers" class="<?php echo $stripe_account['transfers_enabled'] ? 'enabled' : 'disabled'?>"></span>
+		</h3>
+		<p><a id="account_info" data-type="stripe_account" data-onblur="ignore"></a></p>
 		<?php endif?>
 		
 		<?php if (!$is_my_profile && $user->descr != "" || $is_my_profile):?>
@@ -104,6 +145,7 @@
 </section>
 
 <script src="/js/moment.min.js"></script>
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 <script>
 	$(document).ready(function(){
 		<?php if ($is_my_profile):?>
@@ -364,6 +406,236 @@
 				time = new Date(time);
 				time = time.getHours()+":"+time.getMinutes();
 				set_pickup_time(weekday, time);
+			}
+		});
+
+		// set Stripe public key
+		Stripe.setPublishableKey('<?php echo $this->config->item("stripe_public_key")?>');
+
+		$("#account_info").editable({
+			// Using a function gives us the opportunity to verify form fields with Ajax-Async
+			url:		function(params) {
+				var d = new $.Deferred();
+
+				// This function is called once both Ajax-Async verifications are approved
+				var success = function() {
+					var inputs = $.extend({
+						type: params.value.type,
+						country: params.value.country,
+						address_country: params.value.country,
+						state: params.value.state,
+						city: params.value.city,
+						line_1: params.value.line_1,
+						line_2: params.value.line_2,
+						postal_code: params.value.postal_code,
+
+						first_name: params.value.first_name,
+						last_name: params.value.last_name,
+						email: params.value.email,
+						year: params.value.year,
+						month: params.value.month,
+						day: params.value.day,
+
+						bank_account_token_id: params.value.bank_account_token_id,
+						pii_token_id: params.value.pii_token_id
+					}, csrfData);
+
+					$.ajax({
+						type: 		"post",
+						url: 		"/vendor/profile/stripe_account",
+						data:		inputs,
+						success:	function(data){
+							var respArr = $.parseJSON(data);
+							if ("success" in respArr){
+								d.resolve(data);
+							} else {
+								// error
+								d.reject(respArr["error"]);
+								errorMessage(respArr["error"]);
+							}
+						},
+						error: 		function(){
+							d.reject("Unable to process");
+							errorMessage("Unable to process");
+						}
+					});
+				};
+
+				// Creating a token based on bank account info
+				Stripe.bankAccount.createToken({
+					country: params.value.bank_country,
+					currency: params.value.currency,
+					routing_number: params.value.routing_number,
+					account_number: params.value.account_number,
+					account_holder_name: params.value.account_holder_name,
+					account_holder_type: params.value.account_holder_type
+				}, function(status, response) {
+					if (response.error) {
+						// Show the errors
+						d.reject(response.error.message);
+						errorMessage(response.error.message);
+					} else { // Token created
+						params.value.bank_account_token_id = response.id;
+						// Check and see if this is the second callback called
+						if (params.value.pii_token_id) {
+							success();
+						}
+					}
+
+				});
+
+				// Creating a token based on SIN number
+				Stripe.piiData.createToken({
+					personal_id_number: params.value.pii
+				}, function(status, response) {
+					if (response.error) {
+						// Show the errors
+						d.reject(response.error.message);
+						errorMessage(response.error.message);
+
+					} else { // Token created
+						params.value.pii_token_id = response.id;
+						// Check and see if this is the second callback called
+						if (params.value.bank_account_token_id) {
+							success();
+						}
+					}
+
+				});
+
+				// Returning a `promise` means even though the function is returned, but process is
+				//waiting for .reject or .resolve to carry on.
+				return d.promise();
+			},
+			value:		{
+				country: html_decode("<?php echo $stripe_account['country']?>"),
+				email: html_decode("<?php echo $stripe_account['email']?>"),
+				day: html_decode("<?php echo $stripe_account['day']?>"),
+				month: html_decode("<?php echo $stripe_account['month']?>"),
+				year: html_decode("<?php echo $stripe_account['year']?>"),
+				first_name: html_decode("<?php echo $stripe_account['first_name']?>"),
+				last_name: html_decode("<?php echo $stripe_account['last_name']?>"),
+				type: html_decode("<?php echo $stripe_account['type']?>"),
+
+				address_country: html_decode("<?php echo $stripe_account['address_country']?>"),
+				state: html_decode("<?php echo $stripe_account['state']?>"),
+				city: html_decode("<?php echo $stripe_account['city']?>"),
+				line_1: html_decode("<?php echo $stripe_account['line_1']?>"),
+				line_2: html_decode("<?php echo $stripe_account['line_2']?>"),
+				postal_code: html_decode("<?php echo $stripe_account['postal_code']?>"),
+
+				bank_country: html_decode("<?php echo $stripe_account['bank_country']?>"),
+				currency: html_decode("<?php echo $stripe_account['currency']?>"),
+				account_holder_type: html_decode("<?php echo $stripe_account['account_holder_type']?>"),
+				routing_number: html_decode("<?php echo $stripe_account['routing_number']?>"),
+				account_holder_name: html_decode("<?php echo $stripe_account['account_holder_name']?>"),
+
+				charges_enabled: <?php echo $stripe_account['charges_enabled'] ? 'true' : 'false'?>,
+				transfers_enabled: <?php echo $stripe_account['transfers_enabled'] ? 'true' : 'false'?>,
+				representer_verification: "<?php echo $stripe_account['representer_verification']?>",
+				bank_account_verification: "<?php echo $stripe_account['bank_account_verification']?>"
+			},
+			send:		"always",
+			params:		csrfData,
+			error:		function(response){
+				errorMessage("Unable to process");
+			},
+			success:	function(response){
+				var respArr = $.parseJSON(response);
+
+				if ("success" in respArr){
+					successMessage("Saved");
+				} else {
+					errorMessage(respArr["error"]);
+					return respArr["error"];
+				}
+			},
+			validate:	function(value){
+				value.type = $.trim(value.type);
+				value.country = $.trim(value.country);
+				value.state = $.trim(value.state);
+				value.city = $.trim(value.city);
+				value.line_1 = $.trim(value.line_1);
+				value.line_2 = $.trim(value.line_2);
+				value.postal_code = $.trim(value.postal_code);
+
+				value.first_name = $.trim(value.first_name);
+				value.last_name = $.trim(value.last_name);
+				value.email = $.trim(value.email);
+				value.year = parseInt($.trim(value.year));
+				value.month = parseInt($.trim(value.month));
+				value.day = parseInt($.trim(value.day));
+
+				value.pii = $.trim(value.pii);
+
+				value.bank_country = $.trim(value.bank_country);
+				value.currency = $.trim(value.currency);
+				value.account_holder_type = $.trim(value.account_holder_type);
+				value.routing_number = $.trim(value.routing_number);
+				value.account_number = $.trim(value.account_number);
+				value.account_holder_name = $.trim(value.account_holder_name);
+
+				// Checking for incomplete form
+				var error = false;
+				// Mapping from field names to their labels to show to user in case of error
+				var field_labels = {
+					type: "Account type",
+					country: "Country",
+					state: "Province / State",
+					city: "City",
+					line_1 : "Line 1",
+					line_2 : "Line 2",
+					postal_code: "Postal Code",
+
+					first_name: "First name",
+					last_name: "Last name",
+					email: "Email",
+
+					pii: "SIN number",
+
+					bank_country: "Bank's country",
+					currency: "Currency",
+					account_holder_type: "Account holder type",
+					routing_number: "Routing number",
+					account_number: "Account number",
+					account_holder_name: "Account holder name"
+				};
+				for (var key in value) {
+					switch (key) {
+						case "day":
+							if (isNaN(value.day) || value.day < 1 || value.day > 31) {
+								error = "Invalid day value";
+							}
+							break;
+
+						case "month":
+							if (isNaN(value.month) || value.month < 1 || value.month > 12) {
+								error = "Invalid month value";
+							}
+							break;
+
+						case "year":
+							if (isNaN(value.year) || value.year < 1900 || value.year > 2100) {
+								error = "Invalid year value";
+							}
+							break;
+
+						default:
+							if (!value[key]) {
+								error = "All fields are mandatory, please enter '" + field_labels[key] + "'";
+							}
+							break;
+					}
+					if (error !== false) {
+						break;
+					}
+				}
+				if (error !== false){
+					errorMessage(error);
+					return "error";
+				}
+
+				return { newValue: value };
 			}
 		});
 		<?php endif?>

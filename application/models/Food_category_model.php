@@ -35,7 +35,7 @@ class Food_category_model extends CI_Model {
 		$min_rating = isset($filters["min_rating"])?$filters["min_rating"]:false;
 		$min_price = isset($filters["min_price"])?$filters["min_price"]:false;
 		$max_price = isset($filters["max_price"])?$filters["max_price"]:false;
-		$location = isset($filters["location"])?filters["location"]:false;
+		$location = isset($filters["location"])?$filters["location"]:false;
 		$show_all = isset($filters["show_all"])?$filters["show_all"]:false;
 		
 		// base query
