@@ -42,7 +42,7 @@
 
 <section id="about">
 	<div class="about_text">
-		<h1>ABOUT US</h1>
+		<h1>About Us</h1>
 		<h2>Home kitchen reinvented</h2>
 		<p>Yumbox is a service made by foodies for foodies. Tap into the limitless world of home kitchen and recipes
 		from your neighbours.</p>
@@ -56,7 +56,7 @@
 
 <section id="contact">
 	<div class="about_text">
-		<h1>CONTACT US</h1>
+		<h1>Contact Us</h1>
 		<h2>Sales</p>
 		<p>Customers: sales@sample.ca</p>
 		<p>Finance: sales@sample.ca</p>

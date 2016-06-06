@@ -1,6 +1,7 @@
 #profile_intro{
 	display: flex;
 	flex-direction: row;
+	padding: 0 2rem;
 	
 	input{
 		font-size: inherit;
@@ -98,6 +99,7 @@
 		
 		.intro_wrapper{
 			padding: 0;
+			text-align: center;
 			
 			h1{
 				text-align: center;

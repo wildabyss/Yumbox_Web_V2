@@ -15,7 +15,7 @@
 		<link rel="stylesheet" href="/css/common.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="/css/jqueryui-editable.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="/css/jquery.tagit.css" type="text/css" media="screen" />
-		<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic|Montserrat" rel="stylesheet" type="text/css"/>
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:600,400,300,400italic" rel="stylesheet" type="text/css"/>
 	</head>
 	
 	<body>

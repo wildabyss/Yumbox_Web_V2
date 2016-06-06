@@ -5,11 +5,13 @@ $mediumGrey: #4A4A4A;
 $darkGrey: #b5b3ac;
 $nearBlack: #3D3C3A;
 $almostBlack : #251F1E;
-$translucentBlack : rgba(0,0,0, 0.3);
-$translucentGrey : rgba(240,240,240, 0.8);
-
 $green: #006622;
-$pink : #F5BDA3;
+$red: #990000;
+
+$translucentBlack : rgba(0,0,0, 0.2);
+$translucentGrey : rgba(240,240,240, 0.8);
+$pink : #F2BCB8;
+
 $teal : #B3CCC8;
 $blue: #95d1d1;
 $red: #ed7a5d;
@@ -23,8 +25,8 @@ $explore_selected: $blue;
 
 // fonts
 $mainFont: 'Open Sans', sans-serif;
-$specialFont:'ButlerStencil-Bold', serif;
-$headingFont: 'Montserrat-Regular', sans-serif;
+$specialFont:'Butler-Regular', serif;
+$headingFont: 'Open Sans', sans-serif;
 
 // sizes
 $max_display_width: 1440px;
