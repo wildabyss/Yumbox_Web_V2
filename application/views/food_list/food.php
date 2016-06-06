@@ -18,11 +18,11 @@
 			<?php if (!$is_my_profile):?>
 			<!-- display price and order button -->
 			<h3 class="price">$<?php echo $food->food_price?></h3>
-			<button id="add_to_order" class="action_button" <?php if (!$enable_order):?>disabled<?php endif?>>ADD ORDER +</button>
+			<button class="action_button btn_add_order" <?php if (!$enable_order):?>disabled<?php endif?>>ADD ORDER +</button>
 			<?php else:?>
 			<!-- display price and rating -->
 			<h3 class="price">$<a id="input_price" data-type="text" data-onblur="ignore"><?php echo $food->food_price?></a></h3>
-			<button class="btn_remove_food" class="action_button remove_button">Remove</button>
+			<button class="action_button btn_remove_order">Remove</button>
 			<?php endif?>
 		</div>
 		
@@ -173,7 +173,7 @@
 <script>
 	<?php if (!$is_my_profile):?>
 	
-	$("#add_to_order").button().click(function(e){
+	$("button.btn_add_order").button().click(function(e){
 		<?php if ($current_user === false):?>
 		window.location.href = "/login?redirect=<?php echo urlencode($_SERVER['REQUEST_URI'])?>";
 		<?php else:?>
@@ -191,7 +191,7 @@
 					
 					// enable/disable further orders
 					if (!respArr["enable_order"]){
-						$("#add_to_order").button("disable");
+						$("button.btn_add_order").button("disable");
 					}
 				} else {
 					// error
@@ -208,7 +208,7 @@
 	
 	<?php else:?>
 	
-	$(".btn_remove_food").button().click(function(e){
+	$("button.btn_remove_order").button().click(function(e){
 		$('<div class="dialog-confirm-food" title="Delete dish?"/>')
 			.prependTo("#global")
 			.html("<p>You sure you want to delete this dish?</p>")

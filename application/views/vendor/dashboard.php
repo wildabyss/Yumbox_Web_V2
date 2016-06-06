@@ -37,8 +37,8 @@
 					<span class="canceled">Canceled &#x274c;</span>
 					<?php //else:?>
 					-->
-					<button class="btn_cancel_order" order_id="<?php //6echo $food_order->order_id?>">Cancel &#x274c;</button>
 					<button class="btn_finish_order" order_id="<?php //6echo $food_order->order_id?>">Finish &#x2713;</button>
+					<button class="btn_cancel_order" order_id="<?php //6echo $food_order->order_id?>">Cancel &#x274c;</button>
 					<?php //endif?>
 				</h3>
 				<div class="price_descr right-align">
@@ -51,7 +51,15 @@
 		
 		<div class="total">
 			<div class="line">
-				<h3>COMMISSION</h3>
+				<h3>TAXES</h3>
+				<h3 class="amount" id="commission">$0.00</h3>
+			</div>
+			<div class="line">
+				<h3>FRONT COMMISSION</h3>
+				<h3 class="amount" id="commission">$0.00</h3>
+			</div>
+			<div class="line">
+				<h3>BACK COMMISSION</h3>
 				<h3 class="amount" id="commission">-$0.00</h3>
 			</div>
 			<div class="line">
