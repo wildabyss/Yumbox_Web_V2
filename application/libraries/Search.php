@@ -10,7 +10,6 @@ class Search {
 	
 	// location based search radius
 	public static $SEARCH_RADIUS = 25;		// 25KM radius for search results
-	public static $EARTH_RADIUS = 6371;
 	
 	// maximum number of results per pagination
 	public static $MAX_CATEGORIES_PAGE = 5;
@@ -36,7 +35,7 @@ class Search {
 		// decipher response
 		$output_arr = json_decode($output);
 		if ($output_arr !== false && $output_arr != NULL){
-			if (isset($output_arr->error_message))
+			if (isset($output_arr->error_message) || count($output_arr->results)==0)
 				return false;
 			else{
 				$latitude = $output_arr->results[0]->geometry->location->lat;
@@ -95,7 +94,16 @@ class Search {
 	 *
 	 * @param string $search_query
 	 * @param array $filters
+	 *		is_rush		=> bool
+	 *		is_open		=> bool
+	 *		category_ids   => array
+	 *		min_rating	=> int
+	 *		min_price	 => float
+	 *		max_price	 => float
+	 *		location	=> {latitude, longitude}
 	 * @param bool $show_by_categories
+	 *		if true, foods will be returned per category as index
+	 * 		if false, foods will be returned with index "all"
 	 * @return [foods, categories]
 	 */
 	public function searchForFood($search_query, $filters=array(), $show_by_categories=true){
@@ -145,6 +153,13 @@ EOT;
 			}
 		}
 		
+		// do we have results?
+		if (isset($filters["food_ids"]) && count($filters["food_ids"])==0){
+			return array(
+				"foods" => array(),
+				"categories" => array()
+			);
+		}
 		
 		// load model
 		$CI =& get_instance();
@@ -154,6 +169,9 @@ EOT;
 		// result containers
 		$foods = array();
 		$categories = array();
+		
+		// FIXME: for MVP, show all without pagination
+		$filters["show_all"] = true;
 		
 		// find all categories
 		if (isset($filters["category_ids"]) && count($filters["category_ids"])>0){
@@ -171,7 +189,7 @@ EOT;
 			}
 		} else {
 			// get all foods
-			$foods = $CI->food_model->getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_FOODS_PAGE_NO_CATEGORIES, $filters);
+			$foods["all"] = $CI->food_model->getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_FOODS_PAGE_NO_CATEGORIES, $filters);
 		}
 		
 		// array to be returned

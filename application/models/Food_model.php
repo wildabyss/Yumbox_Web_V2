@@ -28,6 +28,8 @@ class Food_model extends CI_Model {
 	 *	min_rating	=> int
 	 *	min_price	 => float
 	 *	max_price	 => float
+	 * 	location	=> [latitude, longitude]
+	 *	show_all	=> bool
 	 */
 	public function getActiveFoodsAndVendorAndOrdersAndRatingAndPictures($limit, array $filters){
 		
@@ -40,6 +42,8 @@ class Food_model extends CI_Model {
 		$min_rating = isset($filters["min_rating"])?$filters["min_rating"]:false;
 		$min_price = isset($filters["min_price"])?$filters["min_price"]:false;
 		$max_price = isset($filters["max_price"])?$filters["max_price"]:false;
+		$location = isset($filters["location"])?$filters["location"]:false;
+		$show_all = isset($filters["show_all"])?$filters["show_all"]:false;
 	
 		// base query
 		$query_str = '
@@ -56,6 +60,8 @@ class Food_model extends CI_Model {
 			on f.id = a.food_id
 			left join user u
 			on u.id = f.user_id
+			left join address ad
+			on ad.user_id = f.user_id
 			left join food_picture p
 			on p.food_id = f.id
 			where
@@ -98,14 +104,22 @@ class Food_model extends CI_Model {
 		if ($vendor_id !== false){
 			$query_str .= ' and u.id = ?';
 		}
-		$query_str .= ' group by f.id order by f.name limit ?';
+		// filter locations
+		if ($location !== false){
+			$query_str .= ' and ad.longitude is not null and ad.latitude is not null
+				and distance_btw_coords(ad.latitude, ad.longitude, ?, ?) <= ?';
+		}
+		$query_str .= ' group by f.id order by f.name';
+		if (!$show_all){
+			$query_str .= ' limit ?';
+		}
 		
 		// bindings
 		$bindings = array(
 			Food_review_model::$HIGHEST_RATING,
 			Food_model::$ACTIVE_FOOD, 
 			User_model::$INACTIVE_USER,
-			$is_open?1:0,
+			$is_open,
 		);
 		if ($is_rush){
 			$bindings[] = Food_model::$PICKUP_ANYTIME;
@@ -121,7 +135,14 @@ class Food_model extends CI_Model {
 		if ($vendor_id !== false){
 			$bindings[] = $vendor_id;
 		}
-		$bindings[] = $limit;
+		if ($location !== false){
+			$bindings[] = $location["latitude"];
+			$bindings[] = $location["longitude"];
+			$bindings[] = Search::$SEARCH_RADIUS;
+		}
+		if (!$show_all){
+			$bindings[] = $limit;
+		}
 		
 		// perform database query
 		$query = $this->db->query($query_str, $bindings);
@@ -139,14 +160,14 @@ class Food_model extends CI_Model {
 	public function getFoodAndVendorForFoodId($food_id){
 		$query = $this->db->query('
 			select 
-				f.id food_id, f.name food_name, f.alternate_name food_alt_name, f.price food_price, f.descr, f.ingredients, 
+				f.id food_id, f.status food_status, f.name food_name, f.alternate_name food_alt_name, f.price food_price, f.descr, f.ingredients, 
 				f.health_benefits, f.eating_instructions, 
 				f.pickup_method, f.prep_time_hours prep_time, f.quota,
 				p.path pic_path,
 				average_rating(f.id)/?*100 rating,
 				total_orders(f.id) total_orders,
 				u.id vendor_id, u.name vendor_name, u.email, u.phone, u.return_date,
-				u.is_open
+				u.is_open, u.status vendor_status
 			from food f
 			left join user u
 			on u.id = f.user_id
@@ -154,14 +175,10 @@ class Food_model extends CI_Model {
 			on p.food_id = f.id
 			where
 				f.id = ?
-				and f.status = ?
-				and u.status <> ?
 			group by f.id',
 			array(
 				Food_review_model::$HIGHEST_RATING,
-				$food_id,
-				self::$ACTIVE_FOOD,
-				User_model::$INACTIVE_USER
+				$food_id
 			));
 		$results = $query->result();
 		
@@ -186,14 +203,8 @@ class Food_model extends CI_Model {
 			left join user u
 			on u.id = f.user_id
 			where
-				f.id = ?
-				and f.status = ?
-				and u.status <> ?',
-			array(
-				$food_id,
-				self::$ACTIVE_FOOD,
-				User_model::$INACTIVE_USER
-			));
+				f.id = ?',
+			array($food_id));
 		$results = $query->result();
 		
 		if (count($results) == 0)
@@ -252,6 +263,137 @@ class Food_model extends CI_Model {
 			return $this->db->error();
 		}
 		
+		return true;
+	}
+	
+	
+	/**
+	 * Change the name of the food
+	 * @return true on success, error on failure
+	 */
+	public function changeName($food_id, $name){
+		if (!$this->db->query('update food set name = ? where id=?', array($name, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Change the name of the food
+	 * @return true on success, error on failure
+	 */
+	public function changeAlternateName($food_id, $alt_name){
+		if (!$this->db->query('update food set alternate_name = ? where id=?', array($alt_name, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Change the price of the food
+	 * @return true on success, error on failure
+	 */
+	public function changePrice($food_id, $price){
+		if (!$this->db->query('update food set price = ? where id=?', array($price, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Change the description
+	 * @return true on success, error on failure
+	 */
+	public function changeDescription($food_id, $descr){
+		if (!$this->db->query('update food set descr = ? where id=?', array($descr, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Change the description
+	 * @return true on success, error on failure
+	 */
+	public function changeIngredients($food_id, $ingredients){
+		if (!$this->db->query('update food set ingredients = ? where id=?', array($ingredients, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Change the description
+	 * @return true on success, error on failure
+	 */
+	public function changeHealthBenefits($food_id, $benefits){
+		if (!$this->db->query('update food set health_benefits = ? where id=?', array($benefits, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Change the description
+	 * @return true on success, error on failure
+	 */
+	public function changeEatingInstructions($food_id, $instructions){
+		if (!$this->db->query('update food set eating_instructions = ? where id=?', array($instructions, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Modify the display picture of the user
+	 * @return true on sucess, error on failure
+	 */
+	public function modifyFoodPicture($food_id, $pic_path){
+		// associate with new file
+		if (!$this->db->query("call add_food_picture(?, ?)", array($food_id, $pic_path))){
+			return $this->db->error();
+		}
+
+		return true;
+	}
+	
+	
+	public function modifyPickupMethod($food_id, $method){
+		if ($method != self::$PICKUP_ANYTIME && $method != self::$PICKUP_DESIGNATED){
+			return "incorrect pickup method";
+		}
+		
+		if (!$this->db->query("update food set pickup_method=? where id=?", array($method, $food_id))){
+			return $this->db->error();
+		}
+
+		return true;
+	}
+	
+	
+	public function modifyPreparationTime($food_id, $time){
+		if (!is_numeric($time) || $time<=0){
+			return "incorrect time";
+		}
+		
+		if (!$this->db->query("update food set prep_time_hours=? where id=?", array($time, $food_id))){
+			return $this->db->error();
+		}
+
 		return true;
 	}
 }

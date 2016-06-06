@@ -34,17 +34,46 @@ class Profile extends Yumbox_Controller {
 			show_404();
 		}
 		$filters["vendor_id"] = $user->id;
-		$filters["is_open"] = 0;
+		$filters["is_open"] = false;
 		
 		// is this my profile?
 		$my_id = $this->login_util->getUserId();
-		
 		if ($my_id !== false && $my_id == $user_id){
 			// my profile
 			$myprofile = true;
 		} else {
 			$myprofile = false;
 		}
+		
+		// massage regular pickup times
+		$user->pickup_mon = array(
+			"enable" => ($user->pickup_mon != "00:00:00"),
+			"time" => $user->pickup_mon
+		);
+		$user->pickup_tue = array(
+			"enable" => ($user->pickup_tue != "00:00:00"),
+			"time" => $user->pickup_tue
+		);
+		$user->pickup_wed = array(
+			"enable" => ($user->pickup_wed != "00:00:00"),
+			"time" => $user->pickup_wed
+		);
+		$user->pickup_thu = array(
+			"enable" => ($user->pickup_thu != "00:00:00"),
+			"time" => $user->pickup_thu
+		);
+		$user->pickup_fri = array(
+			"enable" => ($user->pickup_fri != "00:00:00"),
+			"time" => $user->pickup_fri
+		);
+		$user->pickup_sat = array(
+			"enable" => ($user->pickup_sat != "00:00:00"),
+			"time" => $user->pickup_sat
+		);
+		$user->pickup_sun = array(
+			"enable" => ($user->pickup_sun != "00:00:00"),
+			"time" => $user->pickup_sun
+		);
 		
 		// get food data for display
 		$food_list_display = $this->load->view("food_list/food_list_start", [], true);
@@ -89,6 +118,72 @@ class Profile extends Yumbox_Controller {
 		$this->navigation();
 		$this->load->view("vendor/profile", $data);
 		$this->footer();
+	}
+	
+	
+	/**
+	 * AJAX method for opening or closing the user's kitchen
+	 * echo json string:
+	 *   {success, error}
+	 */
+	public function open_kitchen($bool_open=false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// get current user
+		$user_id = $this->login_util->getUserId();
+		
+		if ($bool_open){
+			
+			// check valid email
+			$user = $this->user_model->getUserForUserId($user_id);
+			if ($user->email==""){
+				$json_arr["error"] = "must have valid email before opening kitchen";
+				echo json_encode($json_arr);
+				return;
+			}
+			
+			// get address
+			$address = $this->user_model->getOrCreateAddress($user_id);
+			if ($address->latitude == "" || $address->longitude == ""){
+				$json_arr["error"] = "must have valid address before opening the kitchen";
+				echo json_encode($json_arr);
+				return;
+			}
+			
+			// get all foods and check for categories
+			$filters["vendor_id"] = $user->id;
+			$filters["is_open"] = false;
+			$filters["show_all"] = true;
+			$foods = $this->food_model->getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_RESULTS, $filters);
+			if (count($foods)==0){
+				$json_arr["error"] = "add at least one dish before opening your kitchen";
+				echo json_encode($json_arr);
+				return;
+			}
+			foreach ($foods as $food){
+				$categories = $this->food_category_model->getAllCategoriesForFood($food->food_id);
+				if (count($categories)==0){
+					$json_arr["error"] = "please tag all dishes with at least one category";
+					echo json_encode($json_arr);
+					return;
+				}
+			}
+		}
+		
+		
+		// set kitchen to status
+		$res = $this->user_model->setKitchenStatus($user_id, $bool_open);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
+		echo json_encode($json_arr);
 	}
 	
 	
@@ -309,66 +404,16 @@ class Profile extends Yumbox_Controller {
 	
 	
 	/**
-	 * AJAX method for creating a new dish
-	 * echo json string:
-	 *   {success, li_display, error}
-	 */
-	public function new_food(){
-		// ensure we have POST request
-		if (!is_post_request())
-			show_404();
-		
-		// check if user has logged in
-		if (!$this->login_util->isUserLoggedIn()){
-			$json_arr["error"] = "user not logged in";
-			echo json_encode($json_arr);
-			return;
-		}
-		
-		// get current user and data
-		$user_id = $this->login_util->getUserId();
-		$food_name = $this->input->post("name");
-		$food_alt_name = $this->input->post("alt_name");
-		$food_price = $this->input->post("price");
-		
-		// create new food
-		$food_id = false;
-		try {
-			$food_id = $this->food_model->createFood($user_id, $food_name, $food_alt_name, $food_price);
-		} catch (Exception $e){
-			$json_arr["error"] = $e->getMessage();
-			echo json_encode($json_arr);
-			return;
-		}
-		
-		// get food info
-		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
-		// show predicted pickup time
-		$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
-		$food->prep_time = prep_time_for_display($pickup_time);
-		
-		// get new element output
-		$food_data["food"] = $food;
-		$food_data["is_my_profile"] = true;
-		$food_item_display = $this->load->view("food_list/food_list_item", $food_data, true);
-		
-		// success
-		$json_arr["success"] = "1";
-		$json_arr["li_display"] = $food_item_display;
-		echo json_encode($json_arr);
-	}
-	
-	
-	/**
-	 * AJAX method for removing a dish
+	 * AJAX method for modifying a user's regular pickup time
+	 * Expects weekday and time as post inputs
 	 * echo json string:
 	 *   {success, error}
 	 */
-	public function remove_food($food_id=false){
+	public function change_pickuptime(){
 		// ensure we have POST request
 		if (!is_post_request())
 			show_404();
-		
+
 		// check if user has logged in
 		if (!$this->login_util->isUserLoggedIn()){
 			$json_arr["error"] = "user not logged in";
@@ -378,15 +423,10 @@ class Profile extends Yumbox_Controller {
 		
 		// get current user and data
 		$user_id = $this->login_util->getUserId();
-		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
-		if ($food === false || $food->vendor_id != $user_id){
-			$json_arr["error"] = "incorrect dish specified";
-			echo json_encode($json_arr);
-			return;
-		}
 		
-		// remove food
-		$res = $this->food_model->removeFood($food_id);
+		$weekday = $this->input->post("weekday");
+		$time = $this->input->post("time");
+		$res = $this->user_model->setPickupTime($user_id, $weekday, $time);
 		if ($res !== true){
 			$json_arr["error"] = $res;
 			echo json_encode($json_arr);

@@ -13,10 +13,11 @@ The front-end and back-end of the server-side Yumbox application for home cookin
 
 1. Set upload_max_filesize = 20M in php.ini
 2. Set document root to /public
-3. Create MySQL user 'yumbox'@'localhost' and 'sphinx'@'localhost'
-4. Source /application/database/build_database.sql; modify the database name from yumbox_dev to production name if needed.
-5. Run composer on /composer.json
-6. Create /application/config/secret_config.php with the following and fill in the values:
+3. Create /public/user_pics and /public/food_pics, make sure apache has write access to the both of them
+4. Create MySQL user 'yumbox'@'localhost' and 'sphinx'@'localhost'
+5. Source /application/database/build_database.sql; modify the database name from yumbox_dev to production name if needed.
+6. Run composer on /composer.json
+7. Create /application/config/secret_config.php with the following and fill in the values:
 
 ```php
 <?php
@@ -70,15 +71,30 @@ $config['featured_rush_id']		= 8;
 $config['featured_explore_id']	= 9;
 ```
 
-7. If this is the production environment, create file _prd.txt in root
-8. Make sure searchd is started as a service. Add the following into root level crontab:
+8. If this is the production environment, create file _prd.txt in root
+9.1 Symlink the sphinx configuration file:
+
+```bash
+ln -s {PATH_TO_ROOT}/sphinx.conf /etc/sphinx/sphinx.conf
+```
+
+9.2 Download English dictionaries to /usr/local/share/sphinx/dicts/ from http://sphinxsearch.com/downloads/dicts/
+
+9.3 Make sure searchd is started as a service:
+
+```bash
+service searchd start
+chkconfig searchd on
+```
+
+9.4 Add the following into root level crontab:
 
 ```bash
 # Sphinx indexer
-*/15 * * * * indexer --rotate --all --config {PATH_TO_ROOT}/sphinx.conf
+*/15 * * * * indexer --rotate --all
 ```
 
-9. Recommend setting queue_mail = true in secret_config.php to enable asynchronous mail notification.
+10. Recommend setting queue_mail = true in secret_config.php to enable asynchronous mail notification.
 Add the following to the root level crontab:
 
 ```bash

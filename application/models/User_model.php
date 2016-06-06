@@ -264,33 +264,21 @@ class User_model extends CI_Model {
 	 * Modify address for the given user
 	 */
 	public function modifyAddress($user_id, $address, $city, $province, $country, $postal_code){
-		$this->db->trans_start();
-		
-		// save the plain-text address information
-		if (!$this->db->query('
-			update address set address=?, city=?, province=?, country=?, postal_code=?
-			where user_id = ?', array(
-				trim($address),
-				trim($city),
-				trim($province),
-				trim($country),
-				trim($postal_code),
-				trim($user_id)
-			))){
-			
-			return $this->db->error();
-		}
-		
 		// geocode
 		$coords = $this->search->geocodeLocation($address.' '.$city.' '.$province.' '.$country.' '.$postal_code);
 		if ($coords === false){
 			return "cannot geocode";
 		}
 		
-		// save coordinates
+		// save the plain-text address information
 		if (!$this->db->query('
-			update address set latitude=?, longitude=?
+			update address set address=?, city=?, province=?, country=?, postal_code=?, latitude=?, longitude=?
 			where user_id = ?', array(
+				trim($address),
+				trim($city),
+				trim($province),
+				trim($country),
+				trim($postal_code),
 				$coords["latitude"],
 				$coords["longitude"],
 				trim($user_id)
@@ -298,8 +286,6 @@ class User_model extends CI_Model {
 			
 			return $this->db->error();
 		}
-		
-		$this->db->trans_complete();
 		
 		return true;
 	}
@@ -318,4 +304,42 @@ class User_model extends CI_Model {
 		return true;
 	}
 	
+	
+	/**
+	 * Set kitchen status, change the is_open field
+	 */
+	public function setKitchenStatus($user_id, $bool_open){
+		if (!$this->db->query("update user set is_open = ? where id = ?", array($bool_open, $user_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Set user pickup time
+	 * @param int $user_id
+	 * @param string $weekday = mon, tue, wed, thu, fri, sat, sun
+	 * @param int $time php timestamp
+	 */
+	public function setPickupTime($user_id, $weekday, $time){
+		if ($weekday != 'mon' && $weekday != 'tue' && $weekday != 'wed' && $weekday != 'thu' && $weekday != 'fri' 
+			&& $weekday != 'sat' && $weekday != 'sun'){
+			
+			return "must be a weekday";
+		}
+		
+		$timestamp = strtotime($time);
+		if ($timestamp === false){
+			return "invalid time $time";
+		}
+		$time = date("H:i:s", $timestamp);
+		
+		if (!$this->db->query("update user set pickup_{$weekday} = ? where id = ?", array($time, $user_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
 }

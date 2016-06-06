@@ -2,6 +2,7 @@ drop database if exists yumbox;
 create database yumbox default character set utf8 default collate utf8_general_ci;
 
 grant all on yumbox.* to 'yumbox'@'localhost';
+grant all on yumbox.* to 'sphinx'@'localhost';
 
 use yumbox;
 
@@ -471,6 +472,27 @@ end//
 delimiter ;
 
 
+drop function if exists distance_btw_coords;
+delimiter //
+create function distance_btw_coords(latA float, lonA float, latB float, lonB float)
+returns float not deterministic
+begin
+	/* radius of Earth */
+	declare R float default 6371;
+    declare dLat_rad float default (latB-latA)/180*pi();
+    declare dLon_rad float default (lonB-lonA)/180*pi();
+    declare latA_rad float default latA/180*pi();
+    declare latB_rad float default latB/180*pi();
+    
+    declare a float default sin(dLat_rad/2)*sin(dLat_rad/2)
+		+ sin(dLon_rad/2)*sin(dLon_rad/2)*cos(latA_rad)*cos(latB_rad);
+    declare c float default 2*atan2(sqrt(a),sqrt(1-a));
+    
+    return R*c;
+end//
+delimiter ;
+
+
 drop procedure if exists add_order;
 delimiter //
 create procedure add_order(in order_basket_id bigint unsigned, in food_id bigint unsigned, in quantity smallint unsigned)
@@ -603,10 +625,36 @@ begin
 		values
 			(user_id, path);
 	else
-		update user_picture
-        set path = path
+		update user_picture p
+        set p.path = path
         where
-			user_id = user_id;
+			p.user_id = user_id;
+	end if;
+end//
+delimiter ;
+
+
+drop procedure if exists add_food_picture;
+delimiter //
+create procedure add_food_picture(in food_id bigint, in path varchar(255))
+begin
+	declare p_id bigint unsigned;
+    
+    select p.id into p_id
+    from food_picture p
+    where
+		p.food_id = food_id;
+        
+	if (p_id is null) then
+		insert into food_picture
+			(food_id, path)
+		values
+			(food_id, path);
+	else
+		update food_picture f
+        set f.path = path
+        where
+			f.food_id = food_id;
 	end if;
 end//
 delimiter ;

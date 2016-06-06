@@ -120,14 +120,17 @@ class Order_basket_model extends CI_Model {
 		$query = $this->db->query('
 			select
 				o.id order_id, o.quantity,
-				f.id food_id, f.price,
+				f.id food_id, f.price, f.status food_status,
 				p.id payment_id, r.id refund_id,
-				f.user_id vendor_id
+				u.id vendor_id, u.status vendor_status, u.is_open
 			from
 				order_item o
 			left join
 				food f
 			on f.id = o.food_id
+			left join
+				user u
+			on u.id = f.user_id
 			left join
 				payment p
 			on p.order_item_id = o.id

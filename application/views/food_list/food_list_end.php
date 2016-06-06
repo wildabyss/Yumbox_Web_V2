@@ -53,7 +53,7 @@
 		$("#new_food_form").submit(function(e){
 			$.ajax({
 				type:		"post",
-				url:		"/vendor/profile/new_food",
+				url:		"/vendor/food/new_food",
 				data: 		$("#new_food_form").serialize(),
 				success:	function(response){
 					var respArr = $.parseJSON(response);
@@ -61,16 +61,19 @@
 					if ("success" in respArr){
 						successMessage("Saved");
 
-						// add to list
-						$(respArr["li_display"]).insertBefore("#new_food_li");
+						// add to list and display the modal for further editing
+						$(respArr["li_display"]).insertBefore("#new_food_li").children(".toggle_food_detail").first().click();
+						
+						// remove no food info
+						$("#no_food_info").hide();
 						
 						// reset form
 						$("#new_food_li").hide();
 						$("#btn_add_new_parent").show();
 						reset_form();
 						
-						// remove no food info
-						$("#no_food_info").hide();
+						// display dashboard in user menu
+						$("li.menu_item_dashboard").show();
 					} else {
 						errorMessage(respArr["error"]);
 						return respArr["error"];

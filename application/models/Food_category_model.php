@@ -21,20 +21,22 @@ class Food_category_model extends CI_Model {
 	 *
 	 * @param $filters:
 	 *	is_rush		=> bool
-	 *	can_deliver   => bool
 	 *	vendor_id	 => int
 	 *	min_rating	=> int
 	 *	min_price	 => float
 	 *	max_price	 => float
+	 *  location	=> {latitude, longitude}
+	 *	show_all	=> bool
 	 */
 	public function getAllActiveRelatedCategories(array $category_ids, $limit, array $filters){
 		// sort through filters
 		$is_rush = isset($filters["is_rush"])?$filters["is_rush"]:false;
-		$can_deliver = isset($filters["can_deliver"])?$filters["can_deliver"]:false;
 		$vendor_id = isset($filters["vendor_id"])?$filters["vendor_id"]:false;
 		$min_rating = isset($filters["min_rating"])?$filters["min_rating"]:false;
 		$min_price = isset($filters["min_price"])?$filters["min_price"]:false;
 		$max_price = isset($filters["max_price"])?$filters["max_price"]:false;
+		$location = isset($filters["location"])?filters["location"]:false;
+		$show_all = isset($filters["show_all"])?$filters["show_all"]:false;
 		
 		// base query
 		$query_str = '
@@ -49,6 +51,8 @@ class Food_category_model extends CI_Model {
 				on a.food_id = f.id
 				left join user u
 				on u.id = f.user_id
+				left join address ad
+				on ad.user_id = f.user_id
 				where
 					f.status = ? 
 					and u.status > ?
@@ -66,7 +70,6 @@ class Food_category_model extends CI_Model {
 		if ($min_price !== false){
 			$query_str .= ' and f.price >= ? and f.price <= ?';
 		}
-		
 		// filter categories	
 		$query_str .= ' and a.food_category_id in (';
 		$counter = 0;
@@ -77,10 +80,18 @@ class Food_category_model extends CI_Model {
 			
 			$counter++;
 		}
+		// filter locations
+		if ($location !== false){
+			$query_str .= ' and ad.longitude is not null and ad.latitude is not null
+				and distance_btw_coords(ad.latitude, ad.longitude, ?, ?) <= ?';
+		}
+		// end search query
 		$query_str .= ')) 
 			order by 
-				c.main desc, c.name asc
-			limit ?';
+				c.main desc, c.name asc';
+		if (!$show_all){
+			$query_str .= ' limit ?';
+		}
 		
 		// add bindings
 		$bindings = array(
@@ -98,7 +109,15 @@ class Food_category_model extends CI_Model {
 			$bindings[] = $min_price;
 			$bindings[] = $max_price;
 		}
-		$bindings[] = $limit;
+		if ($location !== false){
+			$bindings[] = $location["latitude"];
+			$bindings[] = $location["longitude"];
+			$bindings[] = Search::$SEARCH_RADIUS;
+		}
+		if (!$show_all){
+			$bindings[] = $limit;
+		}
+		
 		
 		// perform database query
 		$query = $this->db->query($query_str, $bindings);
@@ -110,20 +129,22 @@ class Food_category_model extends CI_Model {
 	 *
 	 * @param $filters:
 	 *	is_rush		=> bool
-	 *	can_deliver   => bool
 	 *	vendor_id	 => int
 	 *	min_rating	=> int
 	 *	min_price	 => float
 	 *	max_price	 => float
+	 *  location	=> {latitude, longitude}
+	 *	show_all	=> bool
 	 */
 	public function getAllActiveCategories($limit, array $filters){
 		// sort through filters
 		$is_rush = isset($filters["is_rush"])?$filters["is_rush"]:false;
-		$can_deliver = isset($filters["can_deliver"])?$filters["can_deliver"]:false;
 		$vendor_id = isset($filters["vendor_id"])?$filters["vendor_id"]:false;
 		$min_rating = isset($filters["min_rating"])?$filters["min_rating"]:false;
 		$min_price = isset($filters["min_price"])?$filters["min_price"]:false;
 		$max_price = isset($filters["max_price"])?$filters["max_price"]:false;
+		$location = isset($filters["location"])?$filters["location"]:false;
+		$show_all = isset($filters["show_all"])?$filters["show_all"]:false;
 		
 		// base query string
 		$query_str = '
@@ -135,6 +156,8 @@ class Food_category_model extends CI_Model {
 			on f.id = a.food_id
 			left join user u
 			on u.id = f.user_id
+			left join address ad
+			on ad.user_id = f.user_id
 			where
 				f.status = ?
 				and u.status > ?
@@ -156,7 +179,15 @@ class Food_category_model extends CI_Model {
 		if ($vendor_id !== false){
 			$query_str .= ' and u.id = ?';
 		}
-		$query_str .= ' order by c.name limit ?';
+		// filter locations
+		if ($location !== false){
+			$query_str .= ' and ad.longitude is not null and ad.latitude is not null
+				and distance_btw_coords(ad.latitude, ad.longitude, ?, ?) <= ?';
+		}
+		$query_str .= ' order by c.name';
+		if (!$show_all){
+			$query_str .= ' limit ?';
+		}
 	
 		// bindings
 		$bindings = array(
@@ -177,7 +208,14 @@ class Food_category_model extends CI_Model {
 		if ($vendor_id !== false){
 			$bindings[] = $vendor_id;
 		}
-		$bindings[] = $limit;
+		if ($location !== false){
+			$bindings[] = $location["latitude"];
+			$bindings[] = $location["longitude"];
+			$bindings[] = Search::$SEARCH_RADIUS;
+		}
+		if (!$show_all){
+			$bindings[] = $limit;
+		}
 		
 		// perform database query
 		$query = $this->db->query($query_str, $bindings);
@@ -200,5 +238,83 @@ class Food_category_model extends CI_Model {
 			where
 				a.food_id = ?', array($food_id));
 		return $query->result();
+	}
+	
+	
+	/**
+	 * Tag category_name with food
+	 * @return true on success, error on failure
+	 */
+	public function addCategoryForFood($food_id, $category_name){
+		$this->db->trans_start();
+		
+		// look for the category_name
+		$query = $this->db->query('
+			select c.id, c.name
+			from food_category c
+			where
+				upper(c.name) = upper(?)', array(trim($category_name)));
+		$results = $query->result();
+		if (count($results)>0){
+			// use this category for tagging
+			
+			$category_id = $results[0]->id;
+			
+			// check if it's already tagged
+			$query = $this->db->query('
+				select 1
+				from food_category_assoc a
+				where
+					a.food_id=? and a.food_category_id=?', array($food_id, $category_id));
+			$results = $query->result();
+			if (count($results)==0){
+				// tag it
+				
+				if (!$this->db->query('insert into food_category_assoc (food_id, food_category_id) values (?,?)', array($food_id, $category_id))){
+					return $this->db->error;
+				}
+			} else {
+				return "tag already exists";
+			}
+		} else {
+			// create a new category
+			
+			if (!$this->db->query('insert into food_category (name) values (?)', array($category_name))){
+				return $this->db->error;
+			}
+			$category_id = $this->db->insert_id();
+			if (!$this->db->query('insert into food_category_assoc (food_id, food_category_id) values (?,?)', array($food_id, $category_id))){
+				return $this->db->error;
+			}
+		}
+		
+		$this->db->trans_complete();
+		return true;
+	}
+	
+	
+	/**
+	 * Remove category_name tag from food
+	 * @return true on success, error on failure
+	 */
+	public function removeCategoryForFood($food_id, $category_name){
+		// look for the category_name
+		$query = $this->db->query('
+			select a.id
+			from food_category_assoc a
+			left join food_category c
+			on c.id = a.food_category_id
+			where
+				upper(c.name) = upper(?)', array(trim($category_name)));
+		$results = $query->result();
+		if (count($results)>0){
+			$assoc_id = $results[0]->id;
+			
+			if (!$this->db->query('delete from food_category_assoc where id=?', array($assoc_id))){
+				return $this->db->error;
+			}
+		}
+		
+		return true;
 	}
 }

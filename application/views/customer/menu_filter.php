@@ -14,17 +14,15 @@
 <section id="menu_filter" class="<?php if ($is_rush):?>rush<?php else:?>explore<?php endif?>">
 	<?php echo form_open($form_action, array('method'=>'get', 'id'=>'filter_form'))?>
 		<div class="search_container">
-			<input id="search" class="ui-state-default" name="search" placeholder="e.g. burrito" 
-				type="text" value="<?php echo $search_query ?>" />
+			<input class="ui-state-default" name="search" placeholder="e.g. burrito" 
+				type="search" value="<?php echo $search_query ?>" />
 			<button id="btn_location" type="button"></button>
 			<div id="location_dialog" class="<?php if ($is_rush):?>rush<?php else:?>explore<?php endif?>" title="My location">
 				<input type="text" value="<?php echo $location?>" class="ui-state-default" id="input_location" />
 			</div>
 			<button id="btn_filter" class="hidden" type="button"></button>
 		</div>
-		
-		
-		
+
 		<div class="menu_filter_container">
 			<div class="menu_filter_zone">
 				<div>
@@ -147,7 +145,7 @@
 			filter_button_click(e, true);
 		});
 
-		$("#search").keydown(function(e){
+		$("input[type=search]").keydown(function(e){
 			if (e.which == $.ui.keyCode.ENTER){
 				e.preventDefault();
 				$("#filter_form").submit();

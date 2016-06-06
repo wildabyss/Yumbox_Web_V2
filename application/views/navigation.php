@@ -17,9 +17,7 @@
 				<li class="menu_item_log"><a class="banner_button" href="<?php echo $sign_in_link?>">Log In</a></li>
 				<?php else:?>
 				<li class="menu_item_kitchen"><a href="/vendor/profile">My Kitchen</a></li>
-				<?php if ($is_vendor):?>
-				<li class="menu_item_dashboard"><a>Chef's Dashboard</a></li>
-				<?php endif?>
+				<li class="menu_item_dashboard" <?php if (!$is_vendor):?>style="display:none"<?php endif?>><a href="/vendor/dashboard">Chef's Dashboard</a></li>
 				<li class="menu_item_log"><a class="banner_button" href="<?php echo $sign_out_link?>">Log Out</a></li>
 				<?php endif?>
 				<li class="menu_item_about"><a href="/#about">About</a></li>
@@ -40,9 +38,7 @@
 					<?php if (!isset($sign_in_button)):?>
 					<ul id="user_menu">
 						<li class="menu_item_kitchen"><a href="/vendor/profile">My Kitchen</a></li>
-						<?php if ($is_vendor):?>
-						<li class="menu_item_dashboard"><a>Chef's Dashboard</a></li>
-						<?php endif?>
+						<li class="menu_item_dashboard" <?php if (!$is_vendor):?>style="display:none"<?php endif?>><a href="/vendor/dashboard">Chef's Dashboard</a></li>
 						<li class="menu_item_logout"><a href="<?php echo $sign_out_link?>">Logout</a></li>
 					</ul>
 					<?php endif?>

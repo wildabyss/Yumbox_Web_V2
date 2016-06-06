@@ -395,6 +395,7 @@ nav{
 	margin: 0;
 	width: 20px !important;
 	height: 20px !important;
+	color: $red;
 	
 	span{
 		padding: 0 !important;
@@ -427,16 +428,26 @@ nav{
 	display: none !important;
 }
 
-.editable-inline{
-	//width: 100% !important;
-}
-
 .editable-input-wrap{
 	display: flex;
 }
 
-.editable-input{
-	flex: 1;
+.editable-full{
+	.editable-container.editable-inline{
+		width: 100%;
+		max-width: 600px;
+		
+		.editable-input{
+			width: 100%;
+			
+			input{
+				width: 100%;
+			}
+			textarea{
+				width: 100%;
+			}
+		}
+	}
 }
 
 
@@ -457,6 +468,13 @@ nav{
 }
 .ui-state-focus{
 	background-color: $defaultWidgetColor;
+}
+
+.ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text{
+	padding: inherit;
+}
+.ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text{
+	padding: inherit;
 }
 
 .rush{

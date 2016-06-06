@@ -19,24 +19,72 @@
 		</p>
 	</div>
 	<div class="intro_wrapper">
-		<h1 class="title"><a id="edit_user_name" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->name)?></a></h1>
+		<h1 class="title editable-full"><a id="edit_user_name" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->name)?></a></h1>
 		<?php if (!$user->is_open):?>
-		<h3 class="is_closed">KITCHEN CLOSED</h3>
+		<h3 class="is_closed btn_kitchen_open <?php if ($is_my_profile):?>my_profile<?php endif?>">KITCHEN CLOSED</h3>
 		<?php else:?>
-		<h3 class="is_open">KITCHEN OPEN</h3>
+		<h3 class="is_open btn_kitchen_open <?php if ($is_my_profile):?>my_profile<?php endif?>">KITCHEN OPEN</h3>
 		<?php endif?>
 		
 		<?php if ($is_my_profile):?>
 		<h3>EMAIL</h3>
-		<p><a id="edit_user_email" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->email)?></a></p>
+		<p class="editable-full"><a id="edit_user_email" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->email)?></a></p>
 		
 		<h3>ADDRESS</h3>
-		<p><a id="edit_user_addr" data-type="address" data-onblur="ignore"></a></p>
+		<p class="editable-full"><a id="edit_user_addr" data-type="address" data-onblur="ignore"></a></p>
 		<?php endif?>
 		
 		<?php if (!$is_my_profile && $user->descr != "" || $is_my_profile):?>
 		<h3>ABOUT ME</h3>
-		<p class="edit_descr_container"><a id="edit_user_descr" data-type="textarea" data-onblur="ignore"><?php echo prevent_xss($user->descr)?></a></p>
+		<p class="editable-full"><a id="edit_user_descr" data-type="textarea" data-onblur="ignore"><?php echo prevent_xss($user->descr)?></a></p>
+		<?php endif?>
+		
+		<?php if (!$is_my_profile && $user->descr != "" || $is_my_profile):?>
+		<h3>REGULAR PICKUP TIME</h3>
+		<div id="pickup_buttonset">
+			<div class="pickup_item explore">
+				<input type="checkbox" id="pickup_mon" weekday="mon" <?php if ($user->pickup_mon["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_mon">Monday</label>
+				<a class="edit_user_time" weekday="mon" <?php if (!$user->pickup_mon["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
+					<?php echo date("H:i", strtotime($user->pickup_mon["time"]))?>
+				</a>
+			</div>
+			<div class="pickup_item explore">
+				<input type="checkbox" id="pickup_tue" weekday="tue" <?php if ($user->pickup_tue["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_tue">Tuesday</label>
+				<a class="edit_user_time" weekday="tue" <?php if (!$user->pickup_tue["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
+					<?php echo date("H:i", strtotime($user->pickup_tue["time"]))?>
+				</a>
+			</div>
+			<div class="pickup_item explore">
+				<input type="checkbox" id="pickup_wed" weekday="wed" <?php if ($user->pickup_wed["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_wed">Wednesday</label>
+				<a class="edit_user_time" weekday="wed" <?php if (!$user->pickup_wed["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
+					<?php echo date("H:i", strtotime($user->pickup_wed["time"]))?>
+				</a>
+			</div>
+			<div class="pickup_item explore">
+				<input type="checkbox" id="pickup_thu" weekday="thu" <?php if ($user->pickup_thu["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_thu">Thursday</label>
+				<a class="edit_user_time" weekday="thu" <?php if (!$user->pickup_thu["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
+					<?php echo date("H:i", strtotime($user->pickup_thu["time"]))?>
+				</a>
+			</div>
+			<div class="pickup_item explore">
+				<input type="checkbox" id="pickup_fri" weekday="fri" <?php if ($user->pickup_fri["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_fri">Friday</label>
+				<a class="edit_user_time" weekday="fri" <?php if (!$user->pickup_fri["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
+					<?php echo date("H:i", strtotime($user->pickup_fri["time"]))?>
+				</a>
+			</div>
+			<div class="pickup_item explore">
+				<input type="checkbox" id="pickup_sat" weekday="sat" <?php if ($user->pickup_sat["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_sat">Saturday</label>
+				<a class="edit_user_time" weekday="sat" <?php if (!$user->pickup_sat["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
+					<?php echo date("H:i", strtotime($user->pickup_sat["time"]))?>
+				</a>
+			</div>
+			<div class="pickup_item explore">
+				<input type="checkbox" id="pickup_sun" weekday="sun" <?php if ($user->pickup_sun["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_sun">Sunday</label>
+				<a class="edit_user_time" weekday="sun" <?php if (!$user->pickup_sun["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
+					<?php echo date("H:i", strtotime($user->pickup_sun["time"]))?>
+				</a>
+			</div>
+		</div>
 		<?php endif?>
 	</div>
 </section>
@@ -53,12 +101,9 @@
 	<?php endif?>
 
 	<?php echo $food_list_display?>
-	
-	<div id="dialog-confirm" title="Remove dish?">
-		<p>Confirm remove this dish?</p>
-	</div>
 </section>
 
+<script src="/js/moment.min.js"></script>
 <script>
 	$(document).ready(function(){
 		<?php if ($is_my_profile):?>
@@ -225,53 +270,101 @@
 			}
 		});
 		
+		$(".btn_kitchen_open").click(function(){
+			if ($(this).hasClass("is_open")){
+				// set to close
+				set_kitchen_status(0);
+			} else if ($(this).hasClass("is_closed")) {
+				// set to open
+				set_kitchen_status(1);
+			}
+		});
 		
-		$("#dialog-confirm").dialog({
-			autoOpen: false,
-			modal: true,
-			resizable: false,
-			dialogClass: 'explore',
-			height:140,
-			buttons:[
-				{
-					icons: {
-						primary: "ui-icon-check"
-					},
-					'class':	'ui-button-dialog',
-					click:		function(){
-						$.ajax({
-							type: 		"post",
-							url: 		"/vendor/profile/remove_food/"+$("#dialog-confirm").data('food_id'),
-							data:		csrfData,
-							success:	function(data){
-								var respArr = $.parseJSON(data);
-								if ("success" in respArr){
-									successMessage("Dish removed");
-									$parent = $("#dialog-confirm").data('parent');
-									$parent.remove();
-								} else {
-									// error
-									errorMessage(respArr["error"]);
-								}
-							},
-							error: 		function(){
-								errorMessage("Unable to process");
-							}
-						});
-						
-						$(this).dialog("close");
-					}
+		var set_kitchen_status = function(set_open){
+			$.ajax({
+				url:			'/vendor/profile/open_kitchen/'+set_open,
+				data:			csrfData,
+				type:			'post',
+				error:		function(response){
+					errorMessage("Unable to set kitchen");
 				},
-				{
-					icons: {
-						primary: "ui-icon-closethick"
-					},
-					'class': 'ui-button-dialog',
-					click: function(){
-						$(this).dialog("close");
+				success:		function(response){
+					var respArr = $.parseJSON(response);
+			
+					if ("success" in respArr){
+						if (set_open){
+							successMessage("Kitchen is now open! Ready to take orders.");
+							$(".btn_kitchen_open").removeClass("is_closed").addClass("is_open").text("KITCHEN OPEN");
+						} else {
+							successMessage("Kitchen is now closed!");
+							$(".btn_kitchen_open").removeClass("is_open").addClass("is_closed").text("KITCHEN CLOSED");
+						}
+					} else {
+						errorMessage(respArr["error"]);
 					}
 				}
-			]
+			});
+		}
+		
+		$('#pickup_buttonset').buttonset({
+			items: "input[type=checkbox]"
+		});
+		
+		var set_pickup_time = function(weekday, time){
+			var inputs = $.extend({}, csrfData);
+			inputs["weekday"] = weekday;
+			inputs["time"] = time;
+			
+			$.ajax({
+				url:			'/vendor/profile/change_pickuptime',
+				data:			inputs,
+				type:			'post',
+				error:		function(response){
+					errorMessage("Unable to change time");
+				},
+				success:		function(response){
+					var respArr = $.parseJSON(response);
+			
+					if ("success" in respArr){
+						successMessage("Saved");
+					} else {
+						errorMessage(respArr["error"]);
+						return respArr["error"];
+					}
+				}
+			});
+		}
+
+		$("input[type=checkbox][name=pickup_weekday]").change(function(){
+			var weekday = $(this).attr("weekday");
+			var default_time;
+			
+			if ($(this).is(":checked")){
+				default_time = "20:00";
+				$(".edit_user_time[weekday="+weekday+"]").show();
+			} else {
+				default_time = "00:00";
+				$(".edit_user_time[weekday="+weekday+"]").hide();
+			}
+			
+			set_pickup_time(weekday, default_time);
+			$(".edit_user_time[weekday="+weekday+"]").editable("setValue", default_time, true);
+		});
+		
+		$(".edit_user_time").editable({
+			format: "HH:mm",
+			template: "HH:mm",
+			combodate:{
+				minuteStep: 15,
+				firstItem: 'none'
+			},
+			validate:	function(time){
+				var weekday = $(this).attr("weekday");
+				// get time
+				time = new Date(time);
+				time = time.getHours()+":"+time.getMinutes();
+				set_pickup_time(weekday, time);
+			}
 		});
 		<?php endif?>
 	});

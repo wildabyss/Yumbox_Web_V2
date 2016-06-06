@@ -656,6 +656,7 @@ nav ul#mobile_user_menu a.logo {
   margin: 0;
   width: 20px !important;
   height: 20px !important;
+  color: #ed7a5d;
 }
 
 .btn_remove span {
@@ -686,8 +687,21 @@ nav ul#mobile_user_menu a.logo {
   display: flex;
 }
 
-.editable-input {
-  flex: 1;
+.editable-full .editable-container.editable-inline {
+  width: 100%;
+  max-width: 600px;
+}
+
+.editable-full .editable-container.editable-inline .editable-input {
+  width: 100%;
+}
+
+.editable-full .editable-container.editable-inline .editable-input input {
+  width: 100%;
+}
+
+.editable-full .editable-container.editable-inline .editable-input textarea {
+  width: 100%;
 }
 
 .ui-button-text {
@@ -708,6 +722,14 @@ nav ul#mobile_user_menu a.logo {
 
 .ui-state-focus {
   background-color: #95d1d1;
+}
+
+.ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text {
+  padding: inherit;
+}
+
+.ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
+  padding: inherit;
 }
 
 .rush .ui-state-default {
@@ -1018,10 +1040,10 @@ div.about_text h1 {
   flex-direction: row;
 }
 
-#menu_filter .search_container input#search {
+#menu_filter .search_container input[type="search"] {
   margin: 0;
   flex: 1;
-  height: 30px;
+  height: 26px;
   padding-right: 28px;
   padding-left: 28px;
   background-image: url("/imgs/search.svg");
@@ -1142,6 +1164,10 @@ div.about_text h1 {
   margin-bottom: 2px;
 }
 
+#menu_listing ul.food_list .toggle_food_detail {
+  cursor: pointer;
+}
+
 #menu_listing ul.food_list .food_price {
   display: block;
   float: right;
@@ -1222,6 +1248,48 @@ div.about_text h1 {
   display: none;
 }
 
+#menu_map {
+  max-height: 600px;
+  overflow: hidden;
+}
+
+#menu_map .kitchen-balloon ul {
+  list-style-type: none;
+  padding-left: 5px;
+}
+
+#menu_map .kitchen-balloon ul li {
+  display: flex;
+  flex-direction: row;
+}
+
+#menu_map .kitchen-balloon ul li a {
+  display: block;
+  margin: 5px;
+}
+
+#menu_map .kitchen-balloon ul li a.food-pic {
+  width: 60px;
+  height: 60px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("/imgs/image-not-available.gif");
+  border: solid 1px #b5b3ac;
+}
+
+#menu_map .kitchen-balloon ul li a.food-info {
+  flex: 1;
+}
+
+#menu_map .kitchen-balloon ul li a.food-info span {
+  display: block;
+}
+
+#menu_map .kitchen-balloon ul li a.food-info .food-name {
+  font-weight: bold;
+}
+
 #menu_map .map_wrapper {
   position: relative;
   width: 100%;
@@ -1281,6 +1349,19 @@ div.about_text h1 {
   margin: 0 auto;
 }
 
+#food_detail input {
+  font-size: inherit;
+  line-height: 20px;
+}
+
+#food_detail input.input_price {
+  width: 70px;
+}
+
+#food_detail ul#input_category {
+  font-size: 1.4rem;
+}
+
 #food_detail .tight_cluster {
   margin: 0 auto;
   margin-bottom: 40px;
@@ -1297,7 +1378,6 @@ div.about_text h1 {
 
 #food_detail .order_info .price {
   flex: 1;
-  text-align: left;
   margin-right: 20px;
 }
 
@@ -1307,26 +1387,13 @@ div.about_text h1 {
 
 #food_detail .order_info .rating {
   flex: 1;
-  text-align: center;
 }
 
 #food_detail .order_info .time {
   flex: 1;
-  text-align: right;
 }
 
-#food_detail .order_info #add_to_order {
-  display: block;
-  white-space: nowrap;
-  height: 32px;
-  width: 145px;
-}
-
-#food_detail ul#food_detail_gallery {
-  padding: 0;
-}
-
-#food_detail ul#food_detail_gallery li {
+#food_detail label.food_pic_container {
   position: relative;
   display: block;
   list-style: none;
@@ -1334,7 +1401,7 @@ div.about_text h1 {
   margin: 0 auto;
 }
 
-#food_detail ul#food_detail_gallery .food_pic {
+#food_detail label.food_pic_container .food_pic {
   display: block;
   position: absolute;
   height: 100%;
@@ -1344,6 +1411,15 @@ div.about_text h1 {
   background-repeat: no-repeat;
   background-size: cover;
   background-image: url("/imgs/image-not-available.gif");
+}
+
+#food_detail .prep_time_container {
+  display: flex;
+}
+
+#food_detail .prep_time_container span.prep_time_head {
+  display: inline-block;
+  margin-right: 5px;
 }
 
 #food_detail .about_dish {
@@ -1389,8 +1465,18 @@ div.about_text h1 {
   flex: 1;
 }
 
+#food_detail .action_button {
+  display: block;
+  white-space: nowrap;
+  height: 32px;
+}
+
+#food_detail .remove_button {
+  color: #ed7a5d;
+}
+
 @media (max-width: 900px) {
-  #food_detail ul#food_detail_gallery li {
+  #food_detail label.food_pic_container {
     height: 0;
     padding-bottom: 56%;
   }
@@ -1404,6 +1490,10 @@ div.about_text h1 {
     display: none;
   }
   #food_detail .is_open {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #food_detail .is_closed {
     margin-left: auto;
     margin-right: auto;
   }
@@ -1448,25 +1538,8 @@ div.about_text h1 {
   padding: 0 2rem;
 }
 
-#profile_intro .editable-container.editable-inline {
-  width: 100%;
-  max-width: 600px;
-}
-
 #profile_intro input {
   font-size: inherit;
-}
-
-#profile_intro .editable-input {
-  width: 100%;
-}
-
-#profile_intro .editable-input input {
-  width: 100%;
-}
-
-#profile_intro .editable-input textarea {
-  width: 100%;
 }
 
 #profile_intro .editable-address {
@@ -1477,6 +1550,35 @@ div.about_text h1 {
 #profile_intro .editable-address span {
   display: inline-block;
   width: 100px;
+}
+
+#profile_intro .btn_kitchen_open.my_profile {
+  cursor: pointer;
+}
+
+#profile_intro .btn_kitchen_open.my_profile:hover {
+  color: white;
+}
+
+#profile_intro #pickup_buttonset {
+  font-size: 1.4rem;
+  overflow: auto;
+  /*display: flex;
+		flex-direction: row;*/
+}
+
+#profile_intro #pickup_buttonset .pickup_item {
+  float: left;
+  width: 265px;
+  margin-bottom: 5px;
+}
+
+#profile_intro #pickup_buttonset .pickup_item label {
+  margin-right: 5px;
+}
+
+#profile_intro #pickup_buttonset .pickup_item label .ui-button-text {
+  width: 90px;
 }
 
 #profile_intro .pic_wrapper {
@@ -1511,6 +1613,10 @@ div.about_text h1 {
   color: #ed7a5d;
 }
 
+#food_modal_container {
+  display: none;
+}
+
 @media (max-width: 600px) {
   #profile_intro {
     display: block;
@@ -1534,11 +1640,7 @@ div.about_text h1 {
   #profile_intro .intro_wrapper h3 {
     text-align: center;
   }
-  #profile_intro .is_open {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  #profile_intro .is_closed {
+  #profile_intro .btn_kitchen_open {
     margin-left: auto;
     margin-right: auto;
   }

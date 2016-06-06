@@ -39,7 +39,7 @@ class Yumbox_Controller extends CI_Controller {
 				$data["order_count"] = $order_count;
 				$data["is_vendor"] = $is_vendor;
 				
-				return $this->load->view("common_nav", $data, !$display);
+				return $this->load->view("navigation", $data, !$display);
 			}
 		}
 		
@@ -47,13 +47,13 @@ class Yumbox_Controller extends CI_Controller {
 		$data["sign_in_button"] = $this->lang->line("sign_in_button");
 		$data["sign_in_link"] = "/login";
 		
-		return $this->load->view("common_nav", $data, !$display);
+		return $this->load->view("navigation", $data, !$display);
 	}
 	
 	/**
 	 * Display the header common to Yumbox web application
 	 */
-	protected function header(){
+	protected function header($display=true){
 		// get user location
 		$user_id = $this->login_util->getUserId();
 		$location = $this->search->getUserCoordinates($user_id);
@@ -62,14 +62,14 @@ class Yumbox_Controller extends CI_Controller {
 		$data['location'] = $location;
 				
 		// Load views
-		$this->load->view("common_header", $data);
+		$this->load->view("header", $data, !$display);
 	}
 	
 	/**
 	 * Display the footer common to Yumbox web application
 	 */
-	protected function footer(){	
+	protected function footer($display=true){	
 		// Load views
-		$this->load->view("common_footer");
+		$this->load->view("footer", array(), !$display);
 	}
 }

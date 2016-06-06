@@ -5,10 +5,6 @@ class Menu extends Yumbox_Controller {
 	public static $LIST_VIEW = "list";
 	public static $MAP_VIEW = "map";
 	
-	// maximum results to show per fetch
-	public static $MAX_RESULTS_FOODS = 5;
-	public static $MAX_RESULTS_CATEGORIES = 4;
-	
 	/**
 	 * Get the data required for the menu filter component for the view
 	 * @return an array of data to be passed to view
@@ -76,7 +72,7 @@ class Menu extends Yumbox_Controller {
 			$food_list_display .= $this->load->view("food_list/food_list_item", $food_data, true);
 		}
 		
-		$list_data["show_more"] = count($foods)>=Search::$MAX_FOODS_PAGE;
+		//$list_data["show_more"] = count($foods)>=Search::$MAX_FOODS_PAGE;
 		$food_list_display .= $this->load->view("food_list/food_list_end", $list_data, true);
 		
 		return $food_list_display;
@@ -94,7 +90,7 @@ class Menu extends Yumbox_Controller {
 		
 		// get user inputs
 		$search_query = $this->input->get('search');
-		$location = $this->input->get('location');
+		$location_str = $this->input->get('location');
 		$chosen_categories = $this->input->get('category');
 		if ($chosen_categories==NULL)
 			$chosen_categories = array();
@@ -106,17 +102,21 @@ class Menu extends Yumbox_Controller {
 		$rating_filter = $this->input->get('rating_min')==""?0:$this->input->get('rating_min');
 	
 		// get user location
-		if ($location==""){
-			$user_id = $this->login_util->getUserId();
-			$coords = $this->search->getUserCoordinates($user_id);
-			$location = "{$coords["latitude"]}, {$coords["longitude"]}";
-		} else {
-			$coords = $this->search->geocodeLocation($location);
+		$location = false;
+		// geocode the input location string
+		if ($location_str!=""){
+			$location = $this->search->geocodeLocation($location_str);
 			
-			if ($coords !== false){
-				setcookie("latitude", $coords["latitude"]);
-				setcookie("longitude", $coords["longitude"]);
+			if ($location !== false){
+				setcookie("latitude", $location["latitude"]);
+				setcookie("longitude", $location["longitude"]);
 			}
+		}
+		// use fallback location if we cannot identify any input location
+		if ($location === false){
+			$user_id = $this->login_util->getUserId();
+			$location = $this->search->getUserCoordinates($user_id);
+			$location_str = "{$location["latitude"]}, {$location["longitude"]}";
 		}
 	
 		// search filters
@@ -128,6 +128,10 @@ class Menu extends Yumbox_Controller {
 		$filters["min_price"] = $price_filter["min"];
 		$filters["max_price"] = $price_filter["max"];
 		$filters["location"] = $location;
+		// map view defaults to show all results
+		if ($view == self::$MAP_VIEW){
+			$filters["show_all"] = true;
+		}
 		$show_by_categories = count($chosen_categories)==0;
 		// perform search
 		$foods_and_cats = $this->search->searchForFood($search_query, $filters, $show_by_categories);
@@ -141,29 +145,71 @@ class Menu extends Yumbox_Controller {
 				$food_list_display .= $this->displayFoodListing($foods[$category->id], $is_rush, $category);
 			}
 		} else {
-			$food_list_display .= $this->displayFoodListing($foods, $is_rush);
+			$food_list_display .= $this->displayFoodListing($foods["all"], $is_rush);
 		}
 		
 		// show more categories?
-		$show_more = count($categories) >= Search::$MAX_CATEGORIES_PAGE;
+		//$show_more = count($categories) >= Search::$MAX_CATEGORIES_PAGE && $show_by_categories;
 		
-		// bind to data
-		$filter_data = $this->dataForMenuFilter($is_rush, $view!=self::$MAP_VIEW, $search_query, $location,
+		// bind to filter data
+		$filter_data = $this->dataForMenuFilter($is_rush, $view!=self::$MAP_VIEW, $search_query, $location_str,
 			$chosen_categories, $can_deliver, $price_filter, $rating_filter);
-		$data["foods"] = $foods;
-		$data['food_list_display'] = $food_list_display;
-		$data['empty_string'] = $this->lang->line("no_result");
-		$data['show_more'] = $show_more;
 
 		// Load views
 		$this->header();
 		$this->navigation();
 		$this->load->view("customer/menu_filter", $filter_data);
-		if ($view == self::$MAP_VIEW)
-			$this->load->view("customer/map", $data);
-		else
+		
+		// load map or list view
+		if ($view == self::$MAP_VIEW) {
+			// construct the foods_for_map array:
+			// [vendor_id => [user object, foods => [food objects]]]
+			$foods_for_map = array();
+			foreach ($foods as $foods_per_cat) {
+				foreach ($foods_per_cat as $food) {
+					if (!isset($foods_for_map[$food->vendor_id])) {
+						$foods_for_map[$food->vendor_id] = $this->user_model->getUserForUserId($food->vendor_id);
+						$foods_for_map[$food->vendor_id]->foods = array();
+					}
+					
+					// we keep the food_id to remove the duplicate foods in different categories
+					$foods_for_map[$food->vendor_id]->foods[$food->food_id] = $food;
+				}
+			}
+			
+			// flatten the food id indices
+			foreach ($foods_for_map as $vendor_id => $data_per_vendor){
+				$foods_for_map[$vendor_id]->foods = array_values($foods_for_map[$vendor_id]->foods);
+			}
+			
+			// bind to data
+			// flatten the vendor indices
+			$map_data['foods_for_map'] = array_values($foods_for_map);
+			$map_data['template'] = array("template"=>$this->load->view("customer/map_item", array(), true));
+			
+			// load view
+			$this->load->view("customer/map", $map_data);
+		} else {
+			// bind to data
+			$data["foods"] = $foods;
+			$data['food_list_display'] = $food_list_display;
+			$data['empty_string'] = $this->lang->line("no_result");
+			//$data['show_more'] = $show_more;
+			
+			// load view
 			$this->load->view("customer/menu", $data);
+		}
+			
 		$this->footer();
+	}
+	
+	
+	/**
+	 * Default to displaying the yum explore page
+	 */
+	public function index()
+	{
+		$this->explore();
 	}
 	
 	
@@ -187,8 +233,9 @@ class Menu extends Yumbox_Controller {
 	
 	/**
 	 * GET method for displaying a particular food item
+	 * @param bool $display if false, return the food_item view in a string
 	 */
-	public function item($food_id=false){
+	public function item($food_id=false, $display=true){
 		// check if user has logged in
 		if ($this->login_util->isUserLoggedIn()){
 			$current_user = $this->login_util->getUserId();
@@ -198,13 +245,18 @@ class Menu extends Yumbox_Controller {
 		
 		// get food data
 		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
-		if ($food === false){
+		if ($food === false || $food->food_status == Food_model::$INACTIVE_FOOD || $food->vendor_status == User_model::$INACTIVE_USER){
 			show_404();
 		}
 		
+		// does this food belong to the logged in user?
+		$is_my_profile = ($food->vendor_id == $current_user);
+		
 		// massage food data
-		$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
-		$food->prep_time = prep_time_for_display($pickup_time);
+		if (!$is_my_profile){
+			$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
+			$food->prep_time = prep_time_for_display($pickup_time);
+		}
 		
 		// can orders be placed?
 		$unfilled_orders = $this->order_model->getTotalUnfilledOrdersForFood($food_id);
@@ -213,8 +265,9 @@ class Menu extends Yumbox_Controller {
 		// get food pictures
 		$food_pictures = $this->food_model->getFoodPicturesForFoodId($food_id);
 		// for now, grab only one picture
-		if (count($food_pictures>1))
-			$food_pictures = array_slice($food_pictures, 0, 1);
+		$food_picture = false;
+		if (count($food_pictures)>0)
+			$food_picture = $food_pictures[0];
 		
 		// get food categories
 		$categories = $this->food_category_model->getAllCategoriesForFood($food_id);
@@ -230,25 +283,81 @@ class Menu extends Yumbox_Controller {
 		
 		// bind to data
 		$data['food'] = $food;
-		$data['food_pictures'] = $food_pictures;
+		$data['food_picture'] = $food_picture;
 		$data['categories'] = $categories;
 		$data['reviews'] = $reviews;
 		$data['user_pictures'] = $user_pictures;
 		$data['current_user'] = $current_user;
 		$data['enable_order'] = $enable_order;
+		$data['is_my_profile'] = $is_my_profile;
+		$data['unfilled_orders'] = $unfilled_orders;
 		
-		// Load views
-		$this->header();
-		$this->navigation();
-		$this->load->view("food_list/food", $data);
-		$this->footer();
+		if ($display){
+			// Load views
+			$this->header();
+			$this->navigation();
+			$this->load->view("food_list/food", $data);
+			$this->footer();
+		} else {
+			return $this->load->view("food_list/food", $data, true);
+		}
 	}
-
+	
+	
 	/**
-	 * Default to displaying the yum explore page
+	 * AJAX method for retrieving the view of a food_item (/food_list/food.php)
+	 * echo json string:
+	 *   {success, view}
 	 */
-	public function index()
-	{
-		$this->explore();
+	public function retrieve_item($food_id=false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		$item_view = $this->item($food_id, false);
+		
+		$json_arr["success"] = "1";
+		$json_arr["view"] = $item_view;
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
+	 * AJAX method for retrieving the list item view of a food_item (/food_list/food_list_item.php)
+	 * echo json string:
+	 *   {success, li_display, error}
+	 */
+	public function retrieve_list_item($food_id=false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// get current logged in user
+		$user_id = $this->login_util->getUserId();
+		
+		// get food info
+		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
+		if ($food === false || $food->food_status == Food_model::$INACTIVE_FOOD || $food->vendor_status == User_model::$INACTIVE_USER){
+			$json_arr["error"] = "incorrect dish specified";
+			echo json_encode($json_arr);
+			return;
+		}
+		// show predicted pickup time
+		$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
+		$food->prep_time = prep_time_for_display($pickup_time);
+		
+		// get food categories
+		$categories[$food_id] = $this->food_category_model->getAllCategoriesForFood($food_id);
+		
+		// get new element output
+		$food_data["food"] = $food;
+		$food_data["is_my_profile"] = ($food->vendor_id==$user_id);
+		$food_data["categories"] = $categories;
+		$food_item_display = $this->load->view("food_list/food_list_item", $food_data, true);
+		
+		// success
+		$json_arr["success"] = "1";
+		$json_arr["li_display"] = $food_item_display;
+		echo json_encode($json_arr);
 	}
 }

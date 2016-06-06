@@ -1,21 +1,24 @@
-<li class="food_item absolute_parent">
+<li class="food_item absolute_parent" food_id="<?php echo $food->food_id?>">
 	<?php if (isset($is_my_profile) && $is_my_profile):?>
 	<button class="btn_remove" food_id="<?php echo $food->food_id?>">X</button>
 	<?php endif?>
 	
-	<a class="food_pic" href="/menu/item/<?php echo $food->food_id?>"
+	<a class="food_pic toggle_food_detail" food_id="<?php echo $food->food_id?>"
+		<?php if (!isset($is_my_profile) || !$is_my_profile):?>href="/menu/item/<?php echo $food->food_id?>"<?php endif?>
 		<?php if ($food->pic_path != ''):?>
 		style="background-image: url('<?php echo $food->pic_path?>')"
 		<?php endif?>>
 	</a>
 	<div>
-		<a href="/menu/item/<?php echo $food->food_id?>">
+		<a class="food_name toggle_food_detail" food_id="<?php echo $food->food_id?>"
+			<?php if (!isset($is_my_profile) || !$is_my_profile):?>href="/menu/item/<?php echo $food->food_id?>"<?php endif?>>
 			<h3><?php echo prevent_xss($food->food_name)?></h3>
 		</a>
 		<a class="food_price"><h3>$<?php echo $food->food_price?></h3></a>
 		
 		<?php if ($food->food_alt_name != ""):?>
-		<a class="alt_name" href="/menu/item/<?php echo $food->food_id?>">
+		<a class="alt_name toggle_food_detail" food_id="<?php echo $food->food_id?>"
+			<?php if (!isset($is_my_profile) || !$is_my_profile):?>href="/menu/item/<?php echo $food->food_id?>"<?php endif?>>
 			<h3><?php echo prevent_xss($food->food_alt_name)?></h3>
 		</a>
 		<?php endif ?>
@@ -48,15 +51,126 @@
 
 <script>
 	<?php if (isset($is_my_profile) && $is_my_profile):?>
-	// this button(s) is created in food_list_item view
 	$(".btn_remove").button().click(function(){
 		var food_id = $(this).attr("food_id");
 		var $parent = $(this).parent();
 		
-		$("#dialog-confirm")
-			.data('food_id', food_id)
-			.data('parent', $parent)
-			.dialog("open");
+		$('<div class="dialog-confirm-profile" title="Delete dish?"/>')
+			.prependTo("#global")
+			.html("<p>You sure you want to delete this dish?</p>")
+			.hide()
+			.dialog({
+				autoOpen: true,
+				modal: true,
+				resizable: false,
+				dialogClass: 'explore',
+				close:	function(){
+					$(".dialog-confirm-profile").dialog("destroy").remove();
+				},
+				buttons:[
+					{
+						icons: {
+							primary: "ui-icon-check"
+						},
+						'class':	'ui-button-dialog',
+						click:		function(){
+							$.ajax({
+								type: 		"post",
+								url: 		"/vendor/food/remove_food/"+food_id,
+								data:		csrfData,
+								success:	function(data){
+									var respArr = $.parseJSON(data);
+									if ("success" in respArr){
+										successMessage("Dish removed");
+										$parent.remove();
+									} else {
+										// error
+										errorMessage(respArr["error"]);
+									}
+								},
+								error: 		function(){
+									errorMessage("Unable to process");
+								}
+							});
+							
+							$(this).dialog("close");
+						}
+					},
+					{
+						icons: {
+							primary: "ui-icon-closethick"
+						},
+						'class': 'ui-button-dialog',
+						click: function(){
+							$(this).dialog("close");
+						}
+					}
+				]
+			});
+	});
+	
+	$(".toggle_food_detail").click(function(){
+		var food_id = $(this).attr("food_id");
+		
+		$.ajax({
+			type: 		"post",
+			url: 		"/customer/menu/retrieve_item/"+food_id,
+			data:		csrfData,
+			success:	function(data){
+				var respArr = $.parseJSON(data);
+				
+				if ("success" in respArr){
+					// add dynamic element
+					$('<div class="food_modal_container"/>')
+						.prependTo("#global")
+						.hide()
+						.html(respArr["view"]);
+					
+					// get parent width
+					var w = $(".food_modal_container").parent().width();
+
+					// open dialog
+					$(".food_modal_container").dialog({
+						autoOpen: true,
+						modal: true,
+						resizable: false,
+						width: w*0.9,
+						dialogClass: 'explore',
+						close: 	function(e, ui){
+							// destroy the dialog
+							$(".food_modal_container").dialog("destroy").remove();
+							
+							// reload the list item
+							$.ajax({
+								type:		"post",
+								url:		"/customer/menu/retrieve_list_item/"+food_id,
+								data: 		csrfData,
+								success:	function(response){
+									var respArr = $.parseJSON(response);
+								
+									if ("success" in respArr){
+										successMessage("Saved");
+
+										// replace existing list item
+										$("li.food_item[food_id="+food_id+"]").replaceWith(respArr["li_display"]);
+									} else {
+										errorMessage(respArr["error"]);
+										return respArr["error"];
+									}
+								},
+								error:		function(){
+									errorMessage("Unable to retrieve data");
+								}
+							});
+						}
+					});
+				}
+			},
+			error:		function(){
+				// error
+				errorMessage("Unable to retrieve this dish");
+			}
+		});
 	});
 	<?php endif?>
 </script>

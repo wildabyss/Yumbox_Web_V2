@@ -394,6 +394,8 @@ class Order extends Yumbox_Controller {
 			return;
 		}
 		
+		$this->db->trans_start();
+		
 		// get current open basket
 		$open_basket = $this->getOpenBasket();
 		if ($open_basket->id != $basket_id){
@@ -429,6 +431,16 @@ class Order extends Yumbox_Controller {
 		foreach ($order_items as $order_item){
 			if ($order_item->payment_id != "")
 				continue;
+			
+			// check if the given food has been deleted, or if the user has become inactive, or if the kitchen is now closed
+			if ($order_item->food_status==Food_model::$INACTIVE_FOOD || 
+				$order_item->vendor_status==User_model::$INACTIVE_USER || $order_item->is_open==0){
+				
+				// remove it from basket
+				$this->order_basket_model->removeOrderFromBasket($order_item->order_id, $basket_id);
+				
+				continue;
+			}
 			
 			// get amount to be charged in dollars
 			$costs = $this->accounting->calcOpenOrderItemCosts($order_item);
@@ -466,6 +478,8 @@ class Order extends Yumbox_Controller {
 			echo json_encode($json_arr);
 			return;
 		}
+		
+		$this->db->trans_complete();
 		
 		// at this point, the orders have been successfully placed
 		$json_arr["success"] = "1";
