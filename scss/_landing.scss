@@ -37,8 +37,8 @@
 	
 	a.button{
 		width: 100%;
-		height: 170px;
-		padding: 5px;
+		height: 190px;
+		padding: 1rem 3rem;
 		
 		text-decoration: none;
 		
@@ -49,6 +49,11 @@
 		left: 0;
 		color: white !important;
 		z-index: 500;
+		h4{
+			color:white;
+			margin-top: 0;
+			margin-bottom: 1rem;
+		}
 	}
 	
 	.featured_arrow{
@@ -56,7 +61,7 @@
 	}
 
 	h1{
-		margin: 5px 0 5px 0;
+		margin: 5px 0 0;
 	}
 }
 
@@ -150,7 +155,7 @@ div.about_text{
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-attachment:fixed; 
-	
+
 }
 
 // media query

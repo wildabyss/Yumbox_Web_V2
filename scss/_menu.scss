@@ -48,6 +48,8 @@
 
 #menu_filter{
 	margin-top: 20px;
+	margin: 20px auto;
+	max-width: 1104px;
 
 	.menu_filter_container{
 		//display: flex;
@@ -82,6 +84,7 @@
 			flex: 1;
 			height: 30px;
 			padding-right: 28px;
+			padding-left: 28px;
 			
 			background-image: url('/imgs/search.svg');
 			background-size: 25px 25px;
@@ -309,6 +312,8 @@
 	.map_wrapper{
 		position: relative;
 		width: 100%;
+		max-width:1104px;
+		margin:0 auto;
 		
 		padding-bottom: 75%;
 		

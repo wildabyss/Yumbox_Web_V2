@@ -1,8 +1,8 @@
 // import font
-/*@font-face {
-	font-family: 'Butler-Bold';
-	src: url("/font/Butler_Bold.otf") format("opentype");
-}*/
+@font-face {
+	font-family: 'Butler-Regular';
+	src: url("/font/Butler_Regular.otf") format("opentype");
+}
 
 // TYPOGRAPHY STYLES
 html{
@@ -18,7 +18,7 @@ body{
 h1{
 	font-family: $specialFont;
 	font-size: 3.8rem;
-	
+	letter-spacing: 1.5px;
 }
 
 h2{
@@ -30,7 +30,7 @@ h2{
 h3{
 	font-family: $headingFont;
 	font-size: 1.6rem;
-	font-weight: bold;
+	font-weight: 600;
 	color: $nearBlack;
 }
 
