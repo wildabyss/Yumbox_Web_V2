@@ -99,6 +99,57 @@ class Order_model extends CI_Model {
 	
 	
 	/**
+	 * Fetch all paid orders for vendor
+	 * @param bool $is_filled 
+	 * 		true: fetch only filled or canceled orders
+	 *		false: fetch only unfilled orders
+	 */
+	public function getPaidOrdersForVendor($vendor_id, $is_filled){
+		$query_str = 'select 
+				f.id food_id, f.name, f.alternate_name, f.price, f.prep_time_hours prep_time,
+				b.id buyer_id, b.name buyer_name,
+				po.amount payout_amount, po.take_rate payout_take_rate,
+				p.amount payment_amount, p.tax_rate, p.take_rate payment_take_rate,
+				o.id order_id, o.quantity, o.is_filled, r.id refund_id,
+				fp.path
+			from order_item o
+			left join
+				food f
+			on f.id = o.food_id
+			left join
+				food_picture fp
+			on fp.food_id = f.id
+			left join
+				order_basket basket
+			on o.order_basket_id = basket.id
+			left join
+				user b
+			on b.id = basket.user_id
+			left join
+				payout po
+			on po.order_item_id = o.id
+			left join
+				payment p
+			on p.order_item_id = o.id
+			left join
+				refund r
+			on r.order_item_id = o.id
+			where
+				f.user_id = ?';
+				
+		if ($is_filled){
+			$query_str .= ' and (o.is_filled = 1 or r.id is not null)';
+		} else {
+			$query_str .= ' and (o.is_filled = 0 or r.id is null) and po.id is not null';
+		}
+		$query_str .= ' group by o.id';
+		
+		$query = $this->db->query($query_str, array($vendor_id));
+		return $query->result();
+	}
+	
+	
+	/**
 	 * Change the quantity field in order
 	 * @return true on success, error on failure
 	 */

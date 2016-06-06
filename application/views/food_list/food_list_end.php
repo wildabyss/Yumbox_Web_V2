@@ -51,6 +51,12 @@
 		}
 	}).click(function(e){
 		$("#new_food_form").submit(function(e){
+			if ($.trim($("#new_food_name").val()) == ""){
+				errorMessage("Dish name cannot be blank");
+				e.preventDefault();
+				return;
+			}
+			
 			$.ajax({
 				type:		"post",
 				url:		"/vendor/food/new_food",

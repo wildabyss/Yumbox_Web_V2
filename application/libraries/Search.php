@@ -9,7 +9,7 @@ class Search {
 	public static $DEFAULT_LOCATION = "Toronto, Ontario";
 	
 	// location based search radius
-	public static $SEARCH_RADIUS = 25;		// 25KM radius for search results
+	public static $SEARCH_RADIUS = 50;		// 25KM radius for search results
 	
 	// maximum number of results per pagination
 	public static $MAX_CATEGORIES_PAGE = 5;

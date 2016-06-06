@@ -166,7 +166,7 @@ class Food_model extends CI_Model {
 				p.path pic_path,
 				average_rating(f.id)/?*100 rating,
 				total_orders(f.id) total_orders,
-				u.id vendor_id, u.name vendor_name, u.email, u.phone, u.return_date,
+				u.id vendor_id, u.name vendor_name, u.email, u.phone,
 				u.is_open, u.status vendor_status
 			from food f
 			left join user u

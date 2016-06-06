@@ -29,7 +29,7 @@ class Order_basket_model extends CI_Model {
 	/**
 	 * Fetch all order_baskets that have been paid for user_id
 	 */
-	public function getPaidOrderBasketsForUser($user_id){
+	public function getPaidOrderBasketsForUser($user_id, $desc_sort=true){
 		$query = $this->db->query('
 			select
 				b.id, b.order_date, b.is_paid,
@@ -46,7 +46,8 @@ class Order_basket_model extends CI_Model {
 			where
 				b.user_id = ?
 				and b.is_paid = 1
-			group by b.id', array($user_id));
+			group by b.id
+			order by b.order_date '.($desc_sort?'desc':'asc'), array($user_id));
 		return $query->result();
 	}
 	

@@ -39,7 +39,7 @@
 		<p class="editable-full"><a id="edit_user_descr" data-type="textarea" data-onblur="ignore"><?php echo prevent_xss($user->descr)?></a></p>
 		<?php endif?>
 		
-		<?php if (!$is_my_profile && $user->descr != "" || $is_my_profile):?>
+		<?php if ($is_my_profile):?>
 		<h3>REGULAR PICKUP TIME</h3>
 		<div id="pickup_buttonset">
 			<div class="pickup_item explore">

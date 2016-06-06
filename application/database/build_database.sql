@@ -27,6 +27,8 @@ create table user
     pickup_sat time not null default '20:00:00',
     pickup_sun time not null default '20:00:00',
     
+    stripe_managed_account_id varchar(32),
+    
 	fb_id varchar(25),
     google_id varchar(25),
 
@@ -35,11 +37,10 @@ create table user
     phone varchar(25),
     driver_lic varchar(30),
     passport_num varchar(30),
-    return_date datetime,					# date of return from break
     
     primary key (id),
     index fb_id_index (fb_id),
-    index return_date_user_index (return_date)
+    index stripe_managed_account_id_index (stripe_managed_account_id)
 ) engine = InnoDB;
 
 drop table if exists user_picture;
@@ -291,14 +292,16 @@ create table order_item
         on delete cascade
 ) engine = InnoDB;
 
+/* payment received from the consumer */
 drop table if exists payment;
-create table if not exists payment (
+create table if not exists payment 
+(
 	id bigint unsigned not null auto_increment,
     amount decimal(8,2) not null,
     payment_date datetime not null,
     order_item_id bigint unsigned not null,
-    tax_rate float not null default 0.13,
-    take_rate float not null default 0.05,
+    tax_rate float not null default 0.00,
+    take_rate float not null default 0.00,
     
     stripe_charge_id varchar(50),
     
@@ -312,6 +315,26 @@ create table if not exists payment (
         on delete restrict
 ) engine = InnoDB;
 
+/* payout to the vendor */
+drop table if exists payout;
+create table if not exists payout
+(
+	id bigint unsigned not null auto_increment,
+    amount decimal(8,2) not null,
+    payment_date datetime not null,
+    order_item_id bigint unsigned not null,
+    take_rate float not null default 0.1,
+    
+    primary key (id),
+    index payout_order_item_index (order_item_id),
+
+	constraint payout_order_item_constraint
+		foreign key (order_item_id)
+        references order_item (id)
+        on delete restrict
+) engine = InnoDB;
+
+/* refund to the consumer */
 drop table if exists refund;
 create table refund
 (
