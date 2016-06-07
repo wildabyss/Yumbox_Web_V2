@@ -20,7 +20,8 @@ class User_model extends CI_Model {
 				u.pickup_sat, u.pickup_sun,
 				u.fb_id, u.google_id,
 				a.address, a.city, a.province, a.postal_code, a.country, a.latitude, a.longitude,
-				p.path picture
+				p.path picture,
+				u.stripe_managed_account_id
 			from user u
 			left join
 				address a
@@ -346,6 +347,28 @@ class User_model extends CI_Model {
 			return $this->db->error();
 		}
 		
+		return true;
+	}
+
+
+	/**
+	 * Modify address for the given user
+	 */
+	public function modifyStripeId($user_id, $stripe_managed_account_id){
+		$this->db->trans_start();
+
+		// save the plain-text address information
+		if (!$this->db->query('
+			update user set stripe_managed_account_id = ?
+			where id = ?', array(
+			$stripe_managed_account_id,
+			$user_id,
+		))) {
+			return $this->db->error();
+		}
+
+		$this->db->trans_complete();
+
 		return true;
 	}
 }

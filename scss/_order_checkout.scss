@@ -143,25 +143,29 @@
 	#order_checkout{
 		display: none;
 		
-		.payment_info{		
-			label{
-				width: 150px;
-				display: inline-block;
-			}
-			
-			input{
-				width: 200px;
-			}
-			
-			#exp_year{
-				width: 30px;
-			}
-			#exp_month{
-				width: 30px
-			}
-			
-			#cvc{
-				width: 50px;
+		.payment_info{
+			.payment_line{
+				display: flex;
+				flex-direction: row;
+				
+				label{
+					flex-shrink: 0;
+					width: 150px;
+					display: inline-block;
+				}
+				
+				input{
+					width: 200px;
+				}
+				input#exp_year{
+					width: 45px;
+				}
+				input#exp_month{
+					width: 45px
+				}
+				input#cvc{
+					width: 50px;
+				}
 			}
 		}
 	}

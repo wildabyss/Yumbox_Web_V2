@@ -16,7 +16,33 @@
 			width: 100px;
 		}
 	}
+
+	.financial_info_container{
+		.editable-input-wrap{
+			flex-flow: column wrap;
+		}
+		
+		.editable-buttons{
+			text-align: right;
+		}
 	
+		.editable-stripe-account {
+			display: flex;
+			margin-bottom: 5px;
+
+			span {
+				display: inline-block;
+				min-width: 150px;
+			}
+			span.birthday {
+				min-width: 55px;
+				text-align: right;
+				padding-right: 3px;
+				padding-left: 3px;
+			}
+		}
+	}
+
 	.btn_kitchen_open.my_profile{
 		cursor: pointer;
 	}
@@ -27,8 +53,6 @@
 	#pickup_buttonset{
 		font-size: 1.4rem;
 		overflow: auto;
-		/*display: flex;
-		flex-direction: row;*/
 		
 		.pickup_item{
 			float: left;
@@ -99,7 +123,6 @@
 		
 		.intro_wrapper{
 			padding: 0;
-			text-align: center;
 			
 			h1{
 				text-align: center;

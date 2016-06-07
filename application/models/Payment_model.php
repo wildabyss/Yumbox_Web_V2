@@ -44,4 +44,19 @@ class Payment_model extends CI_Model {
 		
 		return true;
 	}
+
+	public function savePayout($amount, $take_rate_vendor, $order_item_id)
+	{
+		if (!$this->db->query('INSERT INTO payout (id, amount, payment_date, order_item_id, take_rate) VALUES (NULL, ?, NOW(), ?, ?);',
+			array(
+				$amount,
+				$order_item_id,
+				$take_rate_vendor,
+			)
+		)){
+			return $this->db->error;
+		}
+
+		return true;
+	}
 }

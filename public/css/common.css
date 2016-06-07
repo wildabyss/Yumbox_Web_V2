@@ -206,8 +206,8 @@ h4 {
   color: #b5b3ac;
   font-style: italic;
   font-weight: normal;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 p {
@@ -697,6 +697,10 @@ nav ul#mobile_user_menu a.logo {
 }
 
 .editable-full .editable-container.editable-inline .editable-input input {
+  width: 100%;
+}
+
+.editable-full .editable-container.editable-inline .editable-input select {
   width: 100%;
 }
 
@@ -1565,6 +1569,31 @@ nav ul#mobile_user_menu a.logo {
   width: 100px;
 }
 
+#profile_intro .financial_info_container .editable-input-wrap {
+  flex-flow: column wrap;
+}
+
+#profile_intro .financial_info_container .editable-buttons {
+  text-align: right;
+}
+
+#profile_intro .financial_info_container .editable-stripe-account {
+  display: flex;
+  margin-bottom: 5px;
+}
+
+#profile_intro .financial_info_container .editable-stripe-account span {
+  display: inline-block;
+  min-width: 150px;
+}
+
+#profile_intro .financial_info_container .editable-stripe-account span.birthday {
+  min-width: 55px;
+  text-align: right;
+  padding-right: 3px;
+  padding-left: 3px;
+}
+
 #profile_intro .btn_kitchen_open.my_profile {
   cursor: pointer;
 }
@@ -1576,8 +1605,6 @@ nav ul#mobile_user_menu a.logo {
 #profile_intro #pickup_buttonset {
   font-size: 1.4rem;
   overflow: auto;
-  /*display: flex;
-		flex-direction: row;*/
 }
 
 #profile_intro #pickup_buttonset .pickup_item {
@@ -1645,7 +1672,6 @@ nav ul#mobile_user_menu a.logo {
   }
   #profile_intro .intro_wrapper {
     padding: 0;
-    text-align: center;
   }
   #profile_intro .intro_wrapper h1 {
     text-align: center;
@@ -1806,24 +1832,30 @@ nav ul#mobile_user_menu a.logo {
   display: none;
 }
 
-#basket_view #order_checkout .payment_info label {
+#basket_view #order_checkout .payment_info .payment_line {
+  display: flex;
+  flex-direction: row;
+}
+
+#basket_view #order_checkout .payment_info .payment_line label {
+  flex-shrink: 0;
   width: 150px;
   display: inline-block;
 }
 
-#basket_view #order_checkout .payment_info input {
+#basket_view #order_checkout .payment_info .payment_line input {
   width: 200px;
 }
 
-#basket_view #order_checkout .payment_info #exp_year {
-  width: 30px;
+#basket_view #order_checkout .payment_info .payment_line input#exp_year {
+  width: 45px;
 }
 
-#basket_view #order_checkout .payment_info #exp_month {
-  width: 30px;
+#basket_view #order_checkout .payment_info .payment_line input#exp_month {
+  width: 45px;
 }
 
-#basket_view #order_checkout .payment_info #cvc {
+#basket_view #order_checkout .payment_info .payment_line input#cvc {
   width: 50px;
 }
 

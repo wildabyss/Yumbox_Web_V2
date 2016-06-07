@@ -106,28 +106,28 @@
 		
 		<form method="post" id="payment_form">
 			<div class="payment_info">
-				<p>
+				<p class="payment_line">
 					<label for="cardholder">Cardholder name:</label>
 					<input type="text" id="cardholder" />
 				</p>
-				<p>
+				<p class="payment_line">
 					<label for="credit_number">Credit card number:</label>
 					<input type="text" autocomplete="off" id="credit_number" data-stripe="number" />
 				</p>
-				<p>
+				<p class="payment_line">
 					<label for="exp_date">Expiration:</label>
-					<input type="text" maxlength="2" autocomplete="off" id="exp_month" placeholder="MM" data-stripe="exp_month" />
-					/ <input type="text" maxlength="2" autocomplete="off" id="exp_year" placeholder="YY" data-stripe="exp_year" />
+					<input type="number" min="01" max="12" autocomplete="off" id="exp_month" placeholder="MM" data-stripe="exp_month" />
+					/ <input type="number" min="10" max="30" autocomplete="off" id="exp_year" placeholder="YY" data-stripe="exp_year" />
 				</p>
-				<p>
+				<p class="payment_line">
 					<label for="cvc">CVC:</label>
 					<input type="text" maxlength="3" autocomplete="off" id="cvc" data-stripe="cvc" />
 				</p>
-				<p>
+				<p class="payment_line">
 					<label for="address">Address on card:</label>
 					<input type="text" id="address" data-stripe="address_line1" />
 				</p>
-				<p>
+				<p class="payment_line">
 					<label for="postal">Postal code:</label>
 					<input type="text" id="postal" data-stripe="address_zip" />
 				</p>
