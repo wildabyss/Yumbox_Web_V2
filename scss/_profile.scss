@@ -106,36 +106,80 @@
 	display: none;
 }
 
+#representer_verification, #bank_account_verification {
+  &.verification_uninitialized {
+
+  }
+}
+
+#representer_verification, #bank_account_verification {
+  &.verification_rejected {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: red;
+    border: 1px solid black;
+  }
+}
+
+#representer_verification, #bank_account_verification {
+  &.verification_verified {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: green;
+    border: 1px solid black;
+  }
+}
+
+#charges, #transfers {
+  &.enabled {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: green;
+    border: 1px solid black;
+  }
+  &.disabled {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: red;
+    border: 1px solid black;
+  }
+}
+
 @media (max-width: 600px){
-	#profile_intro{
-		display: block;
-		
-		.pic_wrapper{
-			float: none;
-			margin: 0 auto;
-			width: 150px;
-			
-			#profile_pic{
-				width: 150px;
-				height: 150px;
-			}
-		}
-		
-		.intro_wrapper{
-			padding: 0;
-			
-			h1{
-				text-align: center;
-			}
-			
-			h3{
-				text-align: center;
-			}
-		}
-		
-		.btn_kitchen_open{
-			margin-left: auto;
-			margin-right: auto;
-		}
-	}
+  #profile_intro{
+    display: block;
+
+    .pic_wrapper{
+      float: none;
+      margin: 0 auto;
+      width: 150px;
+
+      #profile_pic{
+        width: 150px;
+        height: 150px;
+      }
+    }
+
+    .intro_wrapper{
+      padding: 0;
+
+      h1{
+        text-align: center;
+      }
+
+      h3{
+        text-align: center;
+      }
+    }
+
+    .btn_kitchen_open{
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+}
 }

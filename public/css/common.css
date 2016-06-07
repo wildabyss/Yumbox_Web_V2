@@ -1653,6 +1653,37 @@ nav ul#mobile_user_menu a.logo {
   color: #ed7a5d;
 }
 
+#representer_verification.verification_rejected, #bank_account_verification.verification_rejected {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: red;
+    border: 1px solid black;
+}
+
+#representer_verification.verification_verified, #bank_account_verification.verification_verified {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: green;
+    border: 1px solid black;
+}
+
+#charges.enabled, #transfers.enabled {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: green;
+    border: 1px solid black;
+}
+#charges.disabled, #transfers.disabled {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: red;
+    border: 1px solid black;
+}
+
 #food_modal_container {
   display: none;
 }

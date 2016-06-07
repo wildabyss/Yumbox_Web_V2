@@ -546,6 +546,10 @@
 		caseSensitive:		false,
 		singleField:		true,
 		beforeTagAdded:		function(event, ui){
+			//If true, it means it's just the initialization which does not need saving
+			if (ui.duringInitialization) {
+				return;
+			}
 			// clone dictionary
 			var inputs = $.extend({}, csrfData);
 			inputs["category_name"] = ui.tagLabel;

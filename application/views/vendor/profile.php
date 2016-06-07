@@ -1,37 +1,3 @@
-<style>
-#representer_verification.verification_uninitialized, #bank_account_verification.verification_uninitialized {
-}
-#representer_verification.verification_rejected, #bank_account_verification.verification_rejected {
-	display: inline-block;
-	width: 16px;
-	height: 16px;
-	background-color: red;
-	border: 1px solid black;
-}
-#representer_verification.verification_verified, #bank_account_verification.verification_verified {
-	display: inline-block;
-	width: 16px;
-	height: 16px;
-	background-color: green;
-	border: 1px solid black;
-}
-
-#charges.enabled, #transfers.enabled {
-	display: inline-block;
-	width: 16px;
-	height: 16px;
-	background-color: green;
-	border: 1px solid black;
-}
-#charges.disabled, #transfers.disabled {
-	display: inline-block;
-	width: 16px;
-	height: 16px;
-	background-color: red;
-	border: 1px solid black;
-}
-</style>
-
 <section id="profile_intro">
 	<div class="pic_wrapper">
 		<label for="input_profile_pic" id="profile_pic" <?php if ($is_my_profile):?>class="editable_pic"<?php endif?>
@@ -65,10 +31,7 @@
 		<h3>ADDRESS</h3>
 		<p class="editable-full address_container"><a id="edit_user_addr" data-type="address" data-onblur="ignore"></a></p>
 
-		<h3>FINANCIAL INFORMATION
-			<span id="charges" class="<?php echo $stripe_account['charges_enabled'] ? 'enabled' : 'disabled'?>"></span>
-			<span id="transfers" class="<?php echo $stripe_account['transfers_enabled'] ? 'enabled' : 'disabled'?>"></span>
-		</h3>
+		<h3>FINANCIAL INFORMATION</h3>
 		<p class="editable-full financial_info_container"><a id="account_info" data-type="stripe_account" data-onblur="ignore"></a></p>
 		<?php endif?>
 		
@@ -450,12 +413,10 @@
 							} else {
 								// error
 								d.reject(respArr["error"]);
-								errorMessage(respArr["error"]);
 							}
 						},
 						error: 		function(){
 							d.reject("Unable to process");
-							errorMessage("Unable to process");
 						}
 					});
 				};
@@ -472,7 +433,6 @@
 					if (response.error) {
 						// Show the errors
 						d.reject(response.error.message);
-						errorMessage(response.error.message);
 					} else { // Token created
 						params.value.bank_account_token_id = response.id;
 						// Check and see if this is the second callback called
@@ -490,7 +450,6 @@
 					if (response.error) {
 						// Show the errors
 						d.reject(response.error.message);
-						errorMessage(response.error.message);
 
 					} else { // Token created
 						params.value.pii_token_id = response.id;
@@ -529,6 +488,7 @@
 				routing_number: html_decode("<?php echo $stripe_account['routing_number']?>"),
 				account_holder_name: html_decode("<?php echo $stripe_account['account_holder_name']?>"),
 
+				has_account: <?php echo $stripe_account['has_account'] ? 'true' : 'false'?>,
 				charges_enabled: <?php echo $stripe_account['charges_enabled'] ? 'true' : 'false'?>,
 				transfers_enabled: <?php echo $stripe_account['transfers_enabled'] ? 'true' : 'false'?>,
 				representer_verification: "<?php echo $stripe_account['representer_verification']?>",
@@ -537,7 +497,7 @@
 			send:		"always",
 			params:		csrfData,
 			error:		function(response){
-				errorMessage("Unable to process");
+				errorMessage(response);
 			},
 			success:	function(response){
 				var respArr = $.parseJSON(response);
@@ -577,13 +537,12 @@
 				// Checking for incomplete form
 				var error = false;
 				// Mapping from field names to their labels to show to user in case of error
-				var field_labels = {
+				var mandatory_field_labels = {
 					type: "Account type",
 					country: "Country",
 					state: "Province / State",
 					city: "City",
 					line_1 : "Line 1",
-					line_2 : "Line 2",
 					postal_code: "Postal Code",
 
 					first_name: "First name",
@@ -620,8 +579,8 @@
 							break;
 
 						default:
-							if (!value[key]) {
-								error = "All fields are mandatory, please enter '" + field_labels[key] + "'";
+							if (!value[key] && mandatory_field_labels[key]) {
+								error = "All fields are mandatory, please enter '" + mandatory_field_labels[key] + "'";
 							}
 							break;
 					}

@@ -68,37 +68,23 @@ $(function(){
         @method value2html(value, element) 
         **/
         value2html: function(value, element) {
-            if(!value) {
+            if(!value || !value.has_account) {
                 $(element).empty();
                 return; 
             }
 
             // Form preview data
             var lines = [
-                [
-                    html_encode(value.line_1),
-                    html_encode(value.line_2)
-                ],
-                [
-                    html_encode(value.city),
-                    html_encode(value.state),
-                    html_encode(value.country)
-                ],
-                [
-                    html_encode(value.postal_code)
-                ],
-
-
-                [
-                    html_encode((value.first_name + " " + value.last_name).trim()),
-                    html_encode(value.email),
-                    html_encode(value.type)
-                ],
-                [
-                    html_encode(value.routing_number),
-                    html_encode(value.account_holder_name)
-                ]
             ];
+
+            if (!value.charges_enabled
+            || !value.transfers_enabled) {
+                lines.push(["Invalid financial information"]);
+            }
+            else {
+                lines.push(["Valid financial information"]);
+            }
+
 
             // Convert form data to HTML
             var html = lines.map(function(line) {
@@ -263,7 +249,7 @@ $(function(){
             '<div class="editable-stripe-account"><span>Line 2: </span><input type="text" name="line_2" class="input-small"></div>'+
             '<div class="editable-stripe-account"><span>Postal Code: </span><input type="text" name="postal_code" class="input-small"></div>'+
 
-            '<h4>Representer information <span id="representer_verification"></span></h4>'+
+            '<h4>Representer information</h4>'+
             '<div class="editable-stripe-account"><span>First name: </span><input type="text" name="first_name" class="input-small"></div>'+
             '<div class="editable-stripe-account"><span>Last name: </span><input type="text" name="last_name" class="input-small"></div>'+
             '<div class="editable-stripe-account"><span>Email: </span><input type="email" name="email" class="input-small"></div>'+
@@ -274,7 +260,7 @@ $(function(){
             '</div>'+
             '<div class="editable-stripe-account"><span>SIN number: </span><input type="text" name="pii" class="input-small"></div>'+
 
-            '<h4>Bank account information <span id="bank_account_verification"></span></h4>'+
+            '<h4>Bank account information</h4>'+
             '<div class="editable-stripe-account"><span>Country: </span><select name="bank_country" class="input-small"><option value="CA">Canada</option><option value="US">United States of America</option></select></div>'+
             '<div class="editable-stripe-account"><span>Currency: </span><select name="currency" class="input-small"><option value="cad">Canadian Dollars</option><option value="usd">US Dollars</option></select></select></div>'+
             '<div class="editable-stripe-account"><span>Acc. holder type: </span><select name="account_holder_type" class="input-small"><option value="individual">Individual</option><option value="company">Company</option></select></div>'+

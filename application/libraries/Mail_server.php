@@ -96,6 +96,17 @@ class Mail_server {
 	/**
 	 * Immediately send an email with the specified recipient and body
 	 * To be used from the queue or sendFromWebsite method
+	 * @param $from_email
+	 * @param $from_name
+	 * @param $replyto_address
+	 * @param $replyto_name
+	 * @param array $recipients
+	 * @param array $cc
+	 * @param array $bcc
+	 * @param $subject
+	 * @param $body
+	 * @throws Exception
+	 * @throws phpmailerException
 	 * @return true on success, error on failure
 	 */
 	public function send($from_email, $from_name, $replyto_address, $replyto_name, array $recipients, array $cc, array $bcc, $subject, $body)

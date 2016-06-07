@@ -151,6 +151,7 @@ class Profile extends Yumbox_Controller {
 					'routing_number' => $external_account ? $external_account->routing_number : '',
 					'account_holder_name' => $external_account ? $external_account->account_holder_name : '',
 
+					'has_account' => true,
 					'charges_enabled' => $account->charges_enabled,
 					'transfers_enabled' => $account->transfers_enabled,
 					'representer_verification' => !$representer_verification ? 'rejected' : 'verified',
@@ -183,6 +184,7 @@ class Profile extends Yumbox_Controller {
 					'routing_number' => '',
 					'account_holder_name' => $user->name,
 
+					'has_account' => false,
 					'charges_enabled' => false,
 					'transfers_enabled' => false,
 					'representer_verification' => 'uninitialized',
