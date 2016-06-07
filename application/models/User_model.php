@@ -19,15 +19,21 @@ class User_model extends CI_Model {
 				u.pickup_mon, u.pickup_tue, u.pickup_wed, u.pickup_thu, u.pickup_fri,
 				u.pickup_sat, u.pickup_sun,
 				u.fb_id, u.google_id,
-				a.address, a.city, a.province, a.postal_code, a.country, a.latitude, a.longitude
+				a.address, a.city, a.province, a.postal_code, a.country, a.latitude, a.longitude,
+				p.path picture
 			from user u
 			left join
 				address a
 			on
 				a.user_id = u.id
+			left join
+				user_picture p
+			on 
+				p.user_id = u.id
 			where
 				u.status > ?
-				and u.id = ?',
+				and u.id = ?
+			group by u.id',
 			array(
 				self::$INACTIVE_USER,
 				$user_id

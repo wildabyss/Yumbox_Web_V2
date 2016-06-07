@@ -372,6 +372,10 @@ class Food_model extends CI_Model {
 	}
 	
 	
+	/**
+	 * Modify pickup method
+	 * @return true on success, error on failure
+	 */
 	public function modifyPickupMethod($food_id, $method){
 		if ($method != self::$PICKUP_ANYTIME && $method != self::$PICKUP_DESIGNATED){
 			return "incorrect pickup method";
@@ -385,6 +389,10 @@ class Food_model extends CI_Model {
 	}
 	
 	
+	/**
+	 * Modify preparation time
+	 * @return true on success, error on failure
+	 */
 	public function modifyPreparationTime($food_id, $time){
 		if (!is_numeric($time) || $time<=0){
 			return "incorrect time";

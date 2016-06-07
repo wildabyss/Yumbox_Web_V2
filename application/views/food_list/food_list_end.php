@@ -14,7 +14,7 @@
 						
 						<input type="text" placeholder="Alternate/ethnic name" name="alt_name" id="new_alt_name" />
 					</div>
-					<div class="new_food_buttons_wrapper">
+					<div class="absolute_parent">
 						<div class="ui-dialog new_food_buttons">
 							<button type="button" class="ui-button-dialog" id="btn_new_food_ok"></button>
 							<button type="button" class="ui-button-dialog" id="btn_new_food_cancel"></button>

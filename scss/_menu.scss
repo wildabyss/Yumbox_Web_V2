@@ -14,7 +14,7 @@
 		color: white;
 		width: 300px;
 		
-		line-height: 40px;
+		line-height: 36px;
 	}
 	
 	a.rush{
@@ -292,16 +292,11 @@
 			}
 		}
 		
-		.new_food_buttons_wrapper{
-			position: relative;
-			
-			.new_food_buttons{
-				left: auto;
-				right: 0;
-				margin-top: 5px;
-			}
+		.new_food_buttons{
+			left: auto;
+			right: 0;
+			margin-top: 5px;
 		}
-		
 	}
 	
 	#dialog-confirm{
@@ -371,7 +366,7 @@
 
 // media query
 
-@media (max-width: 600px){
+@media (max-width: 620px){
 	#menu_filter{
 		
 		.menu_filter_container{

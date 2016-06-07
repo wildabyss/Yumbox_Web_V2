@@ -776,20 +776,20 @@ nav ul#mobile_user_menu a.logo {
   display: none;
 }
 
-#featured_dishes {
+#landing_main #featured_dishes {
   display: flex;
   width: 100%;
   flex: 1;
 }
 
-#featured_dishes .button_parent {
+#landing_main #featured_dishes .button_parent {
   display: flex;
   flex: 1;
   float: left;
   position: relative;
 }
 
-#featured_dishes span {
+#landing_main #featured_dishes span {
   flex: 1;
   width: 100%;
   min-height: 200px;
@@ -800,7 +800,7 @@ nav ul#mobile_user_menu a.logo {
   background-repeat: no-repeat;
 }
 
-#featured_dishes a.button {
+#landing_main #featured_dishes a.button {
   width: 100%;
   height: 190px;
   padding: 1rem 3rem;
@@ -814,17 +814,17 @@ nav ul#mobile_user_menu a.logo {
   z-index: 500;
 }
 
-#featured_dishes a.button h4 {
+#landing_main #featured_dishes a.button h4 {
   color: white;
   margin-top: 0;
   margin-bottom: 1rem;
 }
 
-#featured_dishes .featured_arrow {
+#landing_main #featured_dishes .featured_arrow {
   display: none;
 }
 
-#featured_dishes h1 {
+#landing_main #featured_dishes h1 {
   margin: 5px 0 0;
 }
 
@@ -880,17 +880,6 @@ nav ul#mobile_user_menu a.logo {
   margin-bottom: 10px;
 }
 
-div.about_text {
-  background-color: rgba(240, 240, 240, 0.8);
-  width: 600px;
-  padding: 0 20px 40px 20px;
-  color: #251F1E;
-}
-
-div.about_text h1 {
-  text-align: center;
-}
-
 #about {
   padding-top: 30px;
   height: 100vh;
@@ -902,6 +891,17 @@ div.about_text h1 {
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
+}
+
+#about div.about_text {
+  background-color: rgba(240, 240, 240, 0.8);
+  width: 600px;
+  padding: 0 20px 40px 20px;
+  color: #251F1E;
+}
+
+#about div.about_text h1 {
+  text-align: center;
 }
 
 #contact {
@@ -918,24 +918,24 @@ div.about_text h1 {
 }
 
 @media (max-width: 960px) {
-  #featured_dishes {
+  #landing_main #featured_dishes {
     position: relative;
   }
-  #featured_dishes a.button {
+  #landing_main #featured_dishes a.button {
     height: auto;
   }
-  #featured_dishes #rush_dish {
+  #landing_main #featured_dishes #rush_dish {
     width: 100%;
   }
-  #featured_dishes #explore_dish {
+  #landing_main #featured_dishes #explore_dish {
     display: none;
   }
-  #mobile_detector {
+  #landing_main #mobile_detector {
     display: block;
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 620px) {
   #about .text {
     width: 100%;
   }
@@ -975,7 +975,7 @@ div.about_text h1 {
   border-width: 2px;
   color: white;
   width: 300px;
-  line-height: 40px;
+  line-height: 36px;
 }
 
 #menu_mega_selection.small a.rush {
@@ -1234,11 +1234,7 @@ div.about_text h1 {
   margin-bottom: 5px;
 }
 
-#menu_listing ul.food_list .new_food_buttons_wrapper {
-  position: relative;
-}
-
-#menu_listing ul.food_list .new_food_buttons_wrapper .new_food_buttons {
+#menu_listing ul.food_list .new_food_buttons {
   left: auto;
   right: 0;
   margin-top: 5px;
@@ -1308,7 +1304,7 @@ div.about_text h1 {
   max-height: 600px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 620px) {
   #menu_filter .menu_filter_container .menu_filter_zone {
     padding: 0;
     width: 100vw;
@@ -1442,14 +1438,13 @@ div.about_text h1 {
 
 #food_detail .reviews li {
   list-style: none;
-  overflow: auto;
   margin-top: 10px;
   margin-bottom: 10px;
   display: flex;
   flex-direction: row;
 }
 
-#food_detail .reviews .profile_pic {
+#food_detail .reviews li .profile_pic {
   display: block;
   width: 80px;
   height: 80px;
@@ -1461,8 +1456,26 @@ div.about_text h1 {
   border: solid 1px #251F1E;
 }
 
-#food_detail .reviews .review_info {
+#food_detail .reviews li .review_info {
   flex: 1;
+}
+
+#food_detail .reviews li .review_info textarea {
+  width: 100%;
+}
+
+#food_detail .reviews li .new_review_buttons {
+  left: auto;
+  right: 0;
+  margin-bottom: 20px;
+}
+
+#food_detail .reviews li.btn_new_review_container {
+  display: block;
+}
+
+#food_detail .reviews li.btn_new_review_container button {
+  margin: 0 auto;
 }
 
 #food_detail .action_button {

@@ -95,29 +95,45 @@
 		
 		li{
 			list-style: none;
-			overflow: auto;
 			margin-top: 10px;
 			margin-bottom: 10px;
 			
 			display: flex;
 			flex-direction: row;
-		}
-		
-		.profile_pic{
-			display: block;
-			width: 80px;
-			height: 80px;
-			margin-right: 10px;
 			
-			background-position: center;
-			background-repeat: no-repeat;
-			background-size: cover;
-			background-image: url('/imgs/profile.svg');
-			border: solid 1px $almostBlack;
+			.profile_pic{
+				display: block;
+				width: 80px;
+				height: 80px;
+				margin-right: 10px;
+				
+				background-position: center;
+				background-repeat: no-repeat;
+				background-size: cover;
+				background-image: url('/imgs/profile.svg');
+				border: solid 1px $almostBlack;
+			}
+			
+			.review_info{
+				flex: 1;
+				
+				textarea{
+					width: 100%;
+				}
+			}
+			
+			.new_review_buttons{
+				left: auto;
+				right: 0;
+				margin-bottom: 20px;
+			}
 		}
-		
-		.review_info{
-			flex: 1;
+		li.btn_new_review_container{
+			display: block;
+			
+			button{
+				margin: 0 auto;
+			}
 		}
 	}
 	

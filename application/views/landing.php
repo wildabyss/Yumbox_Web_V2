@@ -1,4 +1,4 @@
-<div id="landing_main">
+<main id="landing_main">
 	<?php echo $nav_content?>
 	
 	<div id="mobile_detector"></div>
@@ -38,7 +38,7 @@
 			</a>
 		</div>
 	</section>
-</div>
+</main>
 
 <section id="about">
 	<div class="about_text">

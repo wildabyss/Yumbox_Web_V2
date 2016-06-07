@@ -145,29 +145,52 @@
 	</div>
 	
 	<h2 class="title center">REVIEWS</h2>
-	<?php if (count($reviews)==0):?>
-		<p class="reviews">No review for this item.</p>
-	<?php else:?>
-		<ul class="reviews">
-			<?php foreach ($reviews as $review):?>
-				<li>
-					<?php if ($user_pictures[$review->user_id]!==false):?>
-					<a class="profile_pic" style="background-image:url('<?php echo $user_pictures[$review->vendor_id]?>')"></a>
-					<?php else:?>
-					<a class="profile_pic"></a>
-					<?php endif?>
-					
-					<div class="review_info">
-						<span><?php echo prevent_xss($review->user_name)?></span>
-						<p>&hearts; <?php echo $review->rating?>%</p>
-						<?php if ($review->review != ""):?>
-						<p>"<?php echo prevent_xss($review->review)?>"</p>
-						<?php endif?>
+	<ul class="reviews">
+		<?php if ($review_display == ""):?>
+		<li class="no_review_info">
+			<p>No review for this item.</p>
+		</li>
+		<?php else:?>
+		<?php echo $review_display?>
+		<?php endif?>
+		
+		<?php if ($can_add_review):?>
+		<li class="btn_new_review_container">
+			<button class="action_button">ADD REVIEW</button>
+		</li>
+		
+		<li class="new_review_container">
+			<a class="profile_pic" style="background-image:url('<?php echo $current_user->picture?>')"></a>
+			<div class="review_info">
+				<span><?php echo prevent_xss($current_user->name)?></span>
+				<?php echo form_open("", array("id"=>"new_review_form"))?>
+					<p>Rating:
+						<span class="rating_buttonset">
+							<input type="radio" id="radio_rating_1" name="rating" value="1"/>
+							<label for="radio_rating_1">1</label>
+							<input type="radio" id="radio_rating_2" name="rating" value="2"/>
+							<label for="radio_rating_2">2</label>
+							<input type="radio" id="radio_rating_3" checked name="rating" value="3"/>
+							<label for="radio_rating_3">3</label>
+							<input type="radio" id="radio_rating_4" name="rating" value="4"/>
+							<label for="radio_rating_4">4</label>
+							<input type="radio" id="radio_rating_5" name="rating" value="5"/>
+							<label for="radio_rating_5">5</label>
+						</span>
+					</p>
+					<p><textarea placeholder="Comment" rows="2" name="review" id="new_comment"></textarea></p>
+				<?php echo form_close()?>
+				
+				<div class="absolute_parent">
+					<div class="ui-dialog new_review_buttons">
+						<button type="button" class="ui-button-dialog" id="btn_new_review_ok"></button>
+						<button type="button" class="ui-button-dialog" id="btn_new_review_cancel"></button>
 					</div>
-				</li>
-			<?php endforeach?>
-		</ul>
-	<?php endif?>
+				</div>
+			</div>
+		</li>
+		<?php endif?>
+	</ul>
 </section>
 
 <script>
@@ -204,6 +227,65 @@
 			}
 		});
 		<?php endif?>
+	});
+	
+	$(".rating_buttonset").buttonset();
+	
+	$("li.new_review_container").hide();
+	
+	$("li.btn_new_review_container button").button().click(function(){
+		$("li.btn_new_review_container").hide();
+		$("li.new_review_container").show();
+	});
+	
+	$("#btn_new_review_ok").button({
+		icons: {
+			primary: "ui-icon-check"
+		}
+	}).click(function(e){
+		$("#new_review_form").submit(function(e){
+			$.ajax({
+				type:		"post",
+				url:		"/customer/menu/add_review/<?php echo $food->food_id?>",
+				data: 		$("#new_review_form").serialize(),
+				success:	function(response){
+					var respArr = $.parseJSON(response);
+				
+					if ("success" in respArr){
+						successMessage("Saved");
+
+						// add to list and display the modal for further editing
+						$(respArr["li_display"]).prependTo("ul.reviews");
+						
+						// remove no review info
+						$("li.no_review_info").hide();
+						
+						// reset form
+						$("li.new_review_container").hide();
+						if (respArr["can_add_more"])
+							$("li.btn_new_review_container").show();
+					} else {
+						errorMessage(respArr["error"]);
+						return respArr["error"];
+					}
+				},
+				error:		function(){
+					errorMessage("Unable to process");
+				}
+			});
+			
+			// prevent actual form submission
+			e.preventDefault();
+		}(e));
+	});
+	
+	$("#btn_new_review_cancel").button({
+		icons: {
+			primary: "ui-icon-closethick"
+		}
+	}).click(function(){
+		$("li.new_review_container").hide();
+		$("li.btn_new_review_container").show();
 	});
 	
 	<?php else:?>

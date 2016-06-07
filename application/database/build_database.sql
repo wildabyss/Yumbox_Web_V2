@@ -212,6 +212,7 @@ create table food_review
     food_id bigint unsigned not null,
     user_id int unsigned not null,
     rating tinyint unsigned not null default 3,		# scale 0 to 5
+    created_on timestamp not null,
     
     review text,
     

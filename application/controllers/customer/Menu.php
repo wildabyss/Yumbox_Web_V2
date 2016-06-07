@@ -205,6 +205,29 @@ class Menu extends Yumbox_Controller {
 	
 	
 	/**
+	 * Method for displaying the list of reviews for the given food
+	 */
+	protected function displayReviews($food_id){
+		$review_display = "";
+		
+		// get food reviews
+		$reviews = $this->food_review_model->getAllReviewsAndUsersForFood($food_id, 5);
+		// for each review, get the first user picture
+		foreach ($reviews as $review){
+			$user_id = $review->user_id;
+			$user_picture = $this->user_model->getUserPicture($user_id);
+			
+			$data["review"] = $review;
+			$data["user_picture"] = $user_picture;
+			
+			$review_display .= $this->load->view("customer/review_item", $data, true);
+		}
+		
+		return $review_display;
+	}
+	
+	
+	/**
 	 * Default to displaying the yum explore page
 	 */
 	public function index()
@@ -237,10 +260,10 @@ class Menu extends Yumbox_Controller {
 	 */
 	public function item($food_id=false, $display=true){
 		// check if user has logged in
+		$current_user = false;
 		if ($this->login_util->isUserLoggedIn()){
-			$current_user = $this->login_util->getUserId();
-		} else{
-			$current_user = false;
+			$current_user_id = $this->login_util->getUserId();
+			$current_user = $this->user_model->getUserForUserId($current_user_id);
 		}
 		
 		// get food data
@@ -250,7 +273,7 @@ class Menu extends Yumbox_Controller {
 		}
 		
 		// does this food belong to the logged in user?
-		$is_my_profile = ($food->vendor_id == $current_user);
+		$is_my_profile = ($current_user !== false && $food->vendor_id == $current_user->id);
 		
 		// massage food data
 		if (!$is_my_profile){
@@ -273,21 +296,16 @@ class Menu extends Yumbox_Controller {
 		$categories = $this->food_category_model->getAllCategoriesForFood($food_id);
 		
 		// get food reviews
-		$reviews = $this->food_review_model->getAllReviewsAndUsersForFood($food_id, 5);
-		$user_pictures = array();
-		// for each review, get the first user picture
-		foreach ($reviews as $review){
-			$user_id = $review->user_id;
-			$user_pictures[$user_id] = $this->user_model->getUserPicture($user_id);
-		}
+		$review_display = $this->displayReviews($food_id);
+		$can_add_review = $this->food_review_model->canUserAddReviewForFood($current_user !== false?$current_user->id:false, $food_id);
 		
 		// bind to data
 		$data['food'] = $food;
 		$data['food_picture'] = $food_picture;
 		$data['categories'] = $categories;
-		$data['reviews'] = $reviews;
-		$data['user_pictures'] = $user_pictures;
+		$data['review_display'] = $review_display;
 		$data['current_user'] = $current_user;
+		$data['can_add_review'] = $can_add_review;
 		$data['enable_order'] = $enable_order;
 		$data['is_my_profile'] = $is_my_profile;
 		$data['unfilled_orders'] = $unfilled_orders;
@@ -332,7 +350,7 @@ class Menu extends Yumbox_Controller {
 		if (!is_post_request())
 			show_404();
 		
-		// get current logged in user
+		// get current logged in user (could be false if not logged in)
 		$user_id = $this->login_util->getUserId();
 		
 		// get food info
@@ -358,6 +376,56 @@ class Menu extends Yumbox_Controller {
 		// success
 		$json_arr["success"] = "1";
 		$json_arr["li_display"] = $food_item_display;
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
+	 * AJAX method for adding a review for food
+	 * echo json string:
+	 *   {success, li_display, can_add_more, error}
+	 */
+	public function add_review($food_id=false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// get current logged in user
+		$user_id = $this->login_util->getUserId();
+		
+		// check if user can add review
+		if (!$this->food_review_model->canUserAddReviewForFood($user_id, $food_id)){
+			$json_arr["error"] = "cannot add review";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// add review
+		$rating = $this->input->post("rating");
+		$review = $this->input->post("review");
+		$review_id = false;
+		try {
+			$review_id = $this->food_review_model->addReviewForFood($user_id, $food_id, $rating, $review);
+		} catch (Exception $e){
+			$json_arr["error"] = $e->getMessage();
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// retrieve review
+		$review = $this->food_review_model->getReviewForId($review_id);
+		$user_picture = $this->user_model->getUserPicture($user_id);
+		$data["review"] = $review;
+		$data["user_picture"] = $user_picture;
+		$review_display = $this->load->view("customer/review_item", $data, true);
+		
+		// can add more reviews?
+		$can_add_more = $this->food_review_model->canUserAddReviewForFood($user_id, $food_id);
+		
+		// success
+		$json_arr["success"] = "1";
+		$json_arr["li_display"] = $review_display;
+		$json_arr["can_add_more"] = $can_add_more;
 		echo json_encode($json_arr);
 	}
 }
