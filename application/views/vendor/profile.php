@@ -408,6 +408,7 @@
 						data:		inputs,
 						success:	function(data){
 							var respArr = $.parseJSON(data);
+							
 							if ("success" in respArr){
 								d.resolve(data);
 							} else {
@@ -466,27 +467,27 @@
 				return d.promise();
 			},
 			value:		{
-				country: html_decode("<?php echo $stripe_account['country']?>"),
-				email: html_decode("<?php echo $stripe_account['email']?>"),
-				day: html_decode("<?php echo $stripe_account['day']?>"),
-				month: html_decode("<?php echo $stripe_account['month']?>"),
-				year: html_decode("<?php echo $stripe_account['year']?>"),
-				first_name: html_decode("<?php echo $stripe_account['first_name']?>"),
-				last_name: html_decode("<?php echo $stripe_account['last_name']?>"),
-				type: html_decode("<?php echo $stripe_account['type']?>"),
+				country: html_decode("<?php echo prevent_xss($stripe_account['country'])?>"),
+				email: html_decode("<?php echo prevent_xss($stripe_account['email'])?>"),
+				day: html_decode("<?php echo prevent_xss($stripe_account['day'])?>"),
+				month: html_decode("<?php echo prevent_xss($stripe_account['month'])?>"),
+				year: html_decode("<?php echo prevent_xss($stripe_account['year'])?>"),
+				first_name: html_decode("<?php echo prevent_xss($stripe_account['first_name'])?>"),
+				last_name: html_decode("<?php echo prevent_xss($stripe_account['last_name'])?>"),
+				type: html_decode("<?php echo prevent_xss($stripe_account['type'])?>"),
 
-				address_country: html_decode("<?php echo $stripe_account['address_country']?>"),
-				state: html_decode("<?php echo $stripe_account['state']?>"),
-				city: html_decode("<?php echo $stripe_account['city']?>"),
-				line_1: html_decode("<?php echo $stripe_account['line_1']?>"),
-				line_2: html_decode("<?php echo $stripe_account['line_2']?>"),
-				postal_code: html_decode("<?php echo $stripe_account['postal_code']?>"),
+				address_country: html_decode("<?php echo prevent_xss($stripe_account['address_country'])?>"),
+				state: html_decode("<?php echo prevent_xss($stripe_account['state'])?>"),
+				city: html_decode("<?php echo prevent_xss($stripe_account['city'])?>"),
+				line_1: html_decode("<?php echo prevent_xss($stripe_account['line_1'])?>"),
+				line_2: html_decode("<?php echo prevent_xss($stripe_account['line_2'])?>"),
+				postal_code: html_decode("<?php echo prevent_xss($stripe_account['postal_code'])?>"),
 
-				bank_country: html_decode("<?php echo $stripe_account['bank_country']?>"),
-				currency: html_decode("<?php echo $stripe_account['currency']?>"),
-				account_holder_type: html_decode("<?php echo $stripe_account['account_holder_type']?>"),
-				routing_number: html_decode("<?php echo $stripe_account['routing_number']?>"),
-				account_holder_name: html_decode("<?php echo $stripe_account['account_holder_name']?>"),
+				bank_country: html_decode("<?php echo prevent_xss($stripe_account['bank_country'])?>"),
+				currency: html_decode("<?php echo prevent_xss($stripe_account['currency'])?>"),
+				account_holder_type: html_decode("<?php echo prevent_xss($stripe_account['account_holder_type'])?>"),
+				routing_number: html_decode("<?php echo prevent_xss($stripe_account['routing_number'])?>"),
+				account_holder_name: html_decode("<?php echo prevent_xss($stripe_account['account_holder_name'])?>"),
 
 				has_account: <?php echo $stripe_account['has_account'] ? 'true' : 'false'?>,
 				charges_enabled: <?php echo $stripe_account['charges_enabled'] ? 'true' : 'false'?>,
@@ -499,11 +500,14 @@
 			error:		function(response){
 				errorMessage(response);
 			},
-			success:	function(response){
+			success:	function(response, newValue){
 				var respArr = $.parseJSON(response);
-
+		
 				if ("success" in respArr){
 					successMessage("Saved");
+					
+					// update value
+					return {newValue: respArr['account']};
 				} else {
 					errorMessage(respArr["error"]);
 					return respArr["error"];

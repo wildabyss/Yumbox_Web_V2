@@ -21,7 +21,7 @@
 			<button class="action_button btn_add_order" <?php if (!$enable_order):?>disabled<?php endif?>>ADD ORDER +</button>
 			<?php else:?>
 			<!-- display price and rating -->
-			<h3 class="price">$<a id="input_price" data-type="text" data-onblur="ignore"><?php echo $food->food_price?></a></h3>
+			<h3 class="price">$<a id="input_price" data-type="number" data-onblur="ignore"><?php echo $food->food_price?></a></h3>
 			<button class="action_button btn_remove_order">Remove</button>
 			<?php endif?>
 		</div>
@@ -36,7 +36,10 @@
 			<p class="time right-align"><span class="no_mobile">Preparation time: </span><?php echo $food->prep_time?></p>
 			<?php else:?>
 			<!-- display total orders and current orders -->
-			<p class="orders"><?php echo $food->total_orders?> total orders | <?php echo $unfilled_orders?> current orders</p>
+			<p class="orders">
+				<a><?php echo $food->total_orders?> total orders</a><br/>
+				<a><?php echo $unfilled_orders?> todo</a> / <a id="input_quota" data-type="text" data-onblur="ignore"><?php echo $food->quota?></a>
+			</p>
 			<p class="rating right-align"><span class="no_mobile">Average rating: </span>&hearts; <?php echo $food->rating?>%</p>
 			<?php endif?>
 		</div>
@@ -51,7 +54,7 @@
 	<?php if ($is_my_profile):?>
 	<h2 class="title center">PREPARATION TIME</h2>
 	<div>
-		<p class="prep_time_container editable-full"><span class="prep_time_head">Time to prepare (hrs):</span><a id="edit_prep_time" data-type="text" data-onblur="ignore"><?php echo $food->prep_time?></a></p>
+		<p class="prep_time_container editable-full"><span class="prep_time_head">Time to prepare:</span><a id="edit_prep_time" data-type="text" data-onblur="ignore"><?php echo $food->prep_time?></a></p>
 		<p>Pickup method:</p>
 		<div id="prep_time_buttonset">
 			<input type="radio" id="radio_immediate" name="pickup_method" <?php if ($food->pickup_method==Food_model::$PICKUP_ANYTIME):?>checked<?php endif?> class="prep_time_radio" value="immediate"/>
@@ -444,6 +447,29 @@
 		}
 	});
 	
+	$("#input_quota").editable({
+		url:		"/vendor/food/change_quota/<?php echo $food->food_id?>",
+		send:		"always",
+		params:		csrfData,
+		inputclass:	"input_quota",
+		error:		function(response){
+			errorMessage("Unable to process");
+		},
+		success:	function(response){
+			var respArr = $.parseJSON(response);
+			
+			if ("success" in respArr){
+				successMessage("Quota limit changed");
+			} else {
+				errorMessage(respArr["error"]);
+				return respArr["error"];
+			}
+		},
+		display:	function(value, response){
+			$(this).html(value + " quota");
+		}
+	});
+	
 	$("#input_price").editable({
 		url:		"/vendor/food/change_price/<?php echo $food->food_id?>",
 		send:		"always",
@@ -639,6 +665,9 @@
 			}
 			
 			return {newValue: value};
+		},
+		display:	function(value, response){
+			$(this).html(value + " hrs");
 		}
 	});
 	

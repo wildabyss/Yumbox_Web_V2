@@ -1358,6 +1358,10 @@ nav ul#mobile_user_menu a.logo {
   width: 70px;
 }
 
+#food_detail input.input_quota {
+  width: 70px;
+}
+
 #food_detail ul#input_category {
   font-size: 1.4rem;
 }
@@ -1653,39 +1657,40 @@ nav ul#mobile_user_menu a.logo {
   color: #ed7a5d;
 }
 
+#food_modal_container {
+  display: none;
+}
+
 #representer_verification.verification_rejected, #bank_account_verification.verification_rejected {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    background-color: red;
-    border: 1px solid black;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: red;
+  border: 1px solid black;
 }
 
 #representer_verification.verification_verified, #bank_account_verification.verification_verified {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    background-color: green;
-    border: 1px solid black;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: green;
+  border: 1px solid black;
 }
 
 #charges.enabled, #transfers.enabled {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    background-color: green;
-    border: 1px solid black;
-}
-#charges.disabled, #transfers.disabled {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    background-color: red;
-    border: 1px solid black;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: green;
+  border: 1px solid black;
 }
 
-#food_modal_container {
-  display: none;
+#charges.disabled, #transfers.disabled {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: red;
+  border: 1px solid black;
 }
 
 @media (max-width: 600px) {

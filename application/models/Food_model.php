@@ -294,6 +294,19 @@ class Food_model extends CI_Model {
 	
 	
 	/**
+	 * Change the quota of the food
+	 * @return true on success, error on failure
+	 */
+	public function changeQuota($food_id, $quota){
+		if (!$this->db->query('update food set quota = ? where id=?', array($quota, $food_id))){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
 	 * Change the price of the food
 	 * @return true on success, error on failure
 	 */

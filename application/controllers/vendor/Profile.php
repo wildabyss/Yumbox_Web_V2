@@ -261,7 +261,12 @@ class Profile extends Yumbox_Controller {
 			}
 			
 			// check if user has a managed account
-			
+			$this->load->library('stripe_util');
+			if (!$this->stripe_util->isAccountPayable($user_id)){
+				$json_arr["error"] = "please fill out your financial information";
+				echo json_encode($json_arr);
+				return;
+			}
 		}
 		
 		
@@ -607,8 +612,8 @@ class Profile extends Yumbox_Controller {
 				$account->tos_acceptance = $account_info['tos_acceptance'];
 				$account->external_account = $account_info['external_account'];
 				$account->save();
-			}
-			catch (\Exception $ex) {
+				
+			} catch (\Exception $ex) {
 				$json_arr["error"] = $ex->getMessage();
 				echo json_encode($json_arr);
 				return;
@@ -618,8 +623,7 @@ class Profile extends Yumbox_Controller {
 			// User has got no managed account, let's create one for him / her
 			try {
 				$account = \Stripe\Account::create($account_info);
-			}
-			catch (\Exception $ex) {
+			} catch (\Exception $ex) {
 				$json_arr["error"] = $ex->getMessage();
 				echo json_encode($json_arr);
 				return;
@@ -636,6 +640,7 @@ class Profile extends Yumbox_Controller {
 
 		// success
 		$json_arr["success"] = "1";
+		$json_arr["account"] = $account;
 		echo json_encode($json_arr);
 	}
 }

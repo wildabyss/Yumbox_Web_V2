@@ -22,9 +22,19 @@ class Food extends Yumbox_Controller {
 		
 		// get current user and data
 		$user_id = $this->login_util->getUserId();
-		$food_name = $this->input->post("name");
-		$food_alt_name = $this->input->post("alt_name");
-		$food_price = $this->input->post("price");
+		$food_name = trim($this->input->post("name"));
+		$food_alt_name = trim($this->input->post("alt_name"));
+		$food_price = trim($this->input->post("price"));
+		
+		if ($food_name == ""){
+			$json_arr["error"] = "dish name cannot be blank";
+			echo json_encode($json_arr);
+			return;
+		} elseif (!is_numeric($food_price) || $food_price <= 0){
+			$json_arr["error"] = "dish price must be > $0";
+			echo json_encode($json_arr);
+			return;
+		}
 		
 		// create new food
 		$food_id = false;
@@ -183,6 +193,52 @@ class Food extends Yumbox_Controller {
 	
 	
 	/**
+	 * AJAX method for changing the quota limit of the dish
+	 * echo json string:
+	 *   {success, error}
+	 */
+	public function change_quota($food_id=false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current user and data
+		$user_id = $this->login_util->getUserId();
+		$food = $this->food_model->getFoodAndVendorForFoodId($food_id);
+		if ($food === false || $food->vendor_id != $user_id){
+			$json_arr["error"] = "incorrect dish specified";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// change quota
+		$quota = $this->input->post("value");
+		if (!is_numeric($quota) || $quota <= 0){
+			$json_arr["error"] = "must be a positive number";
+			echo json_encode($json_arr);
+			return;
+		}
+		$res = $this->food_model->changeQuota($food_id, $quota);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
 	 * AJAX method for changing the price of a dish
 	 * echo json string:
 	 *   {success, error}
@@ -210,7 +266,7 @@ class Food extends Yumbox_Controller {
 		
 		// change price
 		$price = $this->input->post("value");
-		if (!is_numeric($price) || $price < 0){
+		if (!is_numeric($price) || $price <= 0){
 			$json_arr["error"] = "must be a positive number";
 			echo json_encode($json_arr);
 			return;

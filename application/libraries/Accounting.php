@@ -44,6 +44,26 @@ class Accounting {
 	
 	
 	/**
+	 * For a given total item cost, calculate the share to be dispensed to vendor
+	 * and us
+	 * @return ["vendor_share", "application_share"]
+	 */
+	public function calcOpenOrderItemVendorShare($total_cost){
+		$CI =& get_instance();
+		$CI->config->load('config', TRUE);
+		
+		$vendor_take_rate = $CI->config->item("take_rate_vendor");
+		$vendor_share = $vendor_take_rate*$total_cost;
+		$application_share = $total_cost-$vendor_share;
+		
+		return array(
+			"vendor_share"		=> $vendor_share,
+			"application_share"	=> $application_share
+		);
+	}
+	
+	
+	/**
 	 * Calculate the costs of an open order_basket
 	 *
 	 * @param $open_basket order_basket object
@@ -72,7 +92,7 @@ class Accounting {
 	/**
 	 * Get current take_rate and tax_rate
 	 *
-	 * @return ["take_rate", "tax_rate"]
+	 * @return ["take_rate", "tax_rate", "vendor_take_rate"]
 	 */
 	public function getCurrentRates(){
 		$CI =& get_instance();
@@ -80,7 +100,8 @@ class Accounting {
 		
 		return array(
 			"take_rate"		=> $CI->config->item("take_rate"),
-			"tax_rate"		=> $CI->config->item("tax_rate")
+			"tax_rate"		=> $CI->config->item("tax_rate"),
+			"vendor_take_rate"	=> $CI->config->item("take_rate_vendor")
 		);
 	}
 }

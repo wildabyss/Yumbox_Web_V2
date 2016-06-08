@@ -415,7 +415,6 @@ class Order extends Yumbox_Controller {
 		// get Stripe token
 		$stripe_token = $this->input->post("token");
 		$stripe_private_key = $this->config->item("stripe_secret_key");
-		$take_rate_vendor = $this->config->item("take_rate_vendor");
 		Stripe\Stripe::setApiKey($stripe_private_key);
 		
 		// set up customer
@@ -446,11 +445,14 @@ class Order extends Yumbox_Controller {
 			// get amount to be charged in dollars
 			$costs = $this->accounting->calcOpenOrderItemCosts($order_item);
 			$amount = round($costs["base_cost"] + $costs["commission"] + $costs["taxes"], 2);
+			$shares = $this->accounting->calcOpenOrderItemVendorShare($amount);
+			$vendor_share = $shares["vendor_share"];
+			$application_share = $shares["application_share"];
 
 			// Get vendor information and calculate his share
 			$vendor = $this->user_model->getUserForUserId($order_item->vendor_id);
-			$amount_in_cents = $amount * 100;
-			$application_share = round($amount_in_cents * $take_rate_vendor);
+			$amount_in_cents = round($amount * 100);
+			$application_share_in_cents = round($amount * 100);
 			
 			// charge Stripe
 			try {
@@ -460,7 +462,7 @@ class Order extends Yumbox_Controller {
 					"customer"			=> $stripe_customer->id,
 					"metadata"			=> array("order_item " => $order_item->order_id),
 					"destination"		=> $vendor->stripe_managed_account_id,
-					"application_fee"	=> $application_share,
+					"application_fee"	=> $application_share_in_cents,
 				));
 			} catch (Stripe\Error\Card $e){
 				$json_arr["error"] = $e->getMessage();
@@ -470,10 +472,11 @@ class Order extends Yumbox_Controller {
 			
 			// save entry to database
 			$rates = $this->accounting->getCurrentRates();
+			// save payment info
 			$res = $this->payment_model->payOrderItem($amount, $rates['take_rate'], $rates['tax_rate'],
 				$order_item->order_id, $charge->id);
-
-			$res = $res && $this->payment_model->savePayout(($amount_in_cents - $application_share) / 100.0, $take_rate_vendor, $order_item->order_id);
+			// save payout info
+			$res = $res && $this->payment_model->savePayout($vendor_share, $rates["vendor_take_rate"], $order_item->order_id);
 
 			if ($res !== true){
 				$json_arr["error"] = $res;
