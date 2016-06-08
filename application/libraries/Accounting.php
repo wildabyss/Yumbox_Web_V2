@@ -12,11 +12,13 @@ class Accounting {
 		$food_cost = $order_item->quantity*$order_item->price;
 		$food_commission = $order_item->take_rate*$food_cost;
 		$food_tax = ($food_cost+$food_commission)*$order_item->tax_rate;
+		$application_share = ($food_cost+$food_commission+$food_tax)*$order_item->vendor_take_rate;
 		
 		return array(
 			"base_cost" 	=> $food_cost,
 			"commission"	=> $food_commission,
-			"taxes"			=> $food_tax
+			"taxes"			=> $food_tax,
+			"application_share"	=> $application_share,
 		);
 	}
 	
@@ -53,8 +55,8 @@ class Accounting {
 		$CI->config->load('config', TRUE);
 		
 		$vendor_take_rate = $CI->config->item("take_rate_vendor");
-		$vendor_share = $vendor_take_rate*$total_cost;
-		$application_share = $total_cost-$vendor_share;
+		$application_share = $vendor_take_rate*$total_cost;
+		$vendor_share = $total_cost-$application_share;
 		
 		return array(
 			"vendor_share"		=> $vendor_share,

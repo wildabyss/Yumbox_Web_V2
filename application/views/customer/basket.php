@@ -145,6 +145,7 @@
 	// set Stripe public key
 	Stripe.setPublishableKey('<?php echo $this->config->item("stripe_public_key")?>');
 
+	// pagination buttons behaviours
 	$("#btn_current")
 		.button()
 		.click(function(e){
@@ -156,6 +157,17 @@
 		.click(function(e){
 			window.location = "/customer/order/basket";
 		});
+		
+	// prevent default hover and focus behaviours on the pagination buttons
+	$("<?php if (!$is_open_basket):?>#btn_past<?php else:?>#btn_current<?php endif?>").hover(function(){
+		$(this).toggleClass( "ui-state-active", true );
+	}).focusout(function(e){
+		$(this).addClass( "ui-state-active", true );
+		e.preventDefault();
+		e.stopPropagation();
+	});
+	//-
+		
 		
 	$("#btn_checkout")
 		.button()
@@ -304,13 +316,4 @@
 				}
 			});
 		});
-	
-	// prevent default hover and focus behaviours on the buttons
-	$("<?php if (!$is_open_basket):?>#btn_past<?php else:?>#btn_current<?php endif?>").hover(function(){
-		$(this).toggleClass( "ui-state-active", true );
-	}).focusout(function(e){
-		$(this).addClass( "ui-state-active", true );
-		e.preventDefault();
-		e.stopPropagation();
-	});
 </script>

@@ -11,15 +11,47 @@ class Dashboard extends Yumbox_Controller {
 		// get logged in user
 		$user_id = $this->login_util->getUserId();
 		
-		// get orders
+		// get orders, sorted based on due date
 		$unsorted_orders = $this->order_model->getPaidOrdersForVendor($user_id, $is_filled);
 		$sorted_orders = array();
+		$billing = array();
 		foreach ($unsorted_orders as $order){
-			$sorted_orders[] = $order;
+			// get time to deliver
+			$order_time = strtotime($order->order_date);
+			$phptime = $this->time_prediction->calcPickupTime($order->food_id, $order_time, false);
+			$order->prep_time = date("l F j, g:i A", $phptime);
+			
+			// calculate cost of order
+			if ($order->refund_id != ""){
+				$base_cost = 0;
+				$taxes = 0;
+				$front_commission = 0;
+				$back_commission = 0;
+			} else {
+				$costs = $this->accounting->calcPaidOrderItemCosts($order);
+				$base_cost = $costs["base_cost"];
+				$taxes = $costs["taxes"];
+				$front_commission = $costs["commission"];
+				$back_commission = $costs["application_share"];
+			}
+			
+			// calculate vendor share
+			$total = $base_cost + $taxes + $front_commission - $back_commission;
+			$billing[$order->order_id] = array(
+				"taxes"				=> number_format($taxes,2),
+				"front_commission"	=> number_format($front_commission,2),
+				"back_commission"	=> number_format($back_commission,2),
+				"total"				=> number_format($total,2)
+			);
+			
+			$sorted_orders[$phptime] = $order;
 		}
+		ksort($sorted_orders, SORT_NUMERIC);
 		
 		// bind data
-		$data["orders"] = $sorted_orders;
+		$data["foods_orders"] = $sorted_orders;
+		$data["billing"] = $billing;
+		$data["is_current"] = !$is_filled;
 		
 		$this->header();
 		$this->navigation();

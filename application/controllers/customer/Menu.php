@@ -97,7 +97,7 @@ class Menu extends Yumbox_Controller {
 		$can_deliver = $this->input->get('can_deliver')==""?false:$this->input->get('can_deliver');
 		$price_filter = array(
 			"min"=>$this->input->get('price_min')==""?0:$this->input->get('price_min'), 
-			"max"=>$this->input->get('price_max')==""?50:$this->input->get('price_max')
+			"max"=>$this->input->get('price_max')==""?5000:$this->input->get('price_max')
 		);
 		$rating_filter = $this->input->get('rating_min')==""?0:$this->input->get('rating_min');
 	

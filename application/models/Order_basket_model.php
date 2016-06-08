@@ -179,6 +179,7 @@ class Order_basket_model extends CI_Model {
 				b.order_date,
 				o.id order_id, o.quantity, o.is_filled, r.id refund_id, 
 				p.id payment_id, p.tax_rate, p.take_rate,
+				po.id payout_id, po.take_rate vendor_take_rate,
 				fp.path
 			from
 				order_item o
@@ -194,6 +195,9 @@ class Order_basket_model extends CI_Model {
 			left join
 				refund r
 			on r.order_item_id = o.id
+			left join
+				payout po
+			on po.order_item_id = o.id
 			left join
 				order_basket b
 			on b.id = o.order_basket_id

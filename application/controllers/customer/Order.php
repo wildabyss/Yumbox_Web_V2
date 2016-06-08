@@ -444,15 +444,15 @@ class Order extends Yumbox_Controller {
 			
 			// get amount to be charged in dollars
 			$costs = $this->accounting->calcOpenOrderItemCosts($order_item);
-			$amount = round($costs["base_cost"] + $costs["commission"] + $costs["taxes"], 2);
+			$amount = $costs["base_cost"] + $costs["commission"] + $costs["taxes"];
 			$shares = $this->accounting->calcOpenOrderItemVendorShare($amount);
 			$vendor_share = $shares["vendor_share"];
 			$application_share = $shares["application_share"];
-
+			
 			// Get vendor information and calculate his share
 			$vendor = $this->user_model->getUserForUserId($order_item->vendor_id);
 			$amount_in_cents = round($amount * 100);
-			$application_share_in_cents = round($amount * 100);
+			$application_share_in_cents = round($application_share * 100);
 			
 			// charge Stripe
 			try {
@@ -513,8 +513,8 @@ class Order extends Yumbox_Controller {
 	 */
 	public function refund($order_id=false){
 		// ensure we have POST request
-		/*if (!is_post_request())
-			show_404();*/
+		if (!is_post_request())
+			show_404();
 		
 		// check if user has logged in
 		if (!$this->login_util->isUserLoggedIn()){

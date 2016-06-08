@@ -18,6 +18,7 @@ class Order_model extends CI_Model {
 				f.quota,
 				p.id payment_id, p.tax_rate, p.take_rate,
 				o.id order_id, o.quantity, o.is_filled, r.id refund_id,
+				po.id payout_id, po.take_rate vendor_take_rate,
 				fp.path
 			from
 				order_item o
@@ -36,6 +37,9 @@ class Order_model extends CI_Model {
 			left join
 				refund r
 			on r.order_item_id = o.id
+			left join
+				payout po
+			on po.order_item_id = o.id
 			where
 				o.id = ?
 			group by f.id', array($order_id));
@@ -106,10 +110,10 @@ class Order_model extends CI_Model {
 	 */
 	public function getPaidOrdersForVendor($vendor_id, $is_filled){
 		$query_str = 'select 
-				f.id food_id, f.name, f.alternate_name, f.price, f.prep_time_hours prep_time,
-				b.id buyer_id, b.name buyer_name,
-				po.amount payout_amount, po.take_rate payout_take_rate,
-				p.amount payment_amount, p.tax_rate, p.take_rate payment_take_rate,
+				f.id food_id, f.name food_name, f.alternate_name food_alt_name, f.price, f.prep_time_hours prep_time,
+				b.id buyer_id, b.name buyer_name, basket.order_date,
+				po.amount payout_amount, po.take_rate vendor_take_rate,
+				p.amount payment_amount, p.tax_rate, p.take_rate take_rate,
 				o.id order_id, o.quantity, o.is_filled, r.id refund_id,
 				fp.path
 			from order_item o
@@ -140,7 +144,7 @@ class Order_model extends CI_Model {
 		if ($is_filled){
 			$query_str .= ' and (o.is_filled = 1 or r.id is not null)';
 		} else {
-			$query_str .= ' and (o.is_filled = 0 or r.id is null) and po.id is not null';
+			$query_str .= ' and o.is_filled = 0 and r.id is null and po.id is not null';
 		}
 		$query_str .= ' group by o.id';
 		
