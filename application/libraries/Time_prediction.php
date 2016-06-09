@@ -70,7 +70,6 @@ class Time_prediction {
 			if ($return_elapsed){
 				return $time_diff;
 			} else {
-echo $pickup_time;
 				return $pickup_time;
 			}
 		}
