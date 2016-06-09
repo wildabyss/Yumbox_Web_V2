@@ -51,7 +51,7 @@
 
 <script>
 	<?php if (isset($is_my_profile) && $is_my_profile):?>
-	$(".btn_remove").button().click(function(){
+	$(".btn_remove[food_id=<?php echo $food->food_id?>]").button().click(function(){
 		var food_id = $(this).attr("food_id");
 		var $parent = $(this).parent();
 		
@@ -110,7 +110,7 @@
 	});
 	
 	/* Brings up the food detail modal */
-	$(".toggle_food_detail").click(function(){
+	$(".toggle_food_detail[food_id=<?php echo $food->food_id?>]").click(function(){
 		var food_id = $(this).attr("food_id");
 		
 		$.ajax({

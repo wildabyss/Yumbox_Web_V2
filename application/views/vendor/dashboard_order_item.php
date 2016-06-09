@@ -58,7 +58,7 @@
 </li>
 
 <script>
-	$(".btn_cancel_order")
+	$(".btn_cancel_order[order_id=<?php echo $food_order->order_id?>]")
 		.button()
 		.click(function(e){
 			var order_id = $(this).attr("order_id");
@@ -124,7 +124,7 @@
 			});
 		});
 		
-	$(".btn_finish_order")
+	$(".btn_finish_order[order_id=<?php echo $food_order->order_id?>]")
 		.button()
 		.click(function(e){
 			var order_id = $(this).attr("order_id");
