@@ -2,7 +2,6 @@
 	<div class="vendor_section">
 		<div class="title">
 			<h2>Pickup: <?php echo $food_order->prep_time ?></h2>
-			<h3><a href="/vendor/profile/id/">Jimmy Lu</a></h3>
 		</div>
 		
 		<div class="order_item absolute_parent" id="order_item_<?php echo $food_order->order_id?>">
@@ -20,10 +19,10 @@
 				</div>
 			</div>
 			<h3 class="received right-align">
-				<?php if ($food_order->is_filled == Order_model::$IS_FILLED_DELIVERED):?>
-				<span>Delivered &#x2713;</span>
-				<?php elseif ($food_order->refund_id != ""):?>
+				<?php if ($food_order->refund_id != ""):?>
 				<span class="canceled">Canceled &#x274c;</span>
+				<?php elseif ($food_order->is_filled == Order_model::$IS_FILLED_DELIVERED):?>
+				<span>Delivered &#x2713;</span>
 				<?php else:?>
 				<button class="btn_finish_order" order_id="<?php echo $food_order->order_id?>">Finish &#x2713;</button>
 				<button class="btn_cancel_order" order_id="<?php echo $food_order->order_id?>">Cancel &#x274c;</button>

@@ -164,7 +164,8 @@ class Dashboard extends Yumbox_Controller {
 			return;
 		}
 		
-		// for display
+		// for display, refresh order
+		$food_order = $this->order_model->getFoodOrder($order_id);
 		$li_display = $this->displayOrderItem($food_order);
 		
 		// success
