@@ -65,6 +65,8 @@ $config['smtp_security']            = 'tls';
 $config['tax_rate']				= 0.0;
 // take rate (commission rate)
 $config['take_rate']			= 0.0;
+// take rate for vendors
+$config['take_rate_vendor']		= 0.1;
 
 // featured dishes
 $config['featured_rush_id']		= 8;
