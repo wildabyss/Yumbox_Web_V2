@@ -50,7 +50,7 @@ class Time_prediction {
 			$pickup_time = 0;
 			for ($i=0; $i<7; $i++){
 				if ($slots[$i] != "00:00:00"){
-					$str = "{$weekdays[$i]} {$slots[$i]}";
+					$str = "next {$weekdays[$i]} {$slots[$i]}";
 					$next_time = strtotime($str, $order_time);
 
 					$startObj = new DateTime();
@@ -70,6 +70,7 @@ class Time_prediction {
 			if ($return_elapsed){
 				return $time_diff;
 			} else {
+echo $pickup_time;
 				return $pickup_time;
 			}
 		}
