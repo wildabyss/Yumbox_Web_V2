@@ -366,6 +366,13 @@ nav{
 }
 
 
+// list used for displaying sections
+ul.partition{
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
 // is open/closed
 .is_open{
 	display: block;

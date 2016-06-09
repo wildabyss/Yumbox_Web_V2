@@ -126,7 +126,7 @@
 		// category filter checkboxes
 		$("#menu_filter_categories").buttonset();
 		
-		// submit buttons
+		// submit buttons for map or list views
 		var filter_button_click = function(e, is_list){
 			e.preventDefault();
 			
@@ -143,6 +143,15 @@
 		});
 		$( "#btn_list" ).button().click(function(e){
 			filter_button_click(e, true);
+		});
+		
+		// prevent default hover and focus behaviours on the list and map buttons
+		$("<?php if (!$is_list):?>#btn_map<?php else:?>#btn_list<?php endif?>").hover(function(){
+			$(this).toggleClass( "ui-state-active", true );
+		}).focusout(function(e){
+			$(this).addClass( "ui-state-active", true );
+			e.preventDefault();
+			e.stopPropagation();
 		});
 
 		$("input[type=search]").keydown(function(e){
@@ -204,15 +213,6 @@
 		// location button
 		$("#btn_location").button().click(function(e){
 			$("#location_dialog").dialog("open");
-		});
-		
-		// prevent default hover and focus behaviours on the buttons
-		$("<?php if (!$is_list):?>#btn_map<?php else:?>#btn_list<?php endif?>").hover(function(){
-			$(this).toggleClass( "ui-state-active", true );
-		}).focusout(function(e){
-			$(this).addClass( "ui-state-active", true );
-			e.preventDefault();
-			e.stopPropagation();
 		});
 	</script>
 </section>

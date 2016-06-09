@@ -13,7 +13,7 @@ class Order_model extends CI_Model {
 	public function getFoodOrder($order_id){
 		$query = $this->db->query('
 			select
-				f.id food_id, f.name, f.alternate_name, f.price, f.prep_time_hours,
+				f.id food_id, f.name food_name, f.alternate_name food_alt_name, f.price, f.prep_time_hours prep_time,
 				f.user_id vendor_id, b.user_id buyer_id, b.order_date, b.id order_basket_id,
 				f.quota,
 				p.id payment_id, p.tax_rate, p.take_rate,
@@ -194,6 +194,25 @@ class Order_model extends CI_Model {
 			where
 				id = ?
 				and order_basket_id = ?', array($quantity, $order_id, $basket_id))){
+			
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Set the status of the order to finished
+	 * @return true on success, error on failure
+	 */
+	public function finishOrder($order_id){
+		if (!$this->db->query('
+			update order_item 
+			set
+				is_filled = 1
+			where
+				id = ?', array($order_id))){
 			
 			return $this->db->error();
 		}

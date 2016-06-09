@@ -198,7 +198,9 @@
 
 <script>
 	<?php if (!$is_my_profile):?>
+	/** Consumers/Buyers **/
 	
+	/* Add order to user basket on click */
 	$("button.btn_add_order").button().click(function(e){
 		<?php if ($current_user === false):?>
 		window.location.href = "/login?redirect=<?php echo urlencode($_SERVER['REQUEST_URI'])?>";
@@ -232,15 +234,18 @@
 		<?php endif?>
 	});
 	
+	/* Make the ratings buttons for new review a button set (jquery-UI) */
 	$(".rating_buttonset").buttonset();
-	
+	/* Default new review form to hidden */
 	$("li.new_review_container").hide();
 	
+	/* Show new review form on click */
 	$("li.btn_new_review_container button").button().click(function(){
 		$("li.btn_new_review_container").hide();
 		$("li.new_review_container").show();
 	});
 	
+	/* Submit new review form on click */
 	$("#btn_new_review_ok").button({
 		icons: {
 			primary: "ui-icon-check"
@@ -282,6 +287,7 @@
 		}(e));
 	});
 	
+	/* Cancel new review on click */
 	$("#btn_new_review_cancel").button({
 		icons: {
 			primary: "ui-icon-closethick"
@@ -293,6 +299,9 @@
 	
 	<?php else:?>
 	
+	/** Vendor/Chef **/
+	
+	/* Remove this food from vendor's kitchen on click */
 	$("button.btn_remove_order").button().click(function(e){
 		$('<div class="dialog-confirm-food" title="Delete dish?"/>')
 			.prependTo("#global")
@@ -359,6 +368,7 @@
 			});
 	});
 	
+	/* Modify the current food's display picture */
 	$("#input_food_pic").change(function(){
 		var file = this.files[0];
 		var size = file.size;
@@ -404,6 +414,7 @@
 		}
 	});
 	
+	/* Modify the current food's display name */
 	$("#input_name").editable({
 		url:		"/vendor/food/change_name/<?php echo $food->food_id?>",
 		send:		"always",
@@ -425,6 +436,7 @@
 		}
 	});
 	
+	/* Modify the current food's alternate display name (ethnic name) */
 	$("#input_altname").editable({
 		url:		"/vendor/food/change_altname/<?php echo $food->food_id?>",
 		send:		"always",
@@ -447,6 +459,7 @@
 		}
 	});
 	
+	/* Modify the food's quota limit for unfinished orders */
 	$("#input_quota").editable({
 		url:		"/vendor/food/change_quota/<?php echo $food->food_id?>",
 		send:		"always",
@@ -470,6 +483,7 @@
 		}
 	});
 	
+	/* Modify food price */
 	$("#input_price").editable({
 		url:		"/vendor/food/change_price/<?php echo $food->food_id?>",
 		send:		"always",
@@ -490,6 +504,7 @@
 		}
 	});
 	
+	/* Modify food description */
 	$("#input_descr").editable({
 		url:		"/vendor/food/change_description/<?php echo $food->food_id?>",
 		send:		"always",
@@ -509,6 +524,7 @@
 		}
 	});
 	
+	/* Modify food ingredients */
 	$("#input_ingredients").editable({
 		url:		"/vendor/food/change_ingredients/<?php echo $food->food_id?>",
 		send:		"always",
@@ -528,6 +544,7 @@
 		}
 	});
 	
+	/* Modify food health benefits */
 	$("#input_benefits").editable({
 		url:		"/vendor/food/change_benefits/<?php echo $food->food_id?>",
 		send:		"always",
@@ -547,6 +564,7 @@
 		}
 	});
 	
+	/* Modify food's eating instructions */
 	$("#input_instructions").editable({
 		url:		"/vendor/food/change_instructions/<?php echo $food->food_id?>",
 		send:		"always",
@@ -566,6 +584,7 @@
 		}
 	});
 	
+	/* Widget for tagging categories to the food */
 	$("#input_category").tagit({
 		placeholderText:	"tag",
 		removeConfirmation:	true,
@@ -639,6 +658,7 @@
 		}
 	});
 	
+	/* Change preparation time */
 	$('#edit_prep_time').editable({
 		url:		"/vendor/food/change_preptime/<?php echo $food->food_id?>",
 		send:		"always",
@@ -671,10 +691,12 @@
 		}
 	});
 	
+	/* Pickup method buttonset (jquery-UI) */
 	$('#prep_time_buttonset').buttonset({
 		items: "input[type=radio]"
 	});
 	
+	/* Modify the pickup method */
 	$('input[type=radio][name=pickup_method]').change(function(){
 		var method;
 		if (this.value == 'immediate'){

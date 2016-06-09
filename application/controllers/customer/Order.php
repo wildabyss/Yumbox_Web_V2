@@ -183,6 +183,181 @@ class Order extends Yumbox_Controller {
 	
 	
 	/**
+	 * GET method for displaying the order cancel page
+	 * @param bool $display true=display the cancel page, false=return as a display string
+	 */
+	public function cancel($order_id=false, $display=true){
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			redirect("/login?redirect=".urlencode("/customer/order/cancel/$order_id"), 'refresh');
+		}
+		
+		// get logged in user
+		$user_id = $this->login_util->getUserId();
+		
+		// get food order information
+		$food_order = $this->order_model->getFoodOrder($order_id);
+		if ($food_order === false || $food_order->payment_id == "" || $food_order->refund_id != ""){
+			show_404();
+		}
+		
+		// is this a vendor or buyer cancellation?
+		$is_buyer = $food_order->buyer_id==$user_id;
+		$is_vendor = $food_order->vendor_id==$user_id;
+		if (!$is_buyer && !$is_vendor){
+			show_404();
+		}
+		
+		// get vendor information
+		$vendor = $this->user_model->getUserForUserId($food_order->vendor_id);
+		
+		// get payment costs
+		$costs = $this->accounting->calcPaidOrderItemCosts($food_order);
+		$base_cost = $costs["base_cost"];
+		$commission = $costs["commission"];
+		$taxes = $costs["taxes"];
+		$total_cost = $base_cost + $commission + $taxes;
+		
+		// bind data
+		$data["food_order"] = $food_order;
+		$data["vendor"] = $vendor;
+		$data["base_cost"] = $base_cost;
+		$data["commission"] = $commission;
+		$data["taxes"] = $taxes;
+		$data["total_cost"] = $total_cost;
+		
+		// Load views
+		if ($display){
+			$this->header();
+			$this->navigation();
+			$this->load->view("customer/order_cancel", $data);
+			$this->footer();
+		} else {
+			return $this->load->view("customer/order_cancel", $data, true);
+		}
+		
+	}
+
+	
+	/**
+	 * GET method for displaying a particular basket (open or closed) OR displaying the list of historical baskets
+	 */
+	public function basket($basket_id=false){
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			redirect("/login?redirect=".urlencode("/customer/order/basket/$basket_id"), 'refresh');
+		}
+		
+		// get logged in user
+		$user_id = $this->login_util->getUserId();
+		
+		if ($basket_id === false){
+			// show the order history
+			
+			// get paid order baskets
+			$order_baskets = $this->order_basket_model->getPaidOrderBasketsForUser($user_id);
+			foreach ($order_baskets as $basket){
+				// format date
+				$date = strtotime($basket->order_date);
+				$basket->order_date = date('l F j, Y');
+				
+				// modify total cost to accomodate refunds
+				$basket->total_cost = $this->order_basket_model->getTotalCostInPaidBasket($basket->id);
+			}
+			
+			// bind data
+			$data["order_baskets"] = $order_baskets;
+			
+			// Load views
+			$this->header();
+			$this->navigation();
+			$this->load->view("customer/basket_history", $data);
+			$this->footer();
+		} else {
+			// get a particular order basket
+			
+			// Fetch the basket with $basket_id for our current user
+			// This is a security precaution
+			$order_basket = $this->order_basket_model->getOrderBasketForUser($basket_id, $user_id);
+
+			if ($order_basket === false){
+				show_404();
+			} else {
+				// change time
+				$date = strtotime($order_basket->order_date);
+				$order_basket->order_date = date('l F j, Y');
+				
+				// is this the open basket?
+				$is_open_basket = $order_basket->is_paid==0;
+
+				// Basket data
+				$data = $this->getOrdersInBasket($basket_id, $is_open_basket);
+				$data["order_basket"] = $order_basket;
+				$data["is_open_basket"] = $is_open_basket;
+
+				// total cost
+				if ($is_open_basket) {
+					$costs = $this->accounting->calcOpenBasketCosts($basket_id);
+					$data["base_cost"] = $costs["base_cost"];
+					$data["commission"] = $costs["commission"];
+					$data["taxes"] = $costs["taxes"];
+					$data["total_cost"] =  $costs["base_cost"] + $costs["commission"] + $costs["taxes"];
+				}
+
+				// Load views
+				$this->header();
+				$this->navigation();
+				$this->load->view("customer/basket", $data);
+				$this->footer();
+			}
+		}
+	}
+	
+	
+	/**
+	 * GET method for displaying the current open order basket
+	 * Relies on basket() function
+	 */
+	public function current(){
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			redirect("/login?redirect=".urlencode('/customer/order/current'), 'refresh');
+		}
+		
+		// fetch open order basket
+		$open_basket = $this->getOpenBasket();
+		
+		$this->basket($open_basket->id);
+	}
+	
+	
+	/**
+	 * Default to displaying the current open order basket
+	 */
+	public function index()
+	{
+		$this->current();
+	}
+	
+	
+	/**
+	 * AJAX method
+	 * Retrieve the cancel order page
+	 */
+	public function retrieve_cancel($order_id=false){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		$cancel_view = $this->cancel($order_id, false);
+		
+		$json_arr["success"] = "1";
+		$json_arr["view"] = $cancel_view;
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
 	 * AJAX method
 	 * Add order to the un-paid (open) order_basket
 	 * echo json string:
@@ -590,157 +765,5 @@ class Order extends Yumbox_Controller {
 		
 		// send notification email
 		$this->sendEmailCanceledOrder($order, $explanation, $amount);
-	}
-	
-	
-	/**
-	 * GET method for displaying the order cancel page
-	 */
-	public function cancel($order_id=false){
-		// check if user has logged in
-		if (!$this->login_util->isUserLoggedIn()){
-			redirect("/login?redirect=".urlencode("/customer/order/cancel/$order_id"), 'refresh');
-		}
-		
-		// get logged in user
-		$user_id = $this->login_util->getUserId();
-		
-		// get food order information
-		$food_order = $this->order_model->getFoodOrder($order_id);
-		if ($food_order === false || $food_order->payment_id == "" || $food_order->refund_id != ""){
-			show_404();
-		}
-		
-		// is this a vendor or buyer cancellation?
-		$is_buyer = $food_order->buyer_id==$user_id;
-		$is_vendor = $food_order->vendor_id==$user_id;
-		if (!$is_buyer && !$is_vendor){
-			show_404();
-		}
-		
-		// get vendor information
-		$vendor = $this->user_model->getUserForUserId($food_order->vendor_id);
-		
-		// get payment costs
-		$costs = $this->accounting->calcPaidOrderItemCosts($food_order);
-		$base_cost = $costs["base_cost"];
-		$commission = $costs["commission"];
-		$taxes = $costs["taxes"];
-		$total_cost = $base_cost + $commission + $taxes;
-		
-		// bind data
-		$data["food_order"] = $food_order;
-		$data["vendor"] = $vendor;
-		$data["base_cost"] = $base_cost;
-		$data["commission"] = $commission;
-		$data["taxes"] = $taxes;
-		$data["total_cost"] = $total_cost;
-		
-		// Load views
-		$this->header();
-		$this->navigation();
-		$this->load->view("customer/order_cancel", $data);
-		$this->footer();
-	}
-
-	
-	/**
-	 * GET method for displaying a particular basket (open or closed) OR displaying the list of historical baskets
-	 */
-	public function basket($basket_id=false){
-		// check if user has logged in
-		if (!$this->login_util->isUserLoggedIn()){
-			redirect("/login?redirect=".urlencode("/customer/order/basket/$basket_id"), 'refresh');
-		}
-		
-		// get logged in user
-		$user_id = $this->login_util->getUserId();
-		
-		if ($basket_id === false){
-			// show the order history
-			
-			// get paid order baskets
-			$order_baskets = $this->order_basket_model->getPaidOrderBasketsForUser($user_id);
-			foreach ($order_baskets as $basket){
-				// format date
-				$date = strtotime($basket->order_date);
-				$basket->order_date = date('l F j, Y');
-				
-				// modify total cost to accomodate refunds
-				$basket->total_cost = $this->order_basket_model->getTotalCostInPaidBasket($basket->id);
-			}
-			
-			// bind data
-			$data["order_baskets"] = $order_baskets;
-			
-			// Load views
-			$this->header();
-			$this->navigation();
-			$this->load->view("customer/basket_history", $data);
-			$this->footer();
-		} else {
-			// get a particular order basket
-			
-			// Fetch the basket with $basket_id for our current user
-			// This is a security precaution
-			$order_basket = $this->order_basket_model->getOrderBasketForUser($basket_id, $user_id);
-
-			if ($order_basket === false){
-				show_404();
-			} else {
-				// change time
-				$date = strtotime($order_basket->order_date);
-				$order_basket->order_date = date('l F j, Y');
-				
-				// is this the open basket?
-				$is_open_basket = $order_basket->is_paid==0;
-
-				// Basket data
-				$data = $this->getOrdersInBasket($basket_id, $is_open_basket);
-				$data["order_basket"] = $order_basket;
-				$data["is_open_basket"] = $is_open_basket;
-
-				// total cost
-				if ($is_open_basket) {
-					$costs = $this->accounting->calcOpenBasketCosts($basket_id);
-					$data["base_cost"] = $costs["base_cost"];
-					$data["commission"] = $costs["commission"];
-					$data["taxes"] = $costs["taxes"];
-					$data["total_cost"] =  $costs["base_cost"] + $costs["commission"] + $costs["taxes"];
-				}
-
-				// Load views
-				$this->header();
-				$this->navigation();
-				$this->load->view("customer/basket", $data);
-				$this->footer();
-			}
-		}
-	}
-	
-	
-	/**
-	 * GET method for displaying the current open order basket
-	 * Relies on basket() function
-	 */
-	public function current(){
-		// check if user has logged in
-		if (!$this->login_util->isUserLoggedIn()){
-			redirect("/login?redirect=".urlencode('/customer/order/current'), 'refresh');
-		}
-		
-		// fetch open order basket
-		$open_basket = $this->getOpenBasket();
-		
-		$this->basket($open_basket->id);
-	}
-	
-	
-	/**
-	 * Default to displaying the current open order basket
-	 */
-	public function index()
-	{
-		$this->current();
 	}
 }

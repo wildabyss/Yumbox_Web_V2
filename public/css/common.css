@@ -630,6 +630,12 @@ nav ul#mobile_user_menu a.logo {
   background-repeat: no-repeat;
 }
 
+ul.partition {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
 .is_open {
   display: block;
   width: 200px;
@@ -1655,10 +1661,6 @@ nav ul#mobile_user_menu a.logo {
 
 #profile_intro .intro_wrapper .closed {
   color: #ed7a5d;
-}
-
-#food_modal_container {
-  display: none;
 }
 
 #representer_verification.verification_rejected, #bank_account_verification.verification_rejected {

@@ -109,6 +109,7 @@
 			});
 	});
 	
+	/* Brings up the food detail modal */
 	$(".toggle_food_detail").click(function(){
 		var food_id = $(this).attr("food_id");
 		

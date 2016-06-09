@@ -36,6 +36,9 @@
 		<!-- jquery-ui tags -->
 		<script src="/js/tag-it.min.js"></script>
 		
+		<!-- Stripe payment processor -->
+		<script src="https://js.stripe.com/v2/"></script>
+		
 		<!-- global js loading -->
 		<script src="/js/global.js"></script>
 		<script>

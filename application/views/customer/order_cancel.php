@@ -28,9 +28,9 @@
 						<?php endif?>
 					></a>
 					<div class="food_name">
-						<h3><a href="/menu/item/<?php echo $food_order->food_id?>"><?php echo prevent_xss($food_order->name)?></a></h3>
-						<?php if ($food_order->alternate_name != ""):?>
-						<h3><a href="/menu/item/<?php echo $food_order->food_id?>"><?php echo prevent_xss($food_order->alternate_name)?></a></h3>
+						<h3><a href="/menu/item/<?php echo $food_order->food_id?>"><?php echo prevent_xss($food_order->food_name)?></a></h3>
+						<?php if ($food_order->food_alt_name != ""):?>
+						<h3><a href="/menu/item/<?php echo $food_order->food_id?>"><?php echo prevent_xss($food_order->food_alt_name)?></a></h3>
 						</a>
 						<?php endif?>
 					</div>
@@ -77,7 +77,6 @@
 	</div>
 </section>
 
-<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 <script>
 	// set Stripe public key
 	Stripe.setPublishableKey('<?php echo $this->config->item("stripe_public_key")?>');
@@ -107,11 +106,16 @@
 					var respArr = $.parseJSON(data);
 					if ("success" in respArr){
 						
-						// redirect to past orders
-						
-						var basket_id = respArr["basket_id"];
-						window.location.href = "/customer/order/basket/"+basket_id;
-						
+						// check if we're in a modal
+						var $modal = $(".food_modal_container");
+						if ($modal.length){
+							// close modal
+							$modal.dialog("close");
+						} else {
+							// redirect to past orders
+							var basket_id = respArr["basket_id"];
+							window.location.href = "/customer/order/basket/"+basket_id;
+						}
 					} else {
 						// error
 						errorMessage(respArr["error"]);
