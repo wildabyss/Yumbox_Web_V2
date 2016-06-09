@@ -149,7 +149,8 @@ class Order_model extends CI_Model {
 		$query_str .= ' group by o.id';
 		
 		$query = $this->db->query($query_str, array($vendor_id));
-		return $query->result();
+		$results = $query->result();
+		return $results;
 	}
 	
 	

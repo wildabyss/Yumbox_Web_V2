@@ -64,9 +64,18 @@ class Dashboard extends Yumbox_Controller {
 			$phptime = $this->time_prediction->calcPickupTime($order->food_id, $order_time, false);
 			$order->prep_time = date("l F j, g:i A", $phptime);
 			
+			// ensure we don't have repeated key
+			for (; isset($sorted_orders[$phptime]); $phptime++);
 			$sorted_orders[$phptime] = $order;
 		}
-		krsort($sorted_orders, SORT_NUMERIC);
+
+		if ($is_filled){
+			// show most recent first
+			krsort($sorted_orders, SORT_NUMERIC);
+		} else {
+			// show earliest first
+			ksort($sorted_orders, SORT_NUMERIC);
+		}
 		
 		// construct order item list for display
 		$orders_display = "";
