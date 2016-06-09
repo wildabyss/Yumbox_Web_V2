@@ -105,7 +105,6 @@
 </section>
 
 <script src="/js/moment.min.js"></script>
-<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 <script src="/js/editable-address.js"></script>
 <script src="/js/editable-stripe-account.js"></script>
 <script>

@@ -140,7 +140,6 @@
 	</div>
 </section>
 
-<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 <script>
 	// set Stripe public key
 	Stripe.setPublishableKey('<?php echo $this->config->item("stripe_public_key")?>');

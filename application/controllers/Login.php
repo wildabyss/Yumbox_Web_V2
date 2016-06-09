@@ -43,6 +43,11 @@ class Login extends Yumbox_Controller {
 		$this->footer();
 	}
 	
+	
+	/**
+	 * GET method for logging in with Facebook
+	 * Can supply get parameter "redirect" for URL redirection upon successful login
+	 */
 	public function facebook(){
 		// get redirect URL
 		$requestUrl = $this->input->get("redirect");
@@ -65,6 +70,11 @@ class Login extends Yumbox_Controller {
 		}
 	}
 	
+	
+	/**
+	 * GET method for logging in with Google
+	 * Can supply get parameter "redirect" for URL redirection upon successful login
+	 */
 	public function google(){
 		// for Google, the request URL is set in the state parameter
 		$requestUrl = $this->input->get("state");
@@ -88,6 +98,11 @@ class Login extends Yumbox_Controller {
 		}
 	}
 
+	
+	/**
+	 * GET method for displaying the login page
+	 * Can supply get parameter "redirect" for URL redirection upon successful login
+	 */
 	public function index()
 	{
 		$requestUrl = $this->input->get("redirect");

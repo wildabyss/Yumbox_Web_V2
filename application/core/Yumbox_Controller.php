@@ -43,9 +43,12 @@ class Yumbox_Controller extends CI_Controller {
 			}
 		}
 		
+		// get current URL
+		$current_url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+		
 		// show log in button
 		$data["sign_in_button"] = $this->lang->line("sign_in_button");
-		$data["sign_in_link"] = "/login";
+		$data["sign_in_link"] = "/login?redirect=".urlencode($current_url);
 		
 		return $this->load->view("navigation", $data, !$display);
 	}
