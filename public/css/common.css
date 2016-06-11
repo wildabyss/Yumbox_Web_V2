@@ -616,6 +616,9 @@ nav ul#mobile_user_menu a.logo {
   nav ul#pc_nav_buttons_right li.user_menu_trigger_wrapper {
     display: none;
   }
+  nav {
+    padding: 10px 10px 0px 10px;
+  }
 }
 
 .category_tag {
