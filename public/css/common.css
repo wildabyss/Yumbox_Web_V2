@@ -426,7 +426,7 @@ nav {
   align-items: center;
   min-height: 50px;
   position: relative;
-  padding: 20px 10px 0px 10px;
+  padding: 0px 10px;
 }
 
 nav .nav_wrapper {
@@ -509,8 +509,8 @@ nav ul#pc_nav_buttons_right .cart .order_cart {
 
 nav ul#pc_nav_buttons_right .cart #order_count {
   position: absolute;
-  line-height: 18px;
-  /*line-height: initial;*/
+  line-height: 20px;
+  line-height: initial;
   width: 20px;
   height: 20px;
   text-align: center;
@@ -617,7 +617,7 @@ nav ul#mobile_user_menu a.logo {
     display: none;
   }
   nav {
-    padding: 10px 10px 0px 10px;
+    padding: 0px 10px;
   }
 }
 
@@ -924,10 +924,9 @@ ul.partition {
 }
 
 .row {
-    max-width: initial !important;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
 }
-
-
 
 #food-categories {
     text-align: center;
@@ -1053,11 +1052,9 @@ ul.partition {
 }
 
 footer {
-    padding: 50px;
+    padding: 30px 10px 0px 10px;
     text-align: center;
     background-color: #474747;
-    padding-bottom: 0px;
-    color: white;
 }
 
 footer a {
@@ -1068,10 +1065,11 @@ footer a:hover {
 }
 
 footer .footer-cell {
-    padding-bottom: 50px;
+    padding-bottom: 30px;
 }
 
-footer .footer-cell h1 {
+footer .footer-cell h3 {
+    color: white !important;
     margin: 0px;
 }
 
@@ -1080,7 +1078,7 @@ footer .footer-cell div {
     margin-right: auto;
     text-align: left;
     display: table;
-    width: 170px;
+    width: 150px;
 }
 
 footer .footer-cell div ul {

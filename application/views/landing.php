@@ -41,28 +41,28 @@
 </main>
 
 <section id="features" class="row">
-	<div class="small-12 medium-6 large-3">
+	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-3">
 		<div class="box">
 			<img src="/imgs/features_location.svg" width="50px" height="50px" />
 			<h2>Wherever you are</h2>
 			<div>Access YumBox and uncover meals made by local passionate chefs near you</div>
 		</div>
 	</div>
-	<div class="small-12 medium-6 large-3">
+	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-3">
 		<div class="box">
 			<img src="/imgs/features_fresh.svg" width="50px" height="50px" />
 			<h2>Wholesome goodness</h2>
 			<div>Fresh local ingredients, no preservatives and low in fat, sugar and salt</div>
 		</div>
 	</div>
-	<div class="small-12 medium-6 large-3">
+	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-3">
 		<div class="box">
 			<img src="/imgs/features_fireworks.svg" width="50px" height="50px" />
 			<h2>Explosion of selection</h2>
 			<div>Explore your favorite dishes in its purest authenticate flavor, each is made to inspire</div>
 		</div>
 	</div>
-	<div class="small-12 medium-6 large-3">
+	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-3">
 		<div class="box">
 			<img src="/imgs/features_time.svg" width="50px" height="50px" />
 			<h2>Pick up</h2>
@@ -72,21 +72,21 @@
 </section>
 <!--
 <section id="food-categories" class="row">
-	<div class="small-12 column title">
+	<div class="col-xs-12 col-sm-12 title">
 		<h1>Discover authentic ethnic cuisine</h1>
 		<h2>Feel good eating wholesome meals</h2>
 	</div>
-	<div class="small-12 large-4 column ethnic-cuisine">
+	<div class="col-xs-12 col-sm-12 col-lg-4 ethnic-cuisine">
 		<div style="background-image: url('/imgs/2-ethnic-cuisine-korean.jpg');">
 			Korean
 		</div>
 	</div>
-	<div class="small-12 large-4 column ethnic-cuisine">
+	<div class="col-xs-12 col-sm-12 col-lg-4 ethnic-cuisine">
 		<div style="background-image: url('/imgs/2-ethnic-cuisine-kaiseki.jpg');">
 			Kaiseki
 		</div>
 	</div>
-	<div class="small-12 large-4 column ethnic-cuisine">
+	<div class="col-xs-12 col-sm-12 col-lg-4 ethnic-cuisine">
 		<div style="background-image: url('/imgs/2-ethnic-cuisine-street-food.jpg');">
 			Street Food
 		</div>
@@ -94,20 +94,20 @@
 </section>
 -->
 <section id="enjoy" class="row">
-	<div class="small-12 column title">
+	<div class="col-xs-12 col-sm-12 title">
 		<h1>How our fans enjoy YumBox</h1>
 	</div>
-	<div class="small-12 large-4 column ethnic-cuisine">
+	<div class="col-xs-12 col-sm-6 col-lg-4 ethnic-cuisine">
 		<div style="background-image: url('/imgs/3-laptop.jpg');">
 			Recharge with love-packed lunch
 		</div>
 	</div>
-	<div class="small-12 large-4 column ethnic-cuisine">
+	<div class="col-xs-12 col-sm-6 col-lg-4 ethnic-cuisine">
 		<div style="background-image: url('/imgs/3-table.jpg');">
 			Gastronomic fest, whenever wherever
 		</div>
 	</div>
-	<div class="small-12 large-4 column ethnic-cuisine">
+	<div class="col-xs-12 col-sm-6 col-lg-4 ethnic-cuisine">
 		<div style="background-image: url('/imgs/3-coffee.jpg');">
 			Feel good eating wholesome dinner &amp; unwind
 		</div>

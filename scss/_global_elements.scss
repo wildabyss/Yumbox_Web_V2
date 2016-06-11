@@ -232,8 +232,8 @@ nav{
 			
 			#order_count{
 				position: absolute;
-				line-height: 18px;		// fix for IE11
-				/*line-height: initial;*/
+				line-height: 20px;		// fix for IE11
+				line-height: initial;
 				width: 20px;
 				height: 20px;
 				text-align: center;
@@ -330,7 +330,7 @@ nav{
 
 @media (max-width:600px) {
 	nav{
-		padding: 10px 10px 0px 10px;
+		padding: 0px 10px;
 
 		a.logo{
 			display: none;

@@ -1,16 +1,16 @@
 		<footer class="row">
-			<div class="small-12 medium-6 large-3 culumn footer-cell">
+			<div class="col-xs-6 col-sm-6 col-md-6 col-lg-3 footer-cell">
 				<div>
-					<h1>Contact us</h1>
+					<h3>Contact us</h3>
 					<ul>
 						<li>1-416-518-9570 CA</li>
 						<li>1-647-909-2821 Waterloo</li>
 					</ul>
 				</div>
 			</div>
-			<div class="small-12 medium-6 large-3 culumn footer-cell">
+			<div class="col-xs-6 col-sm-6 col-md-6 col-lg-3 footer-cell">
 				<div>
-					<h1>Company</h1>
+					<h3>Company</h3>
 					<ul>
 						<li><a href="/">Home</a></li>
 						<li>How it works</li>
@@ -21,9 +21,9 @@
 					</ul>
 				</div>
 			</div>
-			<div class="small-12 medium-6 large-3 culumn footer-cell">
+			<div class="col-xs-6 col-sm-6 col-md-6 col-lg-3 footer-cell">
 				<div>
-					<h1>Regions</h1>
+					<h3>Regions</h3>
 					<ul>
 						<li>Downtown</li>
 						<li>North York</li>
@@ -34,12 +34,12 @@
 					</ul>
 				</div>
 			</div>
-			<div class="small-12 medium-6 large-3 culumn footer-cell" id="social-networks">
+			<div class="col-xs-6 col-sm-6 col-md-6 col-lg-3 footer-cell" id="social-networks">
 				<div>
-					<h1>Connect</h1>
+					<h3>Connect</h3>
 					<ul>
-						<li><a href="https://twitter.com/YumboxApp" target="_blank"><img width="50px" height="50px" src="/imgs/twitter.svg"></a></li>
-						<li><a href="https://www.facebook.com/yumboxapp/" target="_blank"><img width="50px" height="50px" src="/imgs/facebook.svg"></a></li>
+						<li><a href="https://twitter.com/YumboxApp" target="_blank"><img width="30px" height="30px" src="/imgs/twitter.svg"></a></li>
+						<li><a href="https://www.facebook.com/yumboxapp/" target="_blank"><img width="30px" height="30px" src="/imgs/facebook.svg"></a></li>
 					</ul>
 				</div>
 			</div>
