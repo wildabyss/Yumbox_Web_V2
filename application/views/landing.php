@@ -1,6 +1,6 @@
 <main id="landing_main">
 	<?php echo $nav_content?>
-	
+
 	<div id="mobile_detector"></div>
 
 	<section id="featured_dishes">
@@ -23,7 +23,7 @@
 			</a>
 		</div>
 	</section>
-	
+
 	<section id="menu_mega_selection">
 		<div class="button_parent">
 			<a class="rush" href="/menu/rush">
@@ -40,31 +40,86 @@
 	</section>
 </main>
 
-<section id="about">
-	<div class="about_text">
-		<h1>About Us</h1>
-		<h2>Home kitchen reinvented</h2>
-		<p>Yumbox is a service made by foodies for foodies. Tap into the limitless world of home kitchen and recipes
-		from your neighbours.</p>
-		<h2>Easy and fast ordering</h2>
-		<p>In today's world, fast ordering is the key to getting chown down your throat.</p>
-		<h2>Become a chef</h2>
-		<p>In Yumbox, transitioning from a consumer to a chef is only a few keystrokes away. Ever dreamt of
-		sharing your cooking skills to your city? Let Yumbox make your dream come true.</p>
+<section id="features" class="row">
+	<div class="small-12 medium-6 large-3">
+		<div class="box">
+			<img src="/imgs/features_location.svg" width="50px" height="50px" />
+			<h2>Wherever you are</h2>
+			<div>Access YumBox and uncover meals made by local passionate chefs near you</div>
+		</div>
+	</div>
+	<div class="small-12 medium-6 large-3">
+		<div class="box">
+			<img src="/imgs/features_fresh.svg" width="50px" height="50px" />
+			<h2>Wholesome goodness</h2>
+			<div>Fresh local ingredients, no preservatives and low in fat, sugar and salt</div>
+		</div>
+	</div>
+	<div class="small-12 medium-6 large-3">
+		<div class="box">
+			<img src="/imgs/features_fireworks.svg" width="50px" height="50px" />
+			<h2>Explosion of selection</h2>
+			<div>Explore your favorite dishes in its purest authenticate flavor, each is made to inspire</div>
+		</div>
+	</div>
+	<div class="small-12 medium-6 large-3">
+		<div class="box">
+			<img src="/imgs/features_time.svg" width="50px" height="50px" />
+			<h2>Pick up</h2>
+			<div>Pick up fresh meals near you, all on your schedule</div>
+		</div>
 	</div>
 </section>
 
-<section id="contact">
-	<div class="about_text">
-		<h1>Contact Us</h1>
-		<h2>Sales</p>
-		<p>Customers: sales@sample.ca</p>
-		<p>Finance: sales@sample.ca</p>
-		<h2>Careers</h2>
-		<p>Jobs: jobs@sample.ca</p>
+<section id="food-categories" class="row">
+	<div class="small-12 column title">
+		<h1>Discover authentic ethnic cuisine</h1>
+		<h2>Feel good eating wholesome meals</h2>
+	</div>
+	<div class="small-12 large-4 column ethnic-cuisine">
+		<div style="background-image: url('/imgs/2-ethnic-cuisine-korean.jpg');">
+			Korean
+		</div>
+	</div>
+	<div class="small-12 large-4 column ethnic-cuisine">
+		<div style="background-image: url('/imgs/2-ethnic-cuisine-kaiseki.jpg');">
+			Kaiseki
+		</div>
+	</div>
+	<div class="small-12 large-4 column ethnic-cuisine">
+		<div style="background-image: url('/imgs/2-ethnic-cuisine-street-food.jpg');">
+			Street Food
+		</div>
 	</div>
 </section>
 
+<section id="enjoy" class="row">
+	<div class="small-12 column title">
+		<h1>How our fans enjoy YumBox</h1>
+	</div>
+	<div class="small-12 large-4 column ethnic-cuisine">
+		<div style="background-image: url('/imgs/3-laptop.jpg');">
+			Recharge with love-packed lunch
+		</div>
+	</div>
+	<div class="small-12 large-4 column ethnic-cuisine">
+		<div style="background-image: url('/imgs/3-table.jpg');">
+			Gastronomic fest, whenever wherever
+		</div>
+	</div>
+	<div class="small-12 large-4 column ethnic-cuisine">
+		<div style="background-image: url('/imgs/3-coffee.jpg');">
+			Feel good eating wholesome dinner &amp; unwind
+		</div>
+	</div>
+</section>
+
+<section id="section_4" style="background-image: url('/imgs/section_4.jpg')">
+	<h1>Enjoy cooking? Create dishes you love and make money sharing extra cooked meals</h1>
+	<?php if (isset($sign_in_link)):?>
+		<a href="<?php echo $sign_in_link?>">Sign up</a>
+	<?php endif?>
+</section>
 
 <script>
 	// execute after DOM is fully loaded

@@ -31,4 +31,15 @@
 			background-color: $googleColor;
 		}
 	}
+
+  #login_terms_and_conditions {
+    margin: 40px auto;
+    max-width: 500px;
+    height: 400px;
+    overflow-y: auto;
+    text-align: left;
+    h2 {
+      font-size: 2rem;
+    }
+  }
 }

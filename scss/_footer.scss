@@ -1,0 +1,47 @@
+footer {
+  padding: 50px;
+  text-align: center;
+  background-color: #474747;
+  padding-bottom: 0px;
+  color: white;
+
+  a {
+    color: #cccccc !important;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .footer-cell {
+    padding-bottom: 50px;
+    h1 {
+      margin: 0px;
+    }
+
+    div {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+      display: table;
+      width: 170px;
+      ul {
+        padding-left: 0px;
+        li {
+          list-style-type: none;
+          line-height: 200%;
+          font-size: 1.4rem;
+          color: #cccccc !important;
+        }
+      }
+    }
+
+    &#social-networks div ul li {
+      float: left;
+      margin-right: 10px;
+    }
+
+    * {
+      font-family: "Open Sans", sans-serif !important;
+    }
+  }
+}

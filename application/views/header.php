@@ -11,11 +11,12 @@
 		
 		<!-- layout and styles -->
 		<title>Yumbox</title>
-		<link rel="shortcut icon" href="/imgs/logo.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="/imgs/favicon.png" type="image/png" />
 		<link rel="stylesheet" href="/css/common.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="/css/jqueryui-editable.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="/css/jquery.tagit.css" type="text/css" media="screen" />
 		<link href="https://fonts.googleapis.com/css?family=Open+Sans:600,400,300,400italic" rel="stylesheet" type="text/css"/>
+		<link rel="stylesheet" href="/css/foundation.min.css" type="text/css" media="all" />
 	</head>
 	
 	<body>

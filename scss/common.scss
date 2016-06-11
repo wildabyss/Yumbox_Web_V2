@@ -20,3 +20,11 @@
 
 // order checkout page
 @import "_order_checkout.scss";
+
+// every page's footer
+@import "_footer.scss";
+
+//In order to fix the miss-match between website's design and Foundation
+.row {
+  max-width: initial !important;
+}

@@ -33,7 +33,7 @@ class Landing extends Yumbox_Controller {
 		$data["quick_menu_text"] = $this->lang->line("quick_menu_text");
 		$data["full_menu_text"] = $this->lang->line("full_menu_text");
 		$data["nav_content"] = $this->navigation(false);
-		
+
 		// Load views
 		$this->header();
 		$this->load->view("landing", $data);

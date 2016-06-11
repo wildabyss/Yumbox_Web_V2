@@ -163,9 +163,11 @@ class Dashboard extends Yumbox_Controller {
 			echo json_encode($json_arr);
 			return;
 		}
-		
+
+		// Send emails to the customer and vendor informing them of the order finished
+		$this->sendEmailFinishedOrder($food_order);
+
 		// for display, refresh order
-		$food_order = $this->order_model->getFoodOrder($order_id);
 		$li_display = $this->displayOrderItem($food_order);
 		
 		// success
@@ -210,5 +212,54 @@ class Dashboard extends Yumbox_Controller {
 		$json_arr["success"] = "1";
 		$json_arr["li_display"] = $li_display;
 		echo json_encode($json_arr);
+	}
+
+
+	/**
+	 * Send Email notification for finished order
+	 */
+	protected function sendEmailFinishedOrder($order){
+		// Sending emails to customer and vendor of the food finished
+		$mustache = new Mustache_Engine();
+
+		$this->load->library('mail_server');
+
+		// Gathering customer and vendor's information
+		$customer = $this->user_model->getUserForUserId($order->buyer_id);
+		$vendor = $this->user_model->getUserForUserId($order->vendor_id);
+
+		// Loading the email template for sending emails
+		//TODO: Do we really want to load email templates according to current language?
+		$this->lang->load('email');
+
+		// Sending email to customer
+		$subject = $mustache->render($this->lang->line('customer_finished_subject'), array(
+			'customer' => $customer,
+			'vendor' => $vendor,
+			'order' => $order,
+			'base_url' => $this->config->item('base_url'),
+		));
+		$body = $mustache->render($this->lang->line('customer_finished_body'), array(
+			'customer' => $customer,
+			'vendor' => $vendor,
+			'order' => $order,
+			'base_url' => $this->config->item('base_url'),
+		));
+		$this->mail_server->sendFromWebsite($customer->email, $customer->name, $subject, $body);
+
+		// Sending email to vendor(s)
+		$subject = $mustache->render($this->lang->line('vendor_finished_subject'), array(
+			'customer' => $customer,
+			'vendor' => $vendor,
+			'order' => $order,
+			'base_url' => $this->config->item('base_url'),
+		));
+		$body = $mustache->render($this->lang->line('vendor_finished_body'), array(
+			'customer' => $customer,
+			'vendor' => $vendor,
+			'order' => $order,
+			'base_url' => $this->config->item('base_url'),
+		));
+		$this->mail_server->sendFromWebsite($vendor->email, $vendor->name, $subject, $body);
 	}
 }
