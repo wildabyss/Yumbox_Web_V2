@@ -509,8 +509,8 @@ nav ul#pc_nav_buttons_right .cart .order_cart {
 
 nav ul#pc_nav_buttons_right .cart #order_count {
   position: absolute;
-  line-height: 20px;
-  line-height: initial;
+  line-height: 18px;
+  /*line-height: initial;*/
   width: 20px;
   height: 20px;
   text-align: center;

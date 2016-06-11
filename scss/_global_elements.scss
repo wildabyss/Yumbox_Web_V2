@@ -232,8 +232,8 @@ nav{
 			
 			#order_count{
 				position: absolute;
-				line-height: 20px;		// fix for IE11
-				line-height: initial;
+				line-height: 18px;		// fix for IE11
+				/*line-height: initial;*/
 				width: 20px;
 				height: 20px;
 				text-align: center;
