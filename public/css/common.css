@@ -173,7 +173,7 @@ legend, button::-moz-focus-inner, input::-moz-focus-inner {
 }
 
 html {
-  font-size: 62.5%;
+  font-size: 62.5% !important;
 }
 
 body {
@@ -426,7 +426,7 @@ nav {
   align-items: center;
   min-height: 50px;
   position: relative;
-  padding: 0 10px;
+  padding: 20px 10px 0px 10px;
 }
 
 nav .nav_wrapper {
@@ -890,41 +890,214 @@ ul.partition {
   margin-bottom: 10px;
 }
 
-#about {
-  padding-top: 30px;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-image: url("/imgs/cooking1.jpg");
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+#features {
+    font-size: 100% !important;
+    max-width: initial;
 }
 
-#about div.about_text {
-  background-color: rgba(240, 240, 240, 0.8);
-  width: 600px;
-  padding: 0 20px 40px 20px;
-  color: #251F1E;
+#features .box {
+    text-align: center;
+    padding: 50px 20px;
+    max-width: 230px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-#about div.about_text h1 {
-  text-align: center;
+#features .box h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
 }
 
-#contact {
-  padding-top: 30px;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-image: url("/imgs/food_1.jpeg");
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+
+#login_terms_and_conditions {
+    margin: 40px auto;
+    max-width: 500px;
+    height: 400px;
+    overflow-y: auto;
+    text-align: left;
+}
+#login_terms_and_conditions h2 {
+    font-size: 2rem;
+}
+
+.row {
+    max-width: initial !important;
+}
+
+
+
+#food-categories {
+    padding: 50px;
+    text-align: center;
+    background-color: #cbcbcb;
+    padding-bottom: 60px;
+}
+
+#food-categories .ethnic-cuisine {
+    padding-bottom: 30px;
+}
+
+#food-categories .title {
+    margin-bottom: 40px;
+    border: none;
+    color: #000;
+/*    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);*/
+}
+
+#food-categories .title h1, #about .title h2 {
+    margin: 0px !important;
+    font-family: "Open Sans", sans-serif;
+    margin-bottom: 10px !important;
+    font-size: 2.5em;
+}
+
+#food-categories .ethnic-cuisine div {
+    text-align: center;
+    width: 100vw;
+    height: 100vw;
+    max-width: 300px;
+    max-height: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding-top: 20%;
+    color: white;
+    font-family: "Open Sans", sans-serif;
+    font-size: 4rem;
+    font-weight: bold;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);
+}
+
+
+#enjoy {
+    padding: 80px;
+    text-align: center;
+    background-color: #e3e0d8;
+    padding-bottom: 90px;
+}
+
+#enjoy .ethnic-cuisine {
+    padding-bottom: 30px;
+}
+
+#enjoy .title {
+    margin-bottom: 40px;
+    border: none;
+    color: #000;
+/*    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);*/
+}
+
+#enjoy .title h1, #enjoy .title h2 {
+    margin: 0px !important;
+    font-family: "Open Sans", sans-serif;
+    margin-bottom: 10px !important;
+    font-size: 2.5em;
+}
+
+#enjoy .ethnic-cuisine div {
+    text-align: center;
+    width: 100vw;
+    height: 100vw;
+    max-width: 300px;
+    max-height: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding-top: 10%;
+    padding-left: 30px;
+    padding-right: 30px;
+    color: white;
+    font-family: "Open Sans", sans-serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);
+}
+
+#section_4 {
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 620px;
+    text-align: center;
+    color: white;
+}
+#section_4 h1 {
+    max-width: 650px;
+    padding-top: 20%;
+    margin-top: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: "Open Sans", sans-serif !important;
+    font-size: 2.8rem;
+    font-weight: bold;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);
+}
+#section_4 a {
+    display: inline-block;
+    font-family: "Open Sans", sans-serif !important;
+    font-weight: bold;
+    font-size: 2.8rem;
+    margin-top: 50px;
+    border: 5px solid #95d1d1;
+    padding: 5px 15px 10px 15px;
+}
+#section_4 a:hover {
+    background-color: #95d1d1;
+}
+
+footer {
+    padding: 50px;
+    text-align: center;
+    background-color: #474747;
+    padding-bottom: 0px;
+    color: white;
+}
+
+footer a {
+    color: #cccccc !important;
+}
+footer a:hover {
+    text-decoration: underline;
+}
+
+footer .footer-cell {
+    padding-bottom: 50px;
+}
+
+footer .footer-cell h1 {
+    margin: 0px;
+}
+
+footer .footer-cell div {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    display: table;
+    width: 170px;
+}
+
+footer .footer-cell div ul {
+    padding-left: 0px;
+}
+
+footer .footer-cell div ul li {
+    list-style-type: none;
+    line-height: 200%;
+    font-size: 1.4rem;
+    color: #cccccc !important;
+}
+
+footer .footer-cell#social-networks div ul li {
+    float: left;
+    margin-right: 10px;
+}
+
+footer .footer-cell * {
+    font-family: "Open Sans", sans-serif !important;
 }
 
 @media (max-width: 960px) {
@@ -1257,6 +1430,7 @@ ul.partition {
 #menu_map {
   max-height: 600px;
   overflow: hidden;
+    margin-bottom: 40px;
 }
 
 #menu_map .kitchen-balloon ul {

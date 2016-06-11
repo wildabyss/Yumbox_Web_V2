@@ -120,7 +120,7 @@ $lang['customer_refund_subject'] = "Your order at Yumbox has been refunded";
 $lang['customer_refund_body'] = <<<EOT
 <div style="width: 600px">
 	<p>Dear {{ customer.name }},</p>
-	<p>This email is sent to you because the following order of your with Yumbox has been refunded:</p>
+	<p>This email is sent to you because the following order of yours with Yumbox has been refunded:</p>
 	<table width="100%" cellspacing="10px">
 		<tbody>
 			{{# order }}
@@ -235,3 +235,89 @@ $lang['sign_up_body'] = <<<EOT
 </div>
 EOT;
 
+
+$lang['customer_finished_subject'] = "Your order at Yumbox is ready";
+$lang['customer_finished_body'] = <<<EOT
+<div style="width: 600px">
+	<p>Dear {{ customer.name }},</p>
+	<p>This email is sent to you because the following order of yours with Yumbox is ready:</p>
+	<table width="100%" cellspacing="10px">
+		<tbody>
+			<tr style="border: 1px black solid">
+				<td width="30%" valign="middle" style="text-align: right"><img src="{{base_url}}{{path}}"></td>
+				<td width="70%" valign="top">
+					<table width="100%" cellspacing="5px">
+						<tbody>
+							<tr>
+								<td width="30%" style="text-align: right">Name:</td>
+								<td width="70%"><b>{{ order.food_name }}</b></td>
+							</tr>
+							<tr>
+								<td style="text-align: right">Quantity:</td>
+								<td><b>{{ order.quantity }}</b></td>
+							</tr>
+							<tr>
+								<td style="text-align: right">Price:</td>
+								<td><b>\${{ order.price }}</b></td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+EOT;
+
+$lang['vendor_finished_subject'] = "You've marked an order finished";
+$lang['vendor_finished_body'] = <<<EOT
+<div style="width: 600px">
+	<p>Dear {{ vendor.name }},</p>
+	<p>The following order is finished:</p>
+	<table width="100%" cellspacing="10px">
+		<tbody>
+			<tr style="border: 1px black solid">
+				<td width="30%" valign="middle" style="text-align: right"><img src="{{base_url}}{{path}}"></td>
+				<td width="70%" valign="top">
+					<table width="100%" cellspacing="5px">
+						<tbody>
+							<tr>
+								<td width="30%" style="text-align: right">Name:</td>
+								<td width="70%"><b>{{ order.food_name }}</b></td>
+							</tr>
+							<tr>
+								<td style="text-align: right">Quantity:</td>
+								<td><b>{{ order.quantity }}</b></td>
+							</tr>
+							<tr>
+								<td style="text-align: right">Price:</td>
+								<td><b>\${{ order.price }}</b></td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br />
+	<table cellspacing="5px">
+		<tbody>
+		<tr>
+			<td colspan="2">Customer information</td>
+		</tr>
+		<tr>
+			<td style="text-align: right;">Name:</td>
+			<td><b>{{ customer.name }}</b></td>
+	  	</tr>
+		<tr>
+			<td style="text-align: right;">Email:</td>
+			<td><b>{{ customer.email }}</b></td>
+	  	</tr>
+		<tr>
+			<td style="text-align: right;">Address:</td>
+			<td><b>{{ customer.address }}</b></td>
+	  	</tr>
+		</tbody>
+	</table>
+</div>
+EOT;
