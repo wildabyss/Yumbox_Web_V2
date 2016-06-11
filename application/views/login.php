@@ -11,9 +11,11 @@
 	<p><?php echo $error?></p>
 	<?php endif?>
 
+<!--
 	<div style="text-align: left; position: relative; top: 30px; font-weight: bold; font-size: 12pt;">
 		<input type="checkbox"> I agree
 	</div>
+-->	
 	<div id="login_terms_and_conditions">
 		<h1>TERMS OF USE</h1>
 

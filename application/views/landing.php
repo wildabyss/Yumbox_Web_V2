@@ -70,7 +70,7 @@
 		</div>
 	</div>
 </section>
-
+<!--
 <section id="food-categories" class="row">
 	<div class="small-12 column title">
 		<h1>Discover authentic ethnic cuisine</h1>
@@ -92,7 +92,7 @@
 		</div>
 	</div>
 </section>
-
+-->
 <section id="enjoy" class="row">
 	<div class="small-12 column title">
 		<h1>How our fans enjoy YumBox</h1>

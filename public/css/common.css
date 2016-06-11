@@ -927,9 +927,9 @@ ul.partition {
 
 
 #food-categories {
-    padding: 50px;
     text-align: center;
     background-color: #cbcbcb;
+    padding-top: 50px;
     padding-bottom: 60px;
 }
 
@@ -972,9 +972,9 @@ ul.partition {
 
 
 #enjoy {
-    padding: 80px;
     text-align: center;
     background-color: #e3e0d8;
+    padding-top: 80px;
     padding-bottom: 90px;
 }
 
