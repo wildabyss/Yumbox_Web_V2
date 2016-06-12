@@ -6,7 +6,7 @@
 				<li><a href="/" class="logo"></a></li>
 				<li><a href="/menu/rush">YUM RUSH</a></li>
 				<li><a href="/menu/explore">YUM EXPLORE</a></li>
-				<li><a href="/#about">ABOUT</a></li>
+				<li><a href="/#features">ABOUT</a></li>
 			</ul>
 
 			<ul id="mobile_user_menu">
@@ -20,7 +20,7 @@
 				<li class="menu_item_dashboard" <?php if (!$is_vendor):?>style="display:none"<?php endif?>><a href="/vendor/dashboard">Chef's Dashboard</a></li>
 				<li class="menu_item_log"><a class="banner_button" href="<?php echo $sign_out_link?>">Log Out</a></li>
 				<?php endif?>
-				<li class="menu_item_about"><a href="/#about">About</a></li>
+				<li class="menu_item_about"><a href="/#features">About</a></li>
 				<li class="filler"></li>
 			</ul>
 			

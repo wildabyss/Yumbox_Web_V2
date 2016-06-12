@@ -45,7 +45,7 @@
 		<div class="box">
 			<img src="/imgs/features_location.svg" width="50px" height="50px" />
 			<h2>Wherever you are</h2>
-			<div>Access YumBox and uncover meals made by local passionate chefs near you</div>
+			<div>Access Yumbox and uncover meals made by local passionate chefs near you</div>
 		</div>
 	</div>
 	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-3">
@@ -95,7 +95,7 @@
 -->
 <section id="enjoy" class="row">
 	<div class="col-xs-12 col-sm-12 title">
-		<h1>How our fans enjoy YumBox</h1>
+		<h1>How our fans enjoy Yumbox</h1>
 	</div>
 	<div class="col-xs-12 col-sm-6 col-lg-4 ethnic-cuisine">
 		<div style="background-image: url('/imgs/3-laptop.jpg');">

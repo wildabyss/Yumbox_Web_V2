@@ -17,7 +17,7 @@
 						<?php if (isset($sign_in_link)):?>
 						<li><a href="<?php echo $sign_in_link?>">Become a vendor</a></li>
 						<?php endif?>
-						<li>Terms and conditions</li>
+						<li><a>Terms and conditions</a></li>
 					</ul>
 				</div>
 			</div>
