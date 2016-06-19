@@ -23,7 +23,7 @@
 		<!-- jquery -->
 		<script src="/js/jquery.min.js"></script>
 		<script src="/js/jquery-ui.min.js"></script>
-		<script src="/js/jquery.ui.touch-punch.min.js"></script>
+		<!--<script src="/js/jquery.ui.touch-punch.min.js"></script>-->
 		
 		<!-- textarea autosizing -->
 		<script src="/js/autosize.min.js"></script>
