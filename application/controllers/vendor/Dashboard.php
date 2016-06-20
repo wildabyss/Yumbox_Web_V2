@@ -164,16 +164,17 @@ class Dashboard extends Yumbox_Controller {
 			return;
 		}
 
-		// Send emails to the customer and vendor informing them of the order finished
-		$this->sendEmailFinishedOrder($food_order);
-
 		// for display, refresh order
+		$food_order = $this->order_model->getFoodOrder($order_id);
 		$li_display = $this->displayOrderItem($food_order);
 		
 		// success
 		$json_arr["success"] = "1";
 		$json_arr["li_display"] = $li_display;
 		echo json_encode($json_arr);
+		
+		// Send emails to the customer and vendor informing them of the order finished
+		$this->sendEmailFinishedOrder($food_order);
 	}
 	
 	
