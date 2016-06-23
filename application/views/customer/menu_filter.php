@@ -18,7 +18,7 @@
 				type="search" value="<?php echo $search_query ?>" />
 			<button id="btn_location" type="button"></button>
 			<div id="location_dialog" class="<?php if ($is_rush):?>rush<?php else:?>explore<?php endif?>" title="My location">
-				<input type="text" value="<?php echo $location?>" class="ui-state-default" id="input_location" />
+				<input type="text" value="" placeholder="enter an address" class="ui-state-default" id="input_location" />
 			</div>
 			<button id="btn_filter" class="hidden" type="button"></button>
 		</div>
