@@ -12,9 +12,10 @@
 	<div>
 		<a class="food_name toggle_food_detail" food_id="<?php echo $food->food_id?>"
 			<?php if (!isset($is_my_profile) || !$is_my_profile):?>href="/menu/item/<?php echo $food->food_id?>"<?php endif?>>
-			<h3><?php echo prevent_xss($food->food_name)?></h3>
+			<h3 class="food_name_h3"><?php echo prevent_xss($food->food_name)?></h3>
+			<h3 class="food_price right-align">$<?php echo $food->food_price?></h3>
 		</a>
-		<a class="food_price"><h3>$<?php echo $food->food_price?></h3></a>
+		
 		
 		<?php if ($food->food_alt_name != ""):?>
 		<a class="alt_name toggle_food_detail" food_id="<?php echo $food->food_id?>"
