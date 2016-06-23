@@ -16,7 +16,7 @@
 				<?php if (isset($sign_in_button)):?>
 				<li class="menu_item_log"><a class="banner_button" href="<?php echo $sign_in_link?>">Log In</a></li>
 				<?php else:?>
-				<li class="menu_item_kitchen"><a href="/vendor/profile">My Kitchen</a></li>
+				<li class="menu_item_kitchen"><a href="/vendor/profile"><?php if ($is_vendor):?>My Kitchen<?php else:?>My Profile<?php endif?></a></li>
 				<li class="menu_item_dashboard" <?php if (!$is_vendor):?>style="display:none"<?php endif?>><a href="/vendor/dashboard">Chef's Dashboard</a></li>
 				<li class="menu_item_log"><a class="banner_button" href="<?php echo $sign_out_link?>">Log Out</a></li>
 				<?php endif?>
@@ -25,10 +25,14 @@
 			</ul>
 			
 			<ul id="pc_nav_buttons_right">
-				<li class="user_menu_trigger_wrapper">
-					<?php if (isset($sign_in_button)):?>
+				<?php if (isset($sign_in_button)):?>
+				<li>
 					<a class="banner_button" href="<?php echo $sign_in_link?>"><?php echo $sign_in_button?></a>
-					<?php elseif (isset($user_name)):?>
+				</li>
+				<?php endif?>
+				
+				<li class="user_menu_trigger_wrapper">
+					<?php if (isset($user_name)):?>
 					<div id="user_menu_trigger">
 						<a class="banner_button"><?php echo prevent_xss(strtoupper($user_name))?></a>
 						<a id="user_menu_visual">&#9660;</a>
@@ -37,12 +41,13 @@
 					
 					<?php if (!isset($sign_in_button)):?>
 					<ul id="user_menu">
-						<li class="menu_item_kitchen"><a href="/vendor/profile">My Kitchen</a></li>
+						<li class="menu_item_kitchen"><a href="/vendor/profile"><?php if ($is_vendor):?>My Kitchen<?php else:?>My Profile<?php endif?></a></li>
 						<li class="menu_item_dashboard" <?php if (!$is_vendor):?>style="display:none"<?php endif?>><a href="/vendor/dashboard">Chef's Dashboard</a></li>
 						<li class="menu_item_logout"><a href="<?php echo $sign_out_link?>">Logout</a></li>
 					</ul>
 					<?php endif?>
 				</li>
+				
 				<?php if (isset($user_name)):?>
 				<li>
 					<a class="cart" href="/customer/order">
@@ -51,6 +56,7 @@
 					</a>
 				</li>
 				<?php endif?>
+				
 				<?php if (ENVIRONMENT !== 'production'):?>
 				<li style="color: red">[BETA]</li>
 				<?php endif?>
