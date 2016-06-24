@@ -247,11 +247,13 @@
 							var respArr = $.parseJSON(data);
 							if ("success" in respArr){
 								
+								successMessage("Order successful! Redirecting to receipt...");
+								
 								// redirect to past orders
-								
-								var basket_id = respArr["basket_id"];
-								window.location.href = "/customer/order/basket/"+basket_id;
-								
+								window.setTimeout(function(){
+									var basket_id = respArr["basket_id"];
+									window.location.href = "/customer/order/basket/"+basket_id;
+								}, 3000);
 							} else {
 								// error
 								errorMessage(respArr["error"]);

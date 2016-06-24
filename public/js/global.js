@@ -58,11 +58,12 @@ var html_decode = function(value){
 // Auto dissappear in 1.5 sec
 var successMessage = function(msg){
 	$("#top_status")
+		.stop()
 		.clearQueue()
 		.attr("class", "success")
 		.html(msg)
 		.fadeIn(300)
-		.delay(1500)
+		.delay(3000)
 		.fadeOut(300);
 };
 // Display warning message at top of screen
@@ -70,6 +71,7 @@ var successMessage = function(msg){
 var errorMessage = function(msg){
 	$("#top_status")
 		.stop()
+		.clearQueue()
 		.attr("class", "warning")
 		.html(msg)
 		.fadeIn(300)
@@ -81,6 +83,7 @@ var errorMessage = function(msg){
 var statusMessageOn = function(msg){
 	$("#top_status")
 		.stop()
+		.clearQueue()
 		.attr("class", "")
 		.html(msg)
 		.fadeIn(300)
