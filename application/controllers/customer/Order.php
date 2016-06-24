@@ -661,7 +661,7 @@ class Order extends Yumbox_Controller {
 		}
 
 		// change basket status
-		$res = $this->order_basket_model->setBasketAsPaid($basket_id);
+		$res = $this->order_basket_model->setBasketAsPaid($basket_id, $this->input->post("description"));
 		if ($res !== true){
 			$json_arr["error"] = $res;
 			echo json_encode($json_arr);

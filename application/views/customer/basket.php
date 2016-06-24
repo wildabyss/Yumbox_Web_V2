@@ -123,13 +123,19 @@
 					<label for="cvc">CVC:</label>
 					<input type="text" maxlength="3" autocomplete="off" id="cvc" data-stripe="cvc" />
 				</p>
+				<!--
 				<p class="payment_line">
 					<label for="address">Address on card:</label>
 					<input type="text" id="address" data-stripe="address_line1" />
 				</p>
+				-->
 				<p class="payment_line">
 					<label for="postal">Postal code:</label>
 					<input type="text" id="postal" data-stripe="address_zip" />
+				</p>
+				<p class="payment_line">
+					<label for="description">Delivery<br />address &amp; phone:</label>
+					<textarea type="text" id="description" style="width: 200px; height: 100px; resize: none;"></textarea>
 				</p>
 			</div>
 		</form>
@@ -238,6 +244,7 @@
 					// clone dictionary
 					var inputs = $.extend({}, csrfData);
 					inputs["token"] = response.id;
+					inputs["description"] = $("#payment_form #description").val();
 					
 					$.ajax({
 						type: 		"post",

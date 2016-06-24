@@ -1,0 +1,1 @@
+ALTER TABLE order_basket ADD description text DEFAULT NULL;
