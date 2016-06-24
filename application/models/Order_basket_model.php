@@ -327,14 +327,15 @@ class Order_basket_model extends CI_Model {
 	 * Set is_paid bit to true for the order_basket
 	 * @return true for success, error on failure
 	 */
-	public function setBasketAsPaid($order_basket_id){
+	public function setBasketAsPaid($order_basket_id, $description) {
 		if (!$this->db->query('
 			update order_basket
 			set 
 				is_paid = 1,
-				order_date = now()
+				order_date = now(),
+				description = ?
 			where
-				id = ?', array($order_basket_id))){
+				id = ?', array($description, $order_basket_id))){
 
 			return $this->db->error();
 		}
