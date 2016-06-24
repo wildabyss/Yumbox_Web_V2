@@ -14,7 +14,7 @@ class User_model extends CI_Model {
 	public function getUserForUserId($user_id){
 		$query = $this->db->query('
 			select 
-				u.id, u.status, u.name, u.email, u.descr,
+				u.id, u.status, u.name, u.email, u.descr, u.phone,
 				u.is_open, 
 				u.pickup_mon, u.pickup_tue, u.pickup_wed, u.pickup_thu, u.pickup_fri,
 				u.pickup_sat, u.pickup_sun,
@@ -260,6 +260,19 @@ class User_model extends CI_Model {
 	 */
 	public function modifyEmail($user_id, $email){
 		if (!$this->db->query('update user set email = ? where id = ?', [trim($email), $user_id])){
+			return $this->db->error();
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Modify user phone
+	 * Return true on success, error on failure
+	 */
+	public function modifyPhone($user_id, $phone){
+		if (!$this->db->query('update user set phone = ? where id = ?', [trim($phone), $user_id])){
 			return $this->db->error();
 		}
 		

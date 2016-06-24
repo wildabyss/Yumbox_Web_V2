@@ -28,6 +28,9 @@
 		<h3>EMAIL</h3>
 		<p class="editable-full"><a id="edit_user_email" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->email)?></a></p>
 		
+		<h3>PHONE NUMBER</h3>
+		<p class="editable-full"><a id="edit_user_phone" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->phone)?></a></p>
+		
 		<h3>ADDRESS</h3>
 		<p class="editable-full address_container"><a id="edit_user_addr" data-type="address" data-onblur="ignore"></a></p>
 
@@ -112,6 +115,35 @@
 		<?php if ($is_my_profile):?>
 		$("#edit_user_name").editable({
 			url:		"/vendor/profile/change_username",
+			send:		"always",
+			params:		csrfData,
+			error:		function(response){
+				errorMessage("Unable to process");
+			},
+			success:	function(response){
+				var respArr = $.parseJSON(response);
+				
+				if ("success" in respArr){
+					successMessage("Saved");
+				} else {
+					errorMessage(respArr["error"]);
+					return respArr["error"];
+				}
+			},
+			validate:	function(value){
+				value = $.trim(value);
+				
+				if (value == ""){
+					errorMessage("Cannot be blank");
+					return "cannot be blank";
+				}
+				
+				return {newValue: value};
+			}
+		});
+		
+		$("#edit_user_phone").editable({
+			url:		"/vendor/profile/change_phone",
 			send:		"always",
 			params:		csrfData,
 			error:		function(response){

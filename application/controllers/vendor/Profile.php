@@ -390,6 +390,41 @@ class Profile extends Yumbox_Controller {
 	
 	
 	/**
+	 * AJAX method for modifying a user's phone
+	 * echo json string:
+	 *   {success, error}
+	 */
+	public function change_phone(){
+		// ensure we have POST request
+		if (!is_post_request())
+			show_404();
+		
+		// check if user has logged in
+		if (!$this->login_util->isUserLoggedIn()){
+			$json_arr["error"] = "user not logged in";
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// get current user and data
+		$user_id = $this->login_util->getUserId();
+		$phone = $this->input->post("value");
+		
+		// modify username
+		$res = $this->user_model->modifyPhone($user_id, $phone);
+		if ($res !== true){
+			$json_arr["error"] = $res;
+			echo json_encode($json_arr);
+			return;
+		}
+		
+		// success
+		$json_arr["success"] = "1";
+		echo json_encode($json_arr);
+	}
+	
+	
+	/**
 	 * AJAX method for modifying a user's address
 	 * echo json string:
 	 *   {success, error}

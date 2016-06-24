@@ -569,6 +569,14 @@ class Order extends Yumbox_Controller {
 			return;
 		}
 		
+		// check user has email and phone number
+		$user = $this->user_model->getUserForUserId($this->login_util->getUserId());
+		if ($user->email=="" || $user->phone==""){
+			$json_arr["error"] = "Please enter valid email and phone number in My Profile";
+			echo json_encode($json_arr);
+			return;
+		}
+		
 		$this->db->trans_start();
 		
 		// get current open basket
