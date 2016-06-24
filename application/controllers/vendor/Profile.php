@@ -227,8 +227,8 @@ class Profile extends Yumbox_Controller {
 			
 			// check valid email
 			$user = $this->user_model->getUserForUserId($user_id);
-			if ($user->email==""){
-				$json_arr["error"] = "must have valid email before opening kitchen";
+			if ($user->email=="" || $user->phone==""){
+				$json_arr["error"] = "Must have valid email and phone number before opening kitchen";
 				echo json_encode($json_arr);
 				return;
 			}
@@ -236,7 +236,7 @@ class Profile extends Yumbox_Controller {
 			// get address
 			$address = $this->user_model->getOrCreateAddress($user_id);
 			if ($address->latitude == "" || $address->longitude == ""){
-				$json_arr["error"] = "must have valid address before opening the kitchen";
+				$json_arr["error"] = "Must have valid address before opening the kitchen";
 				echo json_encode($json_arr);
 				return;
 			}
@@ -247,14 +247,14 @@ class Profile extends Yumbox_Controller {
 			$filters["show_all"] = true;
 			$foods = $this->food_model->getActiveFoodsAndVendorAndOrdersAndRatingAndPictures(self::$MAX_RESULTS, $filters);
 			if (count($foods)==0){
-				$json_arr["error"] = "add at least one dish before opening your kitchen";
+				$json_arr["error"] = "Add at least one dish before opening your kitchen";
 				echo json_encode($json_arr);
 				return;
 			}
 			foreach ($foods as $food){
 				$categories = $this->food_category_model->getAllCategoriesForFood($food->food_id);
 				if (count($categories)==0){
-					$json_arr["error"] = "please tag all dishes with at least one category";
+					$json_arr["error"] = "Please tag all dishes with at least one category";
 					echo json_encode($json_arr);
 					return;
 				}
@@ -263,7 +263,7 @@ class Profile extends Yumbox_Controller {
 			// check if user has a managed account
 			$this->load->library('stripe_util');
 			if (!$this->stripe_util->isAccountPayable($user_id)){
-				$json_arr["error"] = "please fill out your financial information";
+				$json_arr["error"] = "Please fill out your financial information";
 				echo json_encode($json_arr);
 				return;
 			}
