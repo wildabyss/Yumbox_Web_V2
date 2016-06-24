@@ -255,7 +255,7 @@ create table order_basket
     user_id int unsigned not null,
     is_paid tinyint(1) unsigned not null default 0,
     
-    delivery_address int unsigned,
+	description text,
     
     primary key (id),
     index user_id_order_index (user_id),
