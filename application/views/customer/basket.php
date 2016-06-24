@@ -134,8 +134,8 @@
 					<input type="text" id="postal" data-stripe="address_zip" />
 				</p>
 				<p class="payment_line">
-					<label for="description">Delivery<br />address &amp; phone:</label>
-					<textarea type="text" id="description" style="width: 200px; height: 100px; resize: none;"></textarea>
+					<label for="description">Delivery address (for large orders):</label>
+					<textarea type="text" id="description"></textarea>
 				</p>
 			</div>
 		</form>
