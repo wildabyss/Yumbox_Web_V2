@@ -19,74 +19,86 @@
 	<div class="intro_wrapper">
 		<h1 class="title editable-full"><a id="edit_user_name" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->name)?></a></h1>
 		<?php if (!$user->is_open):?>
-		<h3 class="is_closed btn_kitchen_open <?php if ($is_my_profile):?>my_profile<?php endif?>">KITCHEN CLOSED</h3>
+		<h3 class="is_closed btn_kitchen_open <?php if ($is_my_profile):?>my_profile<?php endif?>" <?php if ($is_my_profile && !$is_vendor):?>style="display:none"<?php endif?>>KITCHEN CLOSED</h3>
 		<?php else:?>
-		<h3 class="is_open btn_kitchen_open <?php if ($is_my_profile):?>my_profile<?php endif?>">KITCHEN OPEN</h3>
+		<h3 class="is_open btn_kitchen_open <?php if ($is_my_profile):?>my_profile<?php endif?>" <?php if ($is_my_profile && !$is_vendor):?>style="display:none"<?php endif?>>KITCHEN OPEN</h3>
 		<?php endif?>
 		
 		<?php if ($is_my_profile):?>
-		<h3>EMAIL</h3>
-		<p class="editable-full"><a id="edit_user_email" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->email)?></a></p>
+		<div class="all_info">
+			<h3>EMAIL</h3>
+			<p class="editable-full"><a id="edit_user_email" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->email)?></a></p>
+		</div>
 		
-		<h3>PHONE NUMBER</h3>
-		<p class="editable-full"><a id="edit_user_phone" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->phone)?></a></p>
+		<div class="all_info">
+			<h3>PHONE NUMBER</h3>
+			<p class="editable-full"><a id="edit_user_phone" data-type="text" data-onblur="ignore"><?php echo prevent_xss($user->phone)?></a></p>
+		</div>
 		
-		<h3>ADDRESS</h3>
-		<p class="editable-full address_container"><a id="edit_user_addr" data-type="address" data-onblur="ignore"></a></p>
-
-		<h3>FINANCIAL INFORMATION</h3>
-		<p class="editable-full financial_info_container"><a id="account_info" data-type="stripe_account" data-onblur="ignore"></a></p>
+		<div class="all_info">
+			<h3>ADDRESS</h3>
+			<p class="editable-full address_container"><a id="edit_user_addr" data-type="address" data-onblur="ignore"></a></p>
+		</div>
+			
+		<div class="vendor_info" <?php if (!$is_vendor):?>style="display:none"<?php endif?>>
+			<h3>FINANCIAL INFORMATION</h3>
+			<p class="editable-full financial_info_container"><a id="account_info" data-type="stripe_account" data-onblur="ignore"></a></p>
+		</div>
 		<?php endif?>
 		
 		<?php if (!$is_my_profile && $user->descr != "" || $is_my_profile):?>
-		<h3>ABOUT ME</h3>
-		<p class="editable-full"><a id="edit_user_descr" data-type="textarea" data-onblur="ignore"><?php echo prevent_xss($user->descr)?></a></p>
+		<div class="all_info">
+			<h3>ABOUT ME</h3>
+			<p class="editable-full"><a id="edit_user_descr" data-type="textarea" data-onblur="ignore"><?php echo prevent_xss($user->descr)?></a></p>
+		</div>
 		<?php endif?>
 		
 		<?php if ($is_my_profile):?>
-		<h3>REGULAR PICKUP TIME</h3>
-		<div id="pickup_buttonset">
-			<div class="pickup_item explore">
-				<input type="checkbox" id="pickup_mon" weekday="mon" <?php if ($user->pickup_mon["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_mon">Monday</label>
-				<a class="edit_user_time" weekday="mon" <?php if (!$user->pickup_mon["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
-					<?php echo date("H:i", strtotime($user->pickup_mon["time"]))?>
-				</a>
-			</div>
-			<div class="pickup_item explore">
-				<input type="checkbox" id="pickup_tue" weekday="tue" <?php if ($user->pickup_tue["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_tue">Tuesday</label>
-				<a class="edit_user_time" weekday="tue" <?php if (!$user->pickup_tue["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
-					<?php echo date("H:i", strtotime($user->pickup_tue["time"]))?>
-				</a>
-			</div>
-			<div class="pickup_item explore">
-				<input type="checkbox" id="pickup_wed" weekday="wed" <?php if ($user->pickup_wed["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_wed">Wednesday</label>
-				<a class="edit_user_time" weekday="wed" <?php if (!$user->pickup_wed["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
-					<?php echo date("H:i", strtotime($user->pickup_wed["time"]))?>
-				</a>
-			</div>
-			<div class="pickup_item explore">
-				<input type="checkbox" id="pickup_thu" weekday="thu" <?php if ($user->pickup_thu["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_thu">Thursday</label>
-				<a class="edit_user_time" weekday="thu" <?php if (!$user->pickup_thu["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
-					<?php echo date("H:i", strtotime($user->pickup_thu["time"]))?>
-				</a>
-			</div>
-			<div class="pickup_item explore">
-				<input type="checkbox" id="pickup_fri" weekday="fri" <?php if ($user->pickup_fri["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_fri">Friday</label>
-				<a class="edit_user_time" weekday="fri" <?php if (!$user->pickup_fri["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
-					<?php echo date("H:i", strtotime($user->pickup_fri["time"]))?>
-				</a>
-			</div>
-			<div class="pickup_item explore">
-				<input type="checkbox" id="pickup_sat" weekday="sat" <?php if ($user->pickup_sat["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_sat">Saturday</label>
-				<a class="edit_user_time" weekday="sat" <?php if (!$user->pickup_sat["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
-					<?php echo date("H:i", strtotime($user->pickup_sat["time"]))?>
-				</a>
-			</div>
-			<div class="pickup_item explore">
-				<input type="checkbox" id="pickup_sun" weekday="sun" <?php if ($user->pickup_sun["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_sun">Sunday</label>
-				<a class="edit_user_time" weekday="sun" <?php if (!$user->pickup_sun["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
-					<?php echo date("H:i", strtotime($user->pickup_sun["time"]))?>
-				</a>
+		<div class="vendor_info" <?php if (!$is_vendor):?>style="display:none"<?php endif?>>
+			<h3>REGULAR PICKUP TIME</h3>
+			<div id="pickup_buttonset">
+				<div class="pickup_item explore">
+					<input type="checkbox" id="pickup_mon" weekday="mon" <?php if ($user->pickup_mon["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_mon">Monday</label>
+					<a class="edit_user_time" weekday="mon" <?php if (!$user->pickup_mon["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
+						<?php echo date("H:i", strtotime($user->pickup_mon["time"]))?>
+					</a>
+				</div>
+				<div class="pickup_item explore">
+					<input type="checkbox" id="pickup_tue" weekday="tue" <?php if ($user->pickup_tue["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_tue">Tuesday</label>
+					<a class="edit_user_time" weekday="tue" <?php if (!$user->pickup_tue["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
+						<?php echo date("H:i", strtotime($user->pickup_tue["time"]))?>
+					</a>
+				</div>
+				<div class="pickup_item explore">
+					<input type="checkbox" id="pickup_wed" weekday="wed" <?php if ($user->pickup_wed["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_wed">Wednesday</label>
+					<a class="edit_user_time" weekday="wed" <?php if (!$user->pickup_wed["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
+						<?php echo date("H:i", strtotime($user->pickup_wed["time"]))?>
+					</a>
+				</div>
+				<div class="pickup_item explore">
+					<input type="checkbox" id="pickup_thu" weekday="thu" <?php if ($user->pickup_thu["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_thu">Thursday</label>
+					<a class="edit_user_time" weekday="thu" <?php if (!$user->pickup_thu["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
+						<?php echo date("H:i", strtotime($user->pickup_thu["time"]))?>
+					</a>
+				</div>
+				<div class="pickup_item explore">
+					<input type="checkbox" id="pickup_fri" weekday="fri" <?php if ($user->pickup_fri["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_fri">Friday</label>
+					<a class="edit_user_time" weekday="fri" <?php if (!$user->pickup_fri["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
+						<?php echo date("H:i", strtotime($user->pickup_fri["time"]))?>
+					</a>
+				</div>
+				<div class="pickup_item explore">
+					<input type="checkbox" id="pickup_sat" weekday="sat" <?php if ($user->pickup_sat["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_sat">Saturday</label>
+					<a class="edit_user_time" weekday="sat" <?php if (!$user->pickup_sat["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
+						<?php echo date("H:i", strtotime($user->pickup_sat["time"]))?>
+					</a>
+				</div>
+				<div class="pickup_item explore">
+					<input type="checkbox" id="pickup_sun" weekday="sun" <?php if ($user->pickup_sun["enable"]):?>checked<?php endif?> name="pickup_weekday"/><label for="pickup_sun">Sunday</label>
+					<a class="edit_user_time" weekday="sun" <?php if (!$user->pickup_sun["enable"]):?>style="display:none"<?php endif?> data-type="combodate" data-onblur="ignore">
+						<?php echo date("H:i", strtotime($user->pickup_sun["time"]))?>
+					</a>
+				</div>
 			</div>
 		</div>
 		<?php endif?>

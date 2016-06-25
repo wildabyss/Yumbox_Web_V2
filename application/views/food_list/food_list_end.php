@@ -73,6 +73,10 @@
 						// remove no food info
 						$("#no_food_info").hide();
 						
+						// show all vendor specific profile inputs
+						$('.vendor_info').show();
+						$('.btn_kitchen_open').show();
+						
 						// reset form
 						$("#new_food_li").hide();
 						$("#btn_add_new_parent").show();
