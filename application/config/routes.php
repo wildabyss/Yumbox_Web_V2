@@ -55,3 +55,6 @@ $route['translate_uri_dashes'] = FALSE;
 
 // route customers
 $route['menu(.*)'] = 'customer/menu$1';
+$route['food_pics(.*)'] = 'customer/menu/food_pic$1';
+$route['user_pics(.*)'] = 'vendor/profile/user_pic$1';
+$route['pages(.*)'] = 'landing$1';

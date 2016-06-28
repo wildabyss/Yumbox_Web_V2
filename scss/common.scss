@@ -24,6 +24,9 @@
 // every page's footer
 @import "_footer.scss";
 
+// for pages with static content
+@import "_pages.scss";
+
 //In order to fix the miss-match between website's design and Foundation
 .row {
   margin-left: 0px !important;

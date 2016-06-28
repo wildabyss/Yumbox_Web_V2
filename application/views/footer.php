@@ -3,8 +3,7 @@
 				<div>
 					<h3>Contact us</h3>
 					<ul>
-						<li>1-416-518-9570 CA</li>
-						<li>1-647-909-2821 Waterloo</li>
+						<li>1-647-909-2108 (Waterloo)</li>
 					</ul>
 				</div>
 			</div>
@@ -13,11 +12,11 @@
 					<h3>Company</h3>
 					<ul>
 						<li><a href="/">Home</a></li>
-						<li>How it works</li>
+						<li><a href="/#features">How it works</a></li>
 						<?php if (isset($sign_in_link)):?>
 						<li><a href="<?php echo $sign_in_link?>">Become a vendor</a></li>
 						<?php endif?>
-						<li><a>Terms and conditions</a></li>
+						<li><a href="/pages/terms">Terms and conditions</a></li>
 					</ul>
 				</div>
 			</div>

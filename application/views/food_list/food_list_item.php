@@ -5,8 +5,8 @@
 	
 	<a class="food_pic toggle_food_detail" food_id="<?php echo $food->food_id?>"
 		<?php if (!isset($is_my_profile) || !$is_my_profile):?>href="/menu/item/<?php echo $food->food_id?>"<?php endif?>
-		<?php if ($food->pic_path != ''):?>
-		style="background-image: url('<?php echo $food->pic_path?>')"
+		<?php if ($food->food_pic != ''):?>
+		style="background-image: url('<?php echo $food->food_pic?>?width=220&height=220')"
 		<?php endif?>>
 	</a>
 	<div>
@@ -31,13 +31,15 @@
 		<?php endif?>
 		
 		<div class="order_rating_time_container">
+<!--
 			<span><?php echo $food->total_orders?> orders</span>
-			
+-->
 			<?php if ($food->rating > 0):?>
 			<span class="rating">&hearts; <?php echo $food->rating?>%</span>
 			<?php endif?>
-			
+<!--
 			<span class="prep_time"><?php echo $food->prep_time?></span>
+-->
 		</div>
 		
 		<?php if (isset($categories)):?>

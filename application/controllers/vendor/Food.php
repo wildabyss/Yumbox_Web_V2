@@ -51,6 +51,7 @@ class Food extends Yumbox_Controller {
 		// show predicted pickup time
 		$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
 		$food->prep_time = prep_time_for_display($pickup_time);
+		$food->food_pic = prep_food_image_filename($food->pic_path);
 		
 		// get new element output
 		$food_data["food"] = $food;
@@ -596,7 +597,7 @@ class Food extends Yumbox_Controller {
 		if (count($res)>0){
 			$old_path = $res[0]->path;
 			// remove physically
-			@unlink($_SERVER['DOCUMENT_ROOT'].$old_path);
+			unlinkImageAndCache($_SERVER['DOCUMENT_ROOT'].$old_path);
 		}
 		
 		// associate new photo in db

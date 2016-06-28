@@ -4,8 +4,11 @@
 			<a id="mobile_user_menu_trigger"></a>
 			<ul id="pc_nav_buttons_left">
 				<li><a href="/" class="logo"></a></li>
+<!--
 				<li><a href="/menu/rush">YUM RUSH</a></li>
 				<li><a href="/menu/explore">YUM EXPLORE</a></li>
+-->
+				<li><a href="/menu/explore">I’M HUNGRY. FEED ME</a></li>
 				<li><a href="/#features">ABOUT</a></li>
 			</ul>
 

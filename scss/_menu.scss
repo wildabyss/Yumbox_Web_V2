@@ -78,13 +78,17 @@
 		padding: 0 5px 0 5px;
 		display: flex;
 		flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        >* {
+          margin: 5px;
+        }
 		
 		input[type="search"] {
-			margin: 0;
-			flex: 1;
+			flex: 8;
 			height: 26px;
 			padding-right: 28px;
-			padding-left: 28px;
+			padding-left: 14px;
 			
 			background-image: url('/imgs/search.svg');
 			background-size: 25px 25px;
@@ -95,25 +99,27 @@
 		
 		
 		button#btn_location{
-			margin-left: 5px;
-			width: 30px;
+            min-width: 120px;
 			height: 30px;
-			
+            padding-left: 20px;
+            flex: 1;
+
 			background-image: url('/imgs/map_pin.svg');
 			background-size: 25px 25px;
 			background-repeat: no-repeat;
-			background-position: center;
+			background-position: left center;
 		}
 		
 		button#btn_filter{
-			margin-left: 5px;
-			width: 30px;
+            min-width: 120px;
 			height: 30px;
-			
+            padding-left: 20px;
+            flex: 1;
+
 			background-image: url('/imgs/filter.png');
 			background-size: 25px 25px;
 			background-repeat: no-repeat;
-			background-position: center;
+			background-position: left center;
 		}
 	}	
 

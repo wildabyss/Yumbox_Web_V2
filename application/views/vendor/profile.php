@@ -1,7 +1,7 @@
 <section id="profile_intro">
 	<div class="pic_wrapper">
 		<label for="input_profile_pic" id="profile_pic" <?php if ($is_my_profile):?>class="editable_pic"<?php endif?>
-			<?php if ($user_picture !== false):?>style="background-image:url('<?php echo $user_picture?>')"<?php endif?>>
+			<?php if ($user_picture !== false):?>style="background-image:url('<?php echo $user_picture?>?width=200&height=200')"<?php endif?>>
 			<?php if ($is_my_profile):?>
 			<div class="btn_update_picture">Edit photo</div>
 			<?php endif?>

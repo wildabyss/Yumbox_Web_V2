@@ -6,7 +6,7 @@
 	<h3 class="center"><a href="/vendor/profile/id/<?php echo $food->vendor_id?>"><?php echo prevent_xss($food->vendor_name)?></a></h3>
 	
 	<label for="input_food_pic" class="food_pic_container <?php if ($is_my_profile):?>editable_pic<?php endif?>">
-		<a class="food_pic" food_id="<?php echo $food->food_id?>" <?php if ($food_picture !== false):?>style="background-image:url('<?php echo $food_picture->path?>')"<?php endif?>></a>
+		<a class="food_pic" food_id="<?php echo $food->food_id?>" <?php if ($food_picture !== false):?>style="background-image:url('<?php echo $food_picture->path?>?width=900&height=500')"<?php endif?>></a>
 		<div class="btn_update_picture">Edit photo</div>
 	</label>
 	<?php if ($is_my_profile):?>

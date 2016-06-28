@@ -23,7 +23,7 @@
 			</a>
 		</div>
 	</section>
-
+<!-- commented in favor of single button
 	<section id="menu_mega_selection">
 		<div class="button_parent">
 			<a class="rush" href="/menu/rush">
@@ -34,6 +34,15 @@
 		<div class="button_parent">
 			<a class="explore" href="/menu/explore">
 				<h3><?php echo strtoupper($full_menu_text)?></h3>
+				<p>Experience the world of home kitchen</p>
+			</a>
+		</div>
+	</section>
+-->
+	<section id="menu_single">
+		<div class="button_parent">
+			<a class="explore" href="/menu/explore">
+				<h3><?php echo strtoupper($single_menu_text)?></h3>
 				<p>Experience the world of home kitchen</p>
 			</a>
 		</div>
@@ -97,17 +106,19 @@
 	<div class="col-xs-12 col-sm-12 title">
 		<h1>How our fans enjoy Yumbox</h1>
 	</div>
+<!--
 	<div class="col-xs-12 col-sm-6 col-lg-4 ethnic-cuisine">
 		<div style="background-image: url('/imgs/3-laptop.jpg');">
 			Recharge with love-packed lunch
 		</div>
 	</div>
-	<div class="col-xs-12 col-sm-6 col-lg-4 ethnic-cuisine">
+-->
+	<div class="col-xs-12 col-sm-6 col-lg-6 ethnic-cuisine">
 		<div style="background-image: url('/imgs/3-table.jpg');">
 			Gastronomic fest, whenever wherever
 		</div>
 	</div>
-	<div class="col-xs-12 col-sm-6 col-lg-4 ethnic-cuisine">
+	<div class="col-xs-12 col-sm-6 col-lg-6 ethnic-cuisine">
 		<div style="background-image: url('/imgs/3-coffee.jpg');">
 			Feel good eating wholesome dinner &amp; unwind
 		</div>

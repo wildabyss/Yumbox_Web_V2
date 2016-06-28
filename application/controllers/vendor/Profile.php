@@ -89,6 +89,7 @@ class Profile extends Yumbox_Controller {
 			
 			// massage time for display
 			$food->prep_time = prep_time_for_display($food->prep_time);
+			$food->food_pic = prep_food_image_filename($food->pic_path);
 			
 			// parse data for display
 			$food_data['categories'] = $categories;
@@ -196,7 +197,7 @@ class Profile extends Yumbox_Controller {
 		// bind data
 		$data['is_my_profile'] = $myprofile;
 		$data['user'] = $user;
-		$data['user_picture'] = $user_picture;
+		$data['user_picture'] = prep_food_image_filename($user_picture);
 		$data['foods'] = $foods;
 		$data['food_list_display'] = $food_list_display;
 		$data['my_id'] = $my_id;
@@ -478,7 +479,7 @@ class Profile extends Yumbox_Controller {
 		$old_path = $this->user_model->getUserPicture($user_id);
 		if ($old_path !== false){
 			// remove physically
-			@unlink($_SERVER['DOCUMENT_ROOT'].$old_path);
+			unlinkImageAndCache($_SERVER['DOCUMENT_ROOT'].$old_path);
 		}
 		
 		// associate new photo in db
@@ -642,5 +643,17 @@ class Profile extends Yumbox_Controller {
 		$json_arr["success"] = "1";
 		$json_arr["account"] = $account;
 		echo json_encode($json_arr);
+	}
+
+	public function user_pic($filename)
+	{
+		$width = (int) $this->input->get('width');
+		$height = (int) $this->input->get('height');
+
+		//Original filename and path
+		$food_pics = $_SERVER['DOCUMENT_ROOT'] . $this->config->item('user_pics');
+		$filename = $food_pics . DIRECTORY_SEPARATOR . $filename;
+
+		download_cached_image($filename, $width, $height);
 	}
 }

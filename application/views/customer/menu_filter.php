@@ -1,3 +1,4 @@
+<!--
 <section id="menu_mega_selection" class="small <?php if ($is_rush):?>rush<?php else:?>explore<?php endif?>">
 	<div class="button_parent">
 		<a <?php if (!$is_rush):?>class="rush"<?php endif?> href="/menu/rush">
@@ -10,17 +11,18 @@
 		</a>
 	</div>
 </section>
+-->
 
 <section id="menu_filter" class="<?php if ($is_rush):?>rush<?php else:?>explore<?php endif?>">
 	<?php echo form_open($form_action, array('method'=>'get', 'id'=>'filter_form'))?>
 		<div class="search_container">
-			<input class="ui-state-default" name="search" placeholder="e.g. burrito" 
+			<input class="ui-state-default" name="search" placeholder="<?php echo $search_place_holder; ?>"
 				type="search" value="<?php echo $search_query ?>" />
-			<button id="btn_location" type="button"></button>
-			<div id="location_dialog" class="<?php if ($is_rush):?>rush<?php else:?>explore<?php endif?>" title="My location">
+			<button id="btn_location" type="button"><?php echo $location_btn_label; ?></button>
+			<div id="location_dialog" class="<?php if ($is_rush):?>rush<?php else:?>explore<?php endif?>" title="My address">
 				<input type="text" value="" placeholder="enter an address" class="ui-state-default" id="input_location" />
 			</div>
-			<button id="btn_filter" class="hidden" type="button"></button>
+			<button id="btn_filter" class="hidden" type="button"><?php echo $filters_btn_label; ?></button>
 		</div>
 
 		<div class="menu_filter_container">

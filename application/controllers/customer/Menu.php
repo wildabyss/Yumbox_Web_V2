@@ -13,6 +13,7 @@ class Menu extends Yumbox_Controller {
 		array $chosen_categories, $can_deliver, array $price_filter, $rating_filter){
 		// load language
 		$this->lang->load("landing");
+		$this->lang->load("menu");
 		
 		// get main food categories
 		$main_categories = $this->food_category_model->getAllMainCategories();
@@ -20,7 +21,10 @@ class Menu extends Yumbox_Controller {
 		// bind model data
 		$data["quick_menu_text"] = $this->lang->line("quick_menu_text");
 		$data["full_menu_text"] = $this->lang->line("full_menu_text");
+		$data['search_place_holder'] = $this->lang->line("search_place_holder");
 		$data['main_categories'] = $main_categories;
+		$data['location_btn_label'] = $this->lang->line("location_btn_label");
+		$data['filters_btn_label'] = $this->lang->line("filters_btn_label");
 		
 		// bind user data
 		$data['is_rush'] = $is_rush;
@@ -67,6 +71,7 @@ class Menu extends Yumbox_Controller {
 			// show predicted pickup time
 			$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
 			$food->prep_time = prep_time_for_display($pickup_time);
+			$food->food_pic = prep_food_image_filename($food->pic_path);
 			
 			$food_data["food"] = $food;
 			$food_list_display .= $this->load->view("food_list/food_list_item", $food_data, true);
@@ -289,8 +294,10 @@ class Menu extends Yumbox_Controller {
 		$food_pictures = $this->food_model->getFoodPicturesForFoodId($food_id);
 		// for now, grab only one picture
 		$food_picture = false;
-		if (count($food_pictures)>0)
+		if (count($food_pictures) > 0) {
 			$food_picture = $food_pictures[0];
+			$food_picture->path = prep_food_image_filename($food_picture->path);
+		}
 		
 		// get food categories
 		$categories = $this->food_category_model->getAllCategoriesForFood($food_id);
@@ -363,6 +370,7 @@ class Menu extends Yumbox_Controller {
 		// show predicted pickup time
 		$pickup_time = $this->time_prediction->calcPickupTime($food->food_id, time(), true);
 		$food->prep_time = prep_time_for_display($pickup_time);
+		$food->food_pic = prep_food_image_filename($food->pic_path);
 		
 		// get food categories
 		$categories[$food_id] = $this->food_category_model->getAllCategoriesForFood($food_id);
@@ -427,5 +435,17 @@ class Menu extends Yumbox_Controller {
 		$json_arr["li_display"] = $review_display;
 		$json_arr["can_add_more"] = $can_add_more;
 		echo json_encode($json_arr);
+	}
+
+	public function food_pic($file_name)
+	{
+		$width = (int) $this->input->get('width');
+		$height = (int) $this->input->get('height');
+
+		//Original filename and path
+		$food_pics = $_SERVER['DOCUMENT_ROOT'] . $this->config->item('food_pics');
+		$file_name = $food_pics . DIRECTORY_SEPARATOR . $file_name;
+
+		download_cached_image($file_name, $width, $height);
 	}
 }
